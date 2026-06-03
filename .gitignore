@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+outputs/**
+!outputs/**/.gitkeep
+data/benchmark/benchmark_queries.jsonl
+data/corpus/recommendation_index.json
+*.parquet
+.DS_Store

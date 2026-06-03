@@ -1,0 +1,43 @@
+# config/config.yaml
+# Runtime configuration. Secrets come from .env, never here.
+
+agent:
+  client: http                      # http | mcp
+  base_url_env: CGIO_API_BASE       # read from environment
+  api_key_env: CGIO_API_KEY
+  timeout_seconds: 120
+  # [AUTHOR ACTION] confirm endpoint path + request body in src/agent_client/http_client.py
+  endpoint_path: /api/query
+  request_template:                 # placeholder; map to real API in _normalize()
+    field_query: message
+    field_session: conversation_id  # used for D_followup multi-turn continuity
+
+judges:
+  - name: claude-opus-4-8
+    provider: anthropic
+    api_key_env: ANTHROPIC_API_KEY
+    temperature: 0
+    max_tokens: 1500
+  - name: gpt-5
+    provider: openai
+    api_key_env: OPENAI_API_KEY
+    temperature: 0
+    max_tokens: 1500
+
+run:
+  runs_per_judge: 3
+  runs_per_agent: 1                 # agent at temp 0; 1 capture is enough (raise if you want variance)
+  cache: true
+  blind_answers: true              # strip model self-identification before judging
+
+paths:
+  benchmark: data/benchmark/benchmark_queries.jsonl
+  corpus_index: data/corpus/recommendation_index.json
+  answers: outputs/answers/answers.jsonl
+  judgments: outputs/judgments/judgments.jsonl
+  metrics_dir: outputs/metrics
+  report_dir: outputs/report
+
+report:
+  ci_method: wilson
+  preliminary_if_unverified: true

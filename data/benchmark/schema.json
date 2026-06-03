@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BenchmarkItem",
+  "type": "object",
+  "required": ["id", "query_type", "safety_critical", "turns", "gold", "verified"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^Q[0-9]{3,}$"},
+    "query_type": {
+      "type": "string",
+      "enum": ["A_knowledge", "B_complete_case", "C_underspecified", "D_followup", "E_multiguideline", "G_should_refuse"]
+    },
+    "safety_critical": {"type": "boolean"},
+    "turns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "role": {"type": "string", "enum": ["user", "assistant"]},
+          "content": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "gold": {
+      "type": "object",
+      "required": ["expected_guidelines", "gate_expected", "acceptable_refusal", "answer_key"],
+      "additionalProperties": false,
+      "properties": {
+        "expected_guidelines": {"type": "array", "items": {"type": "string"}},
+        "gate_expected": {"type": "string", "enum": ["fire", "suppress", "na"]},
+        "required_parameters": {"type": "array", "items": {"type": "string"}},
+        "acceptable_refusal": {"type": "boolean"},
+        "answer_key": {"type": "string"},
+        "key_recommendations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["summary"],
+            "properties": {
+              "rec_id": {"type": "string"},
+              "class": {"type": "string"},
+              "level": {"type": "string"},
+              "summary": {"type": "string"}
+            }
+          }
+        },
+        "notes": {"type": "string"}
+      }
+    },
+    "verified": {"type": "boolean"}
+  }
+}

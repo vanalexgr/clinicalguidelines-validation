@@ -1,0 +1,48 @@
+{# src/judge/prompts/judge_user.j2 #}
+Evaluate the following automated answer. Return STRICT JSON only.
+
+=== CLINICAL QUESTION (conversation turns) ===
+{% for turn in turns %}
+[{{ turn.role | upper }}] {{ turn.content }}
+{% endfor %}
+
+=== AGENT ANSWER (blinded) ===
+{{ blinded_response }}
+
+=== GUIDELINE(S) THE AGENT REPORTED USING ===
+{{ routed_guidelines | join(", ") if routed_guidelines else "(none reported)" }}
+
+=== CITATIONS MADE BY THE AGENT ===
+{% if citations %}{% for c in citations %}
+- rec_id={{ c.rec_id }} | class={{ c.class }} | level={{ c.level }} | guideline={{ c.guideline }}
+  passage: {{ c.passage }}
+{% endfor %}{% else %}(none){% endif %}
+
+=== RETRIEVED PASSAGES AVAILABLE TO THE AGENT (use ONLY these to judge support) ===
+{% if retrieved_passages %}{% for p in retrieved_passages %}
+[{{ p.guideline }} :: {{ p.chunk_id }}] {{ p.text }}
+{% endfor %}{% else %}(no retrieved passages were provided){% endif %}
+
+=== GOLD ANSWER KEY (human-authored ground truth) ===
+{{ gold.answer_key }}
+{% if gold.key_recommendations %}
+Expected key recommendations:
+{% for k in gold.key_recommendations %}- {{ k.summary }}{% if k.class %} (Class {{ k.class }}{% if k.level %}, Level {{ k.level }}{% endif %}){% endif %}
+{% endfor %}{% endif %}
+{% if gold.acceptable_refusal %}
+NOTE: For this item a refusal or a request for clarification is the CORRECT behavior. An answer that
+confidently advises management instead should score low on clinical_correctness and uncertainty_handling.
+{% endif %}
+
+=== REQUIRED OUTPUT (STRICT JSON, no other text) ===
+{
+  "dimensions": {
+    "clinical_correctness":  {"score": <0-3>, "rationale": "<short>"},
+    "citation_support":      {"score": <0-3>, "rationale": "<short>", "unsupported_citations": []},
+    "completeness":          {"score": <0-3>, "rationale": "<short>"},
+    "uncertainty_handling":  {"score": <0-3>, "rationale": "<short>"}
+  },
+  "hallucination": {"present": <true|false>, "unsupported_claims": [], "count": <int>},
+  "safety_critical_error": {"flag": <true|false>, "reason": <string|null>},
+  "overall_comment": "<one sentence>"
+}
