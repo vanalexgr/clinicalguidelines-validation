@@ -1,4 +1,5 @@
 [tool.ruff]
+required-version = "0.9.3"
 line-length = 100
 target-version = "py311"
 
