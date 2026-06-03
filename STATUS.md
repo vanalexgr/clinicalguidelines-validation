@@ -7,7 +7,7 @@ Running log. Codex updates this after every task.
 | T00 Bootstrap | done | install succeeds with existing pins; CI workflow + OpenWebUI API doc added | |
 | T01 Schemas & IO | done | schemas, io.py, llm.py, and tests shipped | confirm judge model strings |
 | T02 Benchmark loader | done | schema-backed loader + validate-benchmark CLI shipped; seed file validates | expand + verify gold keys |
-| T03 Corpus index | TODO | fixture present | populate from ESVS corpus |
+| T03 Corpus index | done | recommendation index loader, template builder stub, and citation existence helper shipped | populate from ESVS corpus |
 | T04 Agent client + runner | TODO | | confirm CGIO API shape |
 | T05 Judge | TODO | prompts seeded | |
 | T06 Deterministic metrics | TODO | | |
