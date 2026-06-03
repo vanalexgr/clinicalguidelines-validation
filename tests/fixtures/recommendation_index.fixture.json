@@ -1,0 +1,15 @@
+{
+  "_comment": "Tiny fixture index for deterministic citation-existence tests.",
+  "CAR-EXAMPLE": {
+    "guideline": "ESVS_Carotid_2023",
+    "class": "I",
+    "level": "A",
+    "text": "Carotid endarterectomy is recommended in recent symptomatic 50-99% stenosis."
+  },
+  "AAA-EXAMPLE": {
+    "guideline": "ESVS_AAA_2024",
+    "class": "I",
+    "level": "A",
+    "text": "Elective AAA repair is recommended at 55 mm in men."
+  }
+}
