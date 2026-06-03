@@ -15,8 +15,9 @@ from pydantic import ValidationError
 
 from src.common.schemas import BenchmarkItem, QueryType
 
-DEFAULT_BENCHMARK_PATH = Path("data/benchmark/benchmark_queries.jsonl")
-DEFAULT_SCHEMA_PATH = Path("data/benchmark/schema.json")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_BENCHMARK_PATH = REPO_ROOT / "data/benchmark/benchmark_queries.jsonl"
+DEFAULT_SCHEMA_PATH = REPO_ROOT / "data/benchmark/schema.json"
 
 
 @dataclass(slots=True)
