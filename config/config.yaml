@@ -2,23 +2,22 @@
 # Runtime configuration. Secrets come from .env, never here.
 
 agent:
-  client: http                      # http | mcp
-  base_url_env: CGIO_API_BASE       # read from environment
+  client: http
+  base_url_env: CGIO_API_BASE       # e.g. https://api.clinicalguidelines.io
   api_key_env: CGIO_API_KEY
   timeout_seconds: 120
-  # [AUTHOR ACTION] confirm endpoint path + request body in src/agent_client/http_client.py
-  endpoint_path: /api/query
-  request_template:                 # placeholder; map to real API in _normalize()
-    field_query: message
-    field_session: conversation_id  # used for D_followup multi-turn continuity
+  endpoint_path: /api/v1/vascular-consult
+  # pre_retrieval_mode=true enables the two-round flow that exposes gate behavior.
+  # Phase 1 returns phase:awaiting_confirmation (gate fired) or retrieval_payload directly.
+  pre_retrieval_mode: true
 
 judges:
-  - name: claude-opus-4-8
+  - name: claude-opus-4-7
     provider: anthropic
     api_key_env: ANTHROPIC_API_KEY
     temperature: 0
     max_tokens: 1500
-  - name: gpt-5
+  - name: gpt-4o
     provider: openai
     api_key_env: OPENAI_API_KEY
     temperature: 0

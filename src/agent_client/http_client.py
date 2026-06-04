@@ -1,4 +1,21 @@
-"""HTTP client for the ClinicalGuidelines.io agent."""
+"""HTTP client for the ClinicalGuidelines.io agent.
+
+API shape (confirmed from Laravel-RAGFLOW-router, 2026-06):
+  POST /api/v1/vascular-consult
+  Auth: Authorization: Bearer <CGIO_API_KEY>
+  Request:  { question, history?, pre_retrieval_mode?, guidelines? }
+  Response (standard): { result, citation_chunks, narrative_chunks,
+                         llm_citation_chunks, llm_narrative_chunks,
+                         selected_guidelines, gap_assessment, assets, ... }
+  Response (pre_retrieval_mode=true, gate fires):
+                       { phase:"awaiting_confirmation", confirmation_message,
+                         clarification_questions, pre_retrieval_result,
+                         retrieval_payload:{...standard fields...} }
+  Response (pre_retrieval_mode=true, gate suppressed):
+                       { result, ... } — same as standard response
+
+Run with --dry-run to dump one raw request/response for manual inspection.
+"""
 
 from __future__ import annotations
 
@@ -16,9 +33,30 @@ from src.benchmark.validate_benchmark import load_benchmark_validated
 from src.common.io import load_config
 from src.common.schemas import AgentAnswer, BenchmarkItem, Citation, RetrievedPassage
 
+# --------------------------------------------------------------------------- #
+# Guideline key → canonical benchmark ID mapping
+# (API key on left, benchmark expected_guidelines value on right)
+# --------------------------------------------------------------------------- #
+_GUIDELINE_KEY_TO_CANONICAL: dict[str, str] = {
+    "carotid_vertebral": "ESVS_Carotid_2023",
+    "abdominal_aortic_aneurysm": "ESVS_AAA_2024",
+    "acute_limb_ischaemia": "ESVS_ALI_2020",
+    "antithrombotic_therapy": "ESVS_Antithrombotic_2023",
+    "asymptomatic_pad": "ESVS_Asymptomatic_PAD_IC_2024",
+    "clti": "GVG_CLTI_2019",
+    "chronic_venous_disease": "ESVS_Chronic_Venous_Disease_2022",
+    "venous_thrombosis": "ESVS_Venous_Thrombosis_2021",
+    "descending_thoracic_aorta": "ESVS_ThoracoAbdominal_2026",
+    "aortic_arch": "ESVS_AorticArch_2024",
+    "mesenteric_renal": "ESVS_MesentericRenal_2017",
+    "vascular_trauma": "ESVS_VascularTrauma_2023",
+    "vascular_graft_infections": "ESVS_GraftInfections_2020",
+    "vascular_access": "ESVS_VascularAccess_2023",
+}
+
 
 class HttpAgentClient(AgentClient):
-    """HTTP transport with best-effort normalization into AgentAnswer."""
+    """HTTP transport normalising ClinicalGuidelines.io responses into AgentAnswer."""
 
     def __init__(
         self,
@@ -30,18 +68,13 @@ class HttpAgentClient(AgentClient):
         self.base_url = str(agent_cfg.get("base_url") or "")
         self.api_key = agent_cfg.get("api_key")
         self.endpoint_path = str(agent_cfg.get("endpoint_path") or "")
-        self.request_template = agent_cfg.get("request_template", {})
+        self.pre_retrieval_mode = bool(agent_cfg.get("pre_retrieval_mode", True))
         self.timeout_seconds = float(agent_cfg.get("timeout_seconds", 120))
         self._transport = transport or self._default_transport
 
     @property
     def cache_model_id(self) -> str:
-        model = (
-            self.request_template.get("model")
-            or self.agent_cfg.get("model")
-            or os.environ.get("CGIO_AGENT_MODEL")
-            or "agent"
-        )
+        model = self.agent_cfg.get("model") or os.environ.get("CGIO_AGENT_MODEL") or "agent"
         return str(model)
 
     def generate_answer(self, item: BenchmarkItem, *, run_index: int = 0) -> AgentAnswer:
@@ -57,7 +90,10 @@ class HttpAgentClient(AgentClient):
         return self._invoke(item)
 
     def _invoke(self, item: BenchmarkItem) -> DryRunResult:
-        url = urllib.parse.urljoin(self.base_url.rstrip("/") + "/", self.endpoint_path.lstrip("/"))
+        url = urllib.parse.urljoin(
+            self.base_url.rstrip("/") + "/",
+            self.endpoint_path.lstrip("/"),
+        )
         payload = self._build_request_payload(item)
         headers = {
             "Accept": "application/json",
@@ -76,34 +112,18 @@ class HttpAgentClient(AgentClient):
         )
 
     def _build_request_payload(self, item: BenchmarkItem) -> dict[str, Any]:
-        turns = [{"role": turn.role, "content": turn.content} for turn in item.turns]
+        """Build POST body for /api/v1/vascular-consult."""
+        # The question is always the last user turn.
+        question = item.turns[-1].content
 
-        if self.endpoint_path == "/api/chat/completions":
-            payload: dict[str, Any] = {
-                "messages": turns,
-                "stream": False,
-            }
-            model = (
-                self.request_template.get("model")
-                or self.agent_cfg.get("model")
-                or os.environ.get("CGIO_AGENT_MODEL")
-            )
-            if model:
-                payload["model"] = model
-            for key, value in self.request_template.items():
-                if key in {"model", "field_query", "field_session"} or value is None:
-                    continue
-                payload[key] = value
-            return payload
+        # Prior turns become the history array (as plain strings, alternating user/assistant).
+        history = [t.content for t in item.turns[:-1]]
 
-        query_field = self.request_template.get("field_query", "message")
-        session_field = self.request_template.get("field_session", "conversation_id")
-        payload = {
-            query_field: item.turns[-1].content,
-            "turns": turns,
-        }
-        if session_field:
-            payload[session_field] = item.id
+        payload: dict[str, Any] = {"question": question}
+        if history:
+            payload["history"] = history
+        if self.pre_retrieval_mode:
+            payload["pre_retrieval_mode"] = True
         return payload
 
     def _default_transport(
@@ -137,42 +157,86 @@ class HttpAgentClient(AgentClient):
         latency_s: float,
         run_index: int,
     ) -> AgentAnswer:
-        # TODO(author): Confirm the exact OpenWebUI/ClinicalGuidelines.io response shape from a live
-        # `--dry-run`. Current assumptions:
-        # 1. OpenWebUI-style responses return `choices[0].message.content` for the answer text.
-        # 2. Optional grounding/citation data may appear in `sources`, `citations`, or
-        #    `retrieved_passages`.
-        # 3. Optional structured fields such as `gate_fired`, `clarification_requested`,
-        #    `routed_guidelines`, and `uncertainty_statements` may be present directly and are used
-        #    when available. Otherwise normalization falls back to best-effort heuristics.
-        raw_text = self._extract_text(raw_response)
-        citations = self._extract_citations(raw_response)
-        retrieved_passages = self._extract_retrieved_passages(raw_response)
-        clarification_requested = self._extract_string_list(
-            raw_response,
-            ["clarification_requested", "required_parameters", "follow_up_questions"],
+        """Map the CGIO API response to a normalised AgentAnswer.
+
+        Two response shapes are handled:
+          1. Standard / pre_retrieval_mode gate-suppressed:
+             top-level ``result``, ``citation_chunks``, ``narrative_chunks``,
+             ``selected_guidelines``, ``gap_assessment``.
+          2. pre_retrieval_mode gate-fired (``phase == "awaiting_confirmation"``):
+             top-level ``confirmation_message``, ``clarification_questions``,
+             ``pre_retrieval_result``; clinical chunks live inside ``retrieval_payload``.
+        """
+        if not isinstance(raw_response, dict):
+            raw_text = str(raw_response)
+            return AgentAnswer(
+                id=item.id,
+                run_index=run_index,
+                raw_response=raw_text,
+                gate_fired=False,
+                latency_seconds=latency_s,
+                model_meta={"synthesis_model": self.cache_model_id, "endpoint": self.endpoint_path},
+            )
+
+        phase = raw_response.get("phase")
+        gate_fired = phase == "awaiting_confirmation"
+
+        # Clarification questions (only meaningful when gate fires)
+        clarification_requested: list[str] = []
+        if gate_fired:
+            qs = raw_response.get("clarification_questions") or []
+            clarification_requested = [str(q).strip() for q in qs if str(q).strip()]
+
+        # Answer text
+        if gate_fired:
+            raw_text = str(raw_response.get("confirmation_message") or "")
+        else:
+            raw_text = self._extract_result_text(raw_response)
+
+        # The clinical data (chunks, guidelines) may be nested under retrieval_payload
+        # (phase 1 pre-fetches in parallel) or at the top level (standard mode).
+        payload: dict = raw_response.get("retrieval_payload") or raw_response
+
+        # Routed guidelines: selected_guidelines[].key → canonical benchmark ID
+        routed_guidelines = self._extract_routed_guidelines(payload)
+
+        # Citations: citation_chunks (prefer llm_citation_chunks for judge context)
+        citation_chunks = (
+            payload.get("llm_citation_chunks")
+            or payload.get("citation_chunks")
+            or []
         )
-        gate_fired = self._extract_bool(raw_response, ["gate_fired", "needs_clarification"])
-        if gate_fired is None:
-            gate_fired = bool(clarification_requested)
-        routed_guidelines = self._extract_routed_guidelines(
-            raw_response,
-            citations,
-            retrieved_passages,
+        citations = [_normalize_citation(c) for c in citation_chunks if isinstance(c, dict)]
+
+        # Retrieved passages: narrative_chunks (prefer llm_ variant)
+        narrative_chunks = (
+            payload.get("llm_narrative_chunks")
+            or payload.get("narrative_chunks")
+            or []
         )
-        uncertainty = self._extract_uncertainty(raw_response, raw_text)
-        recommendation = self._extract_recommendation(raw_response, raw_text)
+        retrieved_passages = [
+            _normalize_passage(p, i)
+            for i, p in enumerate(narrative_chunks)
+            if isinstance(p, dict)
+        ]
+
+        # Uncertainty: from gap_assessment
+        uncertainty = _extract_uncertainty(payload)
+
+        # Recommendation text (same as raw_text for this API)
+        recommendation = raw_text
 
         model_meta = {
-            "synthesis_model": self._extract_model_name(raw_response) or self.cache_model_id,
+            "synthesis_model": self.cache_model_id,
             "endpoint": self.endpoint_path,
+            "phase": phase or "complete",
         }
 
         return AgentAnswer(
             id=item.id,
             run_index=run_index,
             raw_response=raw_text,
-            gate_fired=bool(gate_fired),
+            gate_fired=gate_fired,
             clarification_requested=clarification_requested,
             routed_guidelines=routed_guidelines,
             recommendation=recommendation,
@@ -183,178 +247,124 @@ class HttpAgentClient(AgentClient):
             model_meta=model_meta,
         )
 
-    def _extract_text(self, raw_response: Any) -> str:
-        if isinstance(raw_response, str):
-            return raw_response
-        if not isinstance(raw_response, dict):
-            return json.dumps(raw_response, ensure_ascii=False)
+    def _extract_result_text(self, raw_response: dict) -> str:
+        """Extract the main answer text from a standard (non-gate) response."""
         if "_raw_text" in raw_response:
             return str(raw_response["_raw_text"])
 
+        # CGIO standard field
+        for key in ("result", "response", "answer", "recommendation", "text", "message", "output"):
+            if key in raw_response:
+                val = raw_response[key]
+                if isinstance(val, str):
+                    return val
+
+        # OpenWebUI choices wrapper
         choices = raw_response.get("choices")
         if isinstance(choices, list) and choices:
             message = choices[0].get("message", {})
             content = message.get("content", "")
-            return self._coerce_content_to_text(content)
-
-        for key in (
-            "raw_response",
-            "response",
-            "answer",
-            "recommendation",
-            "text",
-            "message",
-            "output",
-        ):
-            if key in raw_response:
-                return self._coerce_content_to_text(raw_response[key])
+            if isinstance(content, str):
+                return content
 
         return json.dumps(raw_response, ensure_ascii=False)
 
-    def _extract_model_name(self, raw_response: Any) -> str | None:
-        if isinstance(raw_response, dict):
-            value = raw_response.get("model") or raw_response.get("model_name")
-            return str(value) if value else None
-        return None
+    def _extract_routed_guidelines(self, payload: dict) -> list[str]:
+        """Map selected_guidelines[].key → canonical IDs, with fallbacks."""
+        result: list[str] = []
+        seen: set[str] = set()
 
-    def _extract_recommendation(self, raw_response: Any, raw_text: str) -> str:
-        if isinstance(raw_response, dict):
-            recommendation = raw_response.get("recommendation")
-            if recommendation:
-                return self._coerce_content_to_text(recommendation)
-        return raw_text
-
-    def _extract_uncertainty(self, raw_response: Any, raw_text: str) -> list[str]:
-        explicit = self._extract_string_list(raw_response, ["uncertainty_statements"])
-        if explicit:
-            return explicit
-
-        statements: list[str] = []
-        for line in raw_text.splitlines():
-            lowered = line.lower()
-            if any(
-                token in lowered
-                for token in (
-                    "uncertain",
-                    "insufficient",
-                    "not enough information",
-                    "guidelines are silent",
-                    "outside the covered guidelines",
-                )
-            ):
-                statements.append(line.strip())
-        return statements
-
-    def _extract_routed_guidelines(
-        self,
-        raw_response: Any,
-        citations: list[Citation],
-        retrieved_passages: list[RetrievedPassage],
-    ) -> list[str]:
-        explicit = self._extract_string_list(raw_response, ["routed_guidelines", "guidelines"])
-        if explicit:
-            return explicit
-
-        guidelines = [
-            citation.guideline
-            for citation in citations
-            if citation.guideline
-        ] + [passage.guideline for passage in retrieved_passages if passage.guideline]
-        deduped = list(dict.fromkeys(guidelines))
-        return deduped
-
-    def _extract_citations(self, raw_response: Any) -> list[Citation]:
-        items = self._extract_list(raw_response, ["citations", "sources"])
-        citations: list[Citation] = []
-        for item in items:
-            if not isinstance(item, dict):
+        # Primary: CGIO selected_guidelines array (preferred)
+        for entry in (payload.get("selected_guidelines") or []):
+            if not isinstance(entry, dict):
                 continue
-            payload = {
-                "rec_id": item.get("rec_id") or item.get("id"),
-                "class": item.get("class"),
-                "level": item.get("level"),
-                "guideline": item.get("guideline") or item.get("document"),
-                "passage": self._coerce_content_to_text(
-                    item.get("passage") or item.get("text") or item.get("content") or ""
-                ),
-            }
-            citations.append(Citation.model_validate(payload))
-        return citations
+            key = entry.get("key", "")
+            canonical = _GUIDELINE_KEY_TO_CANONICAL.get(key, key)
+            if canonical and canonical not in seen:
+                result.append(canonical)
+                seen.add(canonical)
 
-    def _extract_retrieved_passages(self, raw_response: Any) -> list[RetrievedPassage]:
-        items = self._extract_list(raw_response, ["retrieved_passages", "sources"])
-        passages: list[RetrievedPassage] = []
-        for index, item in enumerate(items):
-            if not isinstance(item, dict):
-                continue
-            text = self._coerce_content_to_text(
-                item.get("text") or item.get("passage") or item.get("content") or ""
-            )
-            if not text:
-                continue
-            payload = {
-                "guideline": item.get("guideline") or item.get("document") or "unknown",
-                "chunk_id": item.get("chunk_id") or item.get("id") or f"source-{index}",
-                "text": text,
-            }
-            passages.append(RetrievedPassage.model_validate(payload))
-        return passages
+        # Fallback A: pre-mapped list already in canonical form
+        if not result:
+            for gid in (payload.get("routed_guidelines") or payload.get("guidelines") or []):
+                gid = str(gid)
+                if gid and gid not in seen:
+                    result.append(gid)
+                    seen.add(gid)
 
-    def _extract_string_list(self, raw_response: Any, keys: list[str]) -> list[str]:
-        items = self._extract_list(raw_response, keys)
-        return [str(item).strip() for item in items if str(item).strip()]
+        # Fallback B: derive from citation chunk source_guideline names
+        if not result:
+            for chunk in (payload.get("citation_chunks") or payload.get("citations") or []):
+                if not isinstance(chunk, dict):
+                    continue
+                sg = chunk.get("source_guideline") or chunk.get("guideline") or ""
+                if sg and sg not in seen:
+                    result.append(sg)
+                    seen.add(sg)
+        return result
 
-    def _extract_list(self, raw_response: Any, keys: list[str]) -> list[Any]:
-        if not isinstance(raw_response, dict):
-            return []
-        for key in keys:
-            value = raw_response.get(key)
-            if isinstance(value, list):
-                return value
+
+def _normalize_citation(chunk: dict) -> Citation:
+    """Map a CGIO citation_chunk dict to a Citation schema object."""
+    rec_id = (
+        chunk.get("rec_id")
+        or chunk.get("recommendation_id")
+        or chunk.get("id")
+    )
+    # recommendation_id in CGIO is "Rec 1.2.3" — strip prefix for matching
+    if isinstance(rec_id, str) and rec_id.startswith("Rec "):
+        rec_id = rec_id[4:].strip()
+
+    return Citation.model_validate({
+        "rec_id": rec_id,
+        "class": chunk.get("class"),
+        "level": chunk.get("level"),
+        "guideline": chunk.get("source_guideline") or chunk.get("guideline"),
+        "passage": chunk.get("text") or chunk.get("content") or chunk.get("passage") or "",
+    })
+
+
+def _normalize_passage(chunk: dict, index: int) -> RetrievedPassage:
+    """Map a CGIO narrative_chunk dict to a RetrievedPassage schema object."""
+    text = chunk.get("content") or chunk.get("text") or chunk.get("passage") or ""
+    guideline = (
+        chunk.get("source_guideline")
+        or chunk.get("guideline")
+        or chunk.get("guideline_key")
+        or "unknown"
+    )
+    chunk_id = chunk.get("chunk_id") or chunk.get("id") or f"chunk-{index}"
+    return RetrievedPassage.model_validate({
+        "guideline": str(guideline),
+        "chunk_id": str(chunk_id),
+        "text": str(text),
+    })
+
+
+def _extract_uncertainty(payload: dict) -> list[str]:
+    """Extract uncertainty signals from gap_assessment."""
+    gap = payload.get("gap_assessment") or {}
+    if not isinstance(gap, dict):
         return []
+    statements: list[str] = []
+    if gap.get("hasGuidelineGap"):
+        summary = gap.get("gapSummary")
+        if summary:
+            statements.append(str(summary))
+        for facet in gap.get("uncoveredFacets") or []:
+            statements.append(f"Uncovered facet: {facet}")
+    return statements
 
-    def _extract_bool(self, raw_response: Any, keys: list[str]) -> bool | None:
-        if not isinstance(raw_response, dict):
-            return None
-        for key in keys:
-            value = raw_response.get(key)
-            if isinstance(value, bool):
-                return value
-        return None
 
-    def _coerce_content_to_text(self, content: Any) -> str:
-        if isinstance(content, str):
-            return content
-        if isinstance(content, list):
-            parts: list[str] = []
-            for item in content:
-                if isinstance(item, str):
-                    parts.append(item)
-                elif isinstance(item, dict):
-                    if "text" in item:
-                        parts.append(str(item["text"]))
-                    elif item.get("type") == "text" and "content" in item:
-                        parts.append(str(item["content"]))
-            return "\n".join(part for part in parts if part).strip()
-        if isinstance(content, dict):
-            if "text" in content:
-                return str(content["text"])
-            if "content" in content:
-                return self._coerce_content_to_text(content["content"])
-        return str(content)
-
+# --------------------------------------------------------------------------- #
+# CLI
+# --------------------------------------------------------------------------- #
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, help="Path to config.yaml.")
-    parser.add_argument(
-        "--benchmark-path",
-        help="Optional benchmark JSONL override.",
-    )
-    parser.add_argument(
-        "--item-id",
-        help="Optional benchmark item id to dry-run/normalize.",
-    )
+    parser.add_argument("--benchmark-path", help="Optional benchmark JSONL override.")
+    parser.add_argument("--item-id", help="Optional benchmark item id to dry-run/normalize.")
     parser.add_argument(
         "--dry-run",
         action="store_true",

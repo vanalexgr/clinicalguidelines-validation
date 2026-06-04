@@ -1,0 +1,79 @@
+rec_id,category_name,guideline_name,guideline_year,class,level,evidence_first_authors,rec_text_verbatim
+1,vascula_access,Vascular Access,,I,C,,"Referral of chronic kidney disease patients to the nephrologist and/or surgeon for preparing vascular access is recommended when they reach stage 4 of chronic kidney disease (glomerular filtration rate < 30 ml/min/1.73 m ), especially in cases of rapidly progressing nephropathy."
+2,vascula_access,Vascular Access,,I,B,,A permanent vascular access should be created 3-6 months before the expected start of haemodialysis treatment.
+3,vascula_access,Vascular Access,,I,A,,An autogenous arteriovenous fistula is recommended as the primary option for vascular access.
+4,vascula_access,Vascular Access,,I,B,,The radiocephalic arteriovenous fistula is recommended as the preferred vascular access.
+5,vascula_access,Vascular Access,,IIa,C,,"When vessel suitability is adequate, the non-dominant extremity should be considered as the preferred location for vascular access."
+6,vascula_access,Vascular Access,,IIa,C,,A lower extremity vascular access should be considered only when upper extremity access is impossible.
+7,vascula_access,Vascular Access,,IIa,B,,Tunnelled cuffed central venous catheters as a long standing haemodialysis modality should be considered when the creation of arteriovenous fistulas or grafts is impossible or in patients with limited life expectancy.
+8,vascula_access,Vascular Access,,I,A,,Pre-operative ultrasonography of bilateral upper extremity arteries and veins is recommended in all patients when planning the creation of a vascular access.
+9,vascula_access,Vascular Access,,I,B,,Duplex ultrasound is recommended as the first line imaging modality in suspected vascular access dysfunction.
+10,vascula_access,Vascular Access,,IIb,C,,Computed tomographic angiography may be considered in patients with inconclusive ultrasonographic or angiographic results concerning the degree of central venous stenosis.
+11,vascula_access,Vascular Access,,III,C,,"Contrast enhanced magnetic resonance angiography is not recommended in patients with end stage renal disease, because of the potential risk of gadolinium associated nephrogenic systemic fibrosis."
+12,vascula_access,Vascular Access,,I,C,,In vascular access dysfunction digital subtraction angiography should be performed only when subsequent intervention is anticipated.
+13,vascula_access,Vascular Access,,III,C,,"In patients undergoing or likely to require haemodialysis, intravenous cannulae and venipuncture of the cephalic, basilic and the antecubital veins may be harmful and should not be performed."
+14,vascula_access,Vascular Access,,IIa,B,,Adequate pre-operative hydration should be considered for vascular access creation.
+15,vascula_access,Vascular Access,,I,A,,Broad spectrum antibiotics should be given prior to insertion of an arteriovenous graft including prophylaxis for <i>Staphylococcus aureus</i>.
+16,vascula_access,Vascular Access,,I,B,,**In carriers or in units with a high incidence of methicillin resistant <i>Staphylococcus aureus</i> the administration of a parenteral glycopeptide is recommended.**
+17,vascula_access,Vascular Access,,I,C,,Patients should be examined prior to surgery with a tourniquet in a warm room and the proposed site of an arteriovenous fistula should be marked pre-operatively.
+18,vascula_access,Vascular Access,,IIa,B,,Regional anaesthesia should be considered in preference to local anaesthesia for vascular access surgery because of a possible improvement in access patency rate.
+19,vascula_access,Vascular Access,,IIa,B,,In adults when the inner radial arterial diameter is less than 2.0 mm and/or the cephalic venous diameter is less than 2.0 mm by ultrasound measurement an alternative site for access should be considered.
+20,vascula_access,Vascular Access,,I,C,,If there is an indwelling central venous catheter or pacemaker the vascular access should be created in the opposite arm because of the risk of central venous stenosis and reduced access patency.
+21,vascula_access,Vascular Access,,IIa,A,,"When the upper arm cephalic vein is unavailable, a basilic vein transposition arteriovenous fistula should be considered in preference to an arteriovenous graft because of its improved patency and the reduced risk of infection."
+22,vascula_access,Vascular Access,,IIa,B,,When lower limb vascular access is necessary a femoral vein transposition should be considered in preference to an arteriovenous graft.
+23,vascula_access,Vascular Access,,IIa,C,,"When an arteriovenous fistula cannot be created, a biological graft should be considered in preference to a synthetic graft in the presence of infection."
+24,vascula_access,Vascular Access,,I,C,,The implantation of a self-sealing arteriovenous graft is recommended for patients who have difficult central venous access and who require early cannulation for haemodialysis.
+25,vascula_access,Vascular Access,,IIa,C,,"If after creation of a vascular access, there is no thrill or a bruit in the region of the anastomosis, further investigations should be considered."
+26,vascula_access,Vascular Access,,IIa,C,,"In order to decrease the exposure of patients to the heparin used during dialysis, scheduling elective access procedures on a day between haemodialysis sessions should be considered."
+27,vascula_access,Vascular Access,,I,C,,"In patients with early peri-operative (<30 days) autogenous arteriovenous fistula infection and absence of haemorrhage or pseudoaneurysm, appropriate antibiotic therapy is recommended."
+28,vascula_access,Vascular Access,,I,C,,"Early peri-operative (<30 days) arteriovenous graft infection with systemic sepsis, purulent discharge, perigraft abscess or haemorrhage should be treated by total graft removal."
+29,vascula_access,Vascular Access,,I,C,,"For early autogenous arteriovenous fistula infection in the presence of systemic signs, bleeding and involvement of the anastomosis, fistula ligation should be performed."
+30,vascula_access,Vascular Access,,I,C,,"For early limb threatening vascular access induced ischaemia and for all cases of early ischaemic monomelic neuropathy in the absence of steal, the access should be ligated urgently."
+31,vascula_access,Vascular Access,,I,C,,"For vascular access salvage after early thrombosis, thrombectomy and revision (if needed) should be performed as soon as possible."
+32,vascula_access,Vascular Access,,III,C,,Thrombolysis should not be used for early vascular access thrombosis within 7 days of creation.
+33,vascula_access,Vascular Access,,I,C,,Establishing vascular access training programs is recommended in order to supervise adequate numbers (>25) of autogenous fistulas for each trainee.
+34,vascula_access,Vascular Access,,IIa,B,,"Arteriovenous fistulas should be considered for cannulation 4-6 weeks after creation, and standard arteriovenous grafts after 2-4 weeks."
+35,vascula_access,Vascular Access,,IIa,C,,"If an arteriovenous fistula fails to mature by 6 weeks, additional investigations (like duplex ultrasound) should be considered in order to achieve prompt diagnosis and treatment."
+36,vascula_access,Vascular Access,,III,C,,Arteriovenous fistula cannulation before 2 weeks should generally not be done.
+37,vascula_access,Vascular Access,,IIb,B,,Arteriovenous fistula cannulation between 2 and 4 weeks after creation may be considered in selected patients under close supervision.
+38,vascula_access,Vascular Access,,IIa,B,,"Structured post-operative hand exercise training should be considered, to increase arteriovenous fistula maturation."
+39,vascula_access,Vascular Access,,III,C,,Long-term anti-thrombotic therapy should not be used to prolong vascular access patency in haemodialysis patients.
+40,vascula_access,Vascular Access,,I,C,,Strict aseptic technique is recommended for all vascular access cannulations.
+41,vascula_access,Vascular Access,,I,C,,Physical examination of the vascular access prior to any cannulation is recommended.
+42,vascula_access,Vascular Access,,IIa,C,,In patients with a short cannulation segment the use of the buttonhole technique should be considered over other techniques.
+43,vascula_access,Vascular Access,,I,C,,The rope ladder technique should be used for cannulation of arteriovenous grafts.
+44,vascula_access,Vascular Access,,I,B,,Routine physical examination is recommended for vascular access surveillance and monitoring.
+45,vascula_access,Vascular Access,,I,B,,It is recommended that vascular access surveillance is performed by flow measurement of arteriovenous grafts monthly and arteriovenous fistulas every 3 months.
+46,vascula_access,Vascular Access,,IIa,B,,"When arteriovenous fistula blood flow measurements during dialysis indicate the presence of a vascular access stenosis based on a Qa &lt; 500 ml/min, angiographic assessment of the access should be considered."
+47,vascula_access,Vascular Access,,III,C,,Venous pressure adjusted for the mean arterial pressure &gt; .50 (or derived static venous pressure adjusted for the mean arterial pressure &gt; .55) is not a reliable indicator of stenosis and intervention based on this finding is not recommended.
+48,vascula_access,Vascular Access,,IIa,B,,"When haemodialysis efficiency is impaired, investigation and correction of an underlying vascular access stenosis should be considered."
+49,vascula_access,Vascular Access,,IIa,A,,Surveillance of arteriovenous fistulas with duplex ultrasound at regular intervals and pre-emptive balloon angioplasty should be considered to reduce the risk of arteriovenous fistula thrombosis.
+50,vascula_access,Vascular Access,,III,A,,Surveillance of arteriovenous grafts with duplex ultrasound at regular intervals and pre-emptive balloon angioplasty is not recommended to prevent thrombosis or improve arteriovenous graft functionality.
+51,vascula_access,Vascular Access,,IIa,C,,The appointment of one or more vascular access nurses should be considered to improve patient care and clinical outcomes in each haemodialysis service.
+52,vascula_access,Vascular Access,,I,C,,Surgical revision of vascular access aneurysms is recommended if cannulation sites and access diameter can be preserved.
+53,vascula_access,Vascular Access,,I,C,,"Surgical revision of pseudoaneurysms in arteriovenous grafts is recommended when the aneurysm:<br/>- limits the availability of cannulation sites or<br/>- is associated with pain, poor scar formation, spontaneous bleeding and rapid expansion."
+54,vascula_access,Vascular Access,,IIb,C,,Stent graft exclusion of vascular access aneurysms may be considered in selected patients.
+55,vascula_access,Vascular Access,,III,C,,Access cannulation through a pseudoaneurysm is not recommended.
+56,vascula_access,Vascular Access,,I,C,,Outflow stenosis should be ruled out in symptomatic vascular access aneurysms and treated when present.
+57,vascula_access,Vascular Access,,I,C,,All vascular access late infections should be treated with antibiotics to cover both gram positive and gram negative organisms.
+58,vascula_access,Vascular Access,,I,C,,"In late vascular graft infection total arteriovenous graft excision is recommended in patients with sepsis, clinical signs of infection, and peri-graft fluid around the whole graft."
+59,vascula_access,Vascular Access,,IIb,C,,Partial excision of an arteriovenous prosthetic graft may be considered in selected cases when sections of the graft are well incorporated and appear to be uninfected.
+60,vascula_access,Vascular Access,,I,C,,Balloon angioplasty is recommended as primary treatment for inflow arterial stenosis of any type of vascular access.
+61,vascula_access,Vascular Access,,IIa,C,,Surgical proximal relocation of the vascular access anastomosis should be considered in juxta-anastomotic stenosis in the forearm.
+62,vascula_access,Vascular Access,,I,C,,Balloon angioplasty is recommended for the treatment of venous outflow stenosis.
+63,vascula_access,Vascular Access,,IIa,B,,Endovascular treatment with stent grafts should be considered for the treatment of cephalic arch stenosis.
+64,vascula_access,Vascular Access,,IIa,B,,Surgery or endovascular methods should be considered for treatment of late thrombosis of vascular accesses depending on the centre's expertise.
+65,vascula_access,Vascular Access,,I,C,,Treatment of vascular access thrombosis should include peri-operative diagnosis and treatment of any associated stenosis.
+66,vascula_access,Vascular Access,,I,C,,"After creation of a vascular access, evaluation of persistent arm oedema by fistulography or computed tomographic angiography is recommended to evaluate ipsilateral central venous outflow."
+67,vascula_access,Vascular Access,,I,C,,"Balloon angioplasty as primary treatment of symptomatic central venous outflow disease is recommended, with repeat interventions if indicated."
+68,vascula_access,Vascular Access,,IIb,C,,The use of stent grafts may be considered for the treatment of central vein stenosis.
+69,vascula_access,Vascular Access,,IIb,C,,Stenting or repeat balloon angioplasty should be considered if there is significant elastic recoil of the central vein after balloon angioplasty or if the stenosis recurs within 3 months.
+70,vascula_access,Vascular Access,,IIa,C,,In patients with symptomatic vascular access induced extremity ischaemia with arterial inflow stenosis balloon angioplasty should be considered.
+71,vascula_access,Vascular Access,,I,C,,Symptomatic access induced extremity ischaemia in patients with high flow access should be treated by surgical procedures aimed to reduce access flow.
+72,vascula_access,Vascular Access,,IIa,C,,Distal revascularisation and interval ligation should be considered in patients with vascular access induced limb ischaemia and upper arm access without high flow.
+73,vascula_access,Vascular Access,,I,C,,Post-operative monitoring for signs of ischaemic neuropathy is recommended in patients with diabetes or pre-existing neuropathy undergoing an upper arm vascular access procedure.
+74,vascula_access,Vascular Access,,I,C,,Acute ischaemic neuropathy should be treated by immediate vascular access ligation to prevent further neurological deficit.
+75,vascula_access,Vascular Access,,III,C,,Routine closure of a functioning vascular access after successful kidney transplantation is not recommended.
+76,vascula_access,Vascular Access,,IIa,C,,Vascular access closure should be considered in patients with refractory heart failure after transplantation.
+77,vascula_access,Vascular Access,,IIa,C,,"When standard upper limb vascular access sites have been exhausted, complex access procedures should be considered according to the availability of suitable vessels."
+78,vascula_access,Vascular Access,,III,C,,Individuals should not undergo the insertion of a high risk complex haemodialysis line without serious consideration of either the placement of a peritoneal dialysis catheter or a tertiary vascular access.

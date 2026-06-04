@@ -74,7 +74,12 @@ def evaluate_citation_existence(
     matched_citations = 0
 
     for citation in citations:
-        entry = index.get(citation.rec_id or "")
+        lookup_key = (
+            f"{citation.guideline}:{citation.rec_id}"
+            if citation.guideline and citation.rec_id
+            else citation.rec_id or ""
+        )
+        entry = index.get(lookup_key) or index.get(citation.rec_id or "")
         exists = entry is not None
         class_match = exists and citation.class_ is not None and citation.class_ == entry.class_
         level_match = exists and citation.level is not None and citation.level == entry.level

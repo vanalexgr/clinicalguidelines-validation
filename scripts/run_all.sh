@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# End-to-end pipeline (T04 -> T09). Requires .env populated.
+
+# Usage: ./scripts/run_all.sh
+# Runs the answer generation, judge evaluation, and report build stages in order.
+
 export $(grep -v '^#' .env | xargs) 2>/dev/null || true
 
-python -m src.runner.generate_answers   --config config/config.yaml
-python -m src.judge.run_judge           --config config/config.yaml
-python -m src.metrics.deterministic     --config config/config.yaml
-python -m src.metrics.aggregate         --config config/config.yaml
-python -m src.metrics.agreement         --config config/config.yaml
-python -m src.metrics.pass_fail         --config config/config.yaml
-python -m src.discordance.export_review --config config/config.yaml
-python -m src.report.build_report       --config config/config.yaml
-echo "Done. See outputs/report/report.md"
+BENCHMARK_PATH="data/benchmark/benchmark_queries.jsonl"
+if [[ ! -f "${BENCHMARK_PATH}" && -f "data/benchmark/benchmark_queries.seed.jsonl" ]]; then
+  BENCHMARK_PATH="data/benchmark/benchmark_queries.seed.jsonl"
+fi
+
+python3 -m src.runner.generate_answers --config config/config.yaml --benchmark-path "${BENCHMARK_PATH}"
+python3 -m src.judge.run_judge --config config/config.yaml --benchmark-path "${BENCHMARK_PATH}"
+python3 -m src.report.build_report --config config/config.yaml --benchmark-path "${BENCHMARK_PATH}"
