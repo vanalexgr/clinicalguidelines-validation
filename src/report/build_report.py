@@ -44,7 +44,17 @@ from src.metrics.human_calibration import (
     HumanCalibrationReport,
     compute_human_calibration,
 )
+from src.metrics.citation_breakdown import (
+    ARTEFACT_TYPES,
+    CitationBreakdownResult,
+    REAL_ERROR_TYPES,
+    compute_citation_breakdown,
+)
 from src.metrics.pass_fail import PassFailResult, evaluate_pass_fail_batch
+from src.metrics.reclassification import (
+    ReclassificationReport,
+    compute_reclassification_report,
+)
 
 matplotlib.use("Agg")
 from matplotlib import pyplot as plt
@@ -67,6 +77,8 @@ class ReportContext:
     routing_metrics: RoutingMetrics
     gate_metrics: GateMetrics
     citation_metrics: CitationMetrics
+    citation_breakdown: CitationBreakdownResult | None
+    reclassification_report: ReclassificationReport | None
     per_judge: dict[tuple[str, str], PerJudgeAggregate]
     ensembles: dict[str, EnsembleAggregate]
     pass_fail_results: list[PassFailResult]
@@ -79,6 +91,7 @@ class ReportContext:
     benchmark_counts_by_type: dict[str, int]
     strict_mode: bool
     output_dir: Path
+    metrics_dir: Path | None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -116,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
         judgments_path=args.judgments_path or config["paths"]["judgments"],
         corpus_index_path=args.corpus_index_path or config["paths"]["corpus_index"],
         output_dir=output_dir,
+        overrides_path=Path("data/annotation/hallucination_overrides.jsonl"),
+        metrics_dir=config["paths"]["metrics_dir"],
         strict=not args.dry_run,
     )
     print(
@@ -131,6 +146,8 @@ def build_report(
     judgments_path: str | Path,
     corpus_index_path: str | Path,
     output_dir: str | Path,
+    overrides_path: str | Path | None = None,
+    metrics_dir: str | Path | None = None,
     strict: bool = True,
 ) -> ReportContext:
     """Load data, compute metrics, and write the report artifacts."""
@@ -159,6 +176,23 @@ def build_report(
     gate_metrics = summarize_gate(processed_items, selected_answers)
     citation_metrics = summarize_citation_existence(selected_answers, recommendation_index)
     latency_metrics = summarize_latency(selected_answers)
+    overrides_source = Path(overrides_path) if overrides_path is not None else None
+    citation_breakdown = (
+        compute_citation_breakdown(
+            answers_path=Path(answers_path),
+            judgments_path=Path(judgments_path),
+            index_path=Path(corpus_index_path),
+            bench_path=Path(benchmark_path),
+            overrides_path=overrides_source,
+        )
+        if overrides_source is not None and overrides_source.exists()
+        else None
+    )
+    reclassification_report = (
+        compute_reclassification_report(citation_breakdown)
+        if citation_breakdown is not None
+        else None
+    )
 
     per_judge = aggregate_within_judge(
         [judgment.model_dump(by_alias=True) for judgment in filtered_judgments]
@@ -206,6 +240,8 @@ def build_report(
         routing_metrics=routing_metrics,
         gate_metrics=gate_metrics,
         citation_metrics=citation_metrics,
+        citation_breakdown=citation_breakdown,
+        reclassification_report=reclassification_report,
         per_judge=per_judge,
         ensembles=ensembles,
         pass_fail_results=pass_fail_results,
@@ -218,6 +254,7 @@ def build_report(
         benchmark_counts_by_type=benchmark_summary.counts_by_type,
         strict_mode=strict,
         output_dir=output_dir_path,
+        metrics_dir=Path(metrics_dir) if metrics_dir is not None else None,
     )
 
     _write_report_tables(context, tables_dir)
@@ -226,6 +263,8 @@ def build_report(
         render_report_markdown(context),
         encoding="utf-8",
     )
+    if context.metrics_dir is not None:
+        _write_summary_json(context, context.metrics_dir)
     return context
 
 
@@ -265,6 +304,11 @@ def render_report_markdown(context: ReportContext) -> str:
     routing_rows = _routing_summary_rows(context)
     gate_summary_rows = _gate_summary_rows(context)
     citation_rows = _citation_summary_rows(context, citation_support_ci)
+    citation_tier_rows = _citation_tier_rows(context)
+    hallucination_type_rows = _hallucination_type_rows(context)
+    hallucination_rate_rows = _hallucination_analysis_rows(context)
+    clinical_risk_rows = _clinical_risk_rows(context)
+    reclassification_rows = _reclassification_rows(context.reclassification_report)
     safety_rows = _safety_rows(context)
     agreement_rows = _agreement_rows(context.agreement_report)
 
@@ -419,7 +463,44 @@ def render_report_markdown(context: ReportContext) -> str:
                 ]
             ),
             "",
-            "## 8. Safety-Critical Discordance Rate",
+        ]
+    )
+    if context.citation_breakdown is not None:
+        lines.extend(
+            [
+                "## §8 Citation Correctness Tiers",
+                "",
+                _markdown_table(citation_tier_rows),
+                "",
+                "## §9 Hallucination Analysis",
+                "",
+                "### 9.1 Claim Type Distribution",
+                "",
+                _markdown_table(hallucination_type_rows),
+                "",
+                "### 9.2 Adjusted Hallucination Rate",
+                "",
+                _markdown_table(hallucination_rate_rows),
+                "",
+                "### 9.3 Clinical Risk Distribution",
+                "",
+                _markdown_table(clinical_risk_rows),
+                "",
+                "### 9.4 Clean / Artefact-only / Real-error Items",
+                "",
+                f"Clean: {', '.join(context.citation_breakdown.items_clean) or '(none)'}",
+                f"Artefact-only: {', '.join(context.citation_breakdown.items_artefact_only) or '(none)'}",
+                f"Real errors: {', '.join(context.citation_breakdown.items_real_error) or '(none)'}",
+                "",
+                "## §10 Judge Reclassification Summary",
+                "",
+                _markdown_table(reclassification_rows),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## §11 Safety-Critical Discordance Rate",
             "",
             _markdown_table(
                 [
@@ -433,19 +514,19 @@ def render_report_markdown(context: ReportContext) -> str:
             "",
             _markdown_table(safety_rows),
             "",
-            "## 9. Performance by Query Type",
+            "## §12 Performance by Query Type",
             "",
             _markdown_table(by_query_type_rows),
             "",
-            "## 10. Inter-Judge Agreement",
+            "## §13 Inter-Judge Agreement",
             "",
             _markdown_table(agreement_rows),
             "",
-            "## 11. Judge-vs-Human Agreement",
+            "## §14 Judge-vs-Human Agreement",
             "",
             human_section,
             "",
-            "## 12. Plots",
+            "## §15 Plots",
             "",
             (
                 "- [score_distributions.csv](tables/score_distributions.csv) "
@@ -538,6 +619,18 @@ def _write_report_tables(context: ReportContext, tables_dir: Path) -> None:
 
     by_query_type_rows = _by_query_type_rows(context)
     _write_rows_csv(tables_dir / "by_query_type.csv", by_query_type_rows)
+
+    if context.citation_breakdown is not None:
+        _write_rows_csv(tables_dir / "citation_tiers.csv", _citation_tier_rows(context))
+        _write_rows_csv(tables_dir / "hallucination_types.csv", _hallucination_type_rows(context))
+        _write_rows_csv(
+            tables_dir / "hallucination_rate_summary.csv",
+            _hallucination_analysis_rows(context),
+        )
+        _write_rows_csv(
+            tables_dir / "clinical_risk_distribution.csv",
+            _clinical_risk_rows(context),
+        )
 
 
 def _write_report_plots(context: ReportContext, plots_dir: Path) -> None:
@@ -865,6 +958,115 @@ def _citation_summary_rows(
     ]
 
 
+def _citation_tier_rows(context: ReportContext) -> list[dict[str, str]]:
+    breakdown = context.citation_breakdown
+    if breakdown is None:
+        return []
+    return [
+        {
+            "tier": label,
+            "n": str(count),
+            "%": _fmt_ratio(count, breakdown.tier_totals),
+        }
+        for label, count in breakdown.tiers.items()
+    ]
+
+
+def _hallucination_type_rows(context: ReportContext) -> list[dict[str, str]]:
+    breakdown = context.citation_breakdown
+    if breakdown is None:
+        return []
+    return [
+        {
+            "type": label,
+            "category": "Artefact" if label in ARTEFACT_TYPES else "Real error",
+            "n": str(count),
+        }
+        for label, count in breakdown.hal_type_counts.items()
+    ]
+
+
+def _high_risk_items(context: ReportContext) -> list[str]:
+    breakdown = context.citation_breakdown
+    if breakdown is None:
+        return []
+    items: list[str] = []
+    for item_id, payload in breakdown.per_item.items():
+        if any(flag["clinical_risk"] == "high" for flag in payload["hallucination_flags"]):
+            items.append(item_id)
+    return sorted(items)
+
+
+def _hallucination_analysis_rows(context: ReportContext) -> list[dict[str, str]]:
+    breakdown = context.citation_breakdown
+    if breakdown is None:
+        return []
+    total_items = len(breakdown.per_item)
+    high_risk_items = _high_risk_items(context)
+    reported_count = total_items - len(breakdown.items_clean)
+    return [
+        {
+            "category": "Reported (any judge flag)",
+            "items": f"{reported_count}/{total_items}",
+            "rate": _fmt_pct(breakdown.reported_hal_rate),
+        },
+        {
+            "category": "Artefact-only items",
+            "items": f"{len(breakdown.items_artefact_only)}/{total_items}",
+            "rate": "—",
+        },
+        {
+            "category": "Items with real errors",
+            "items": f"{len(breakdown.items_real_error)}/{total_items}",
+            "rate": _fmt_pct(breakdown.adjusted_hal_rate),
+        },
+        {
+            "category": "Items with high-risk errors",
+            "items": f"{len(high_risk_items)}/{total_items}",
+            "rate": _fmt_pct(len(high_risk_items) / total_items) if total_items else "0.0%",
+        },
+    ]
+
+
+def _clinical_risk_rows(context: ReportContext) -> list[dict[str, str]]:
+    breakdown = context.citation_breakdown
+    if breakdown is None:
+        return []
+    return [
+        {"risk_level": risk, "claim_count": str(count)}
+        for risk, count in breakdown.clinical_risk_counts.items()
+    ]
+
+
+def _reclassification_rows(
+    report: ReclassificationReport | None,
+) -> list[dict[str, str]]:
+    if report is None:
+        return []
+    return [
+        {
+            "layer": "Raw judge flags (any flag = hallucination)",
+            "hallucination_rate": _fmt_pct(report.reported_hal_rate),
+        },
+        {
+            "layer": "Automated type classification (artefacts removed)",
+            "hallucination_rate": _fmt_pct(report.auto_classified_hal_rate),
+        },
+        {
+            "layer": "Clinical review (confirmed real errors only)",
+            "hallucination_rate": _fmt_pct(report.clinical_review_rate),
+        },
+        {
+            "layer": "High clinical risk items",
+            "hallucination_rate": _fmt_pct(report.high_risk_rate),
+        },
+        {
+            "layer": "Flags reclassified after review",
+            "hallucination_rate": f"{report.flags_reclassified}/{report.total_flags} ({_fmt_pct(report.reclassification_rate)})",
+        },
+    ]
+
+
 def _safety_rows(context: ReportContext) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for review_item in context.review_items:
@@ -1081,6 +1283,101 @@ def _write_rows_csv(path: Path, rows: list[dict[str, object]]) -> None:
             writer.writerows(rows)
 
 
+def _write_summary_json(context: ReportContext, metrics_dir: Path) -> None:
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    passes = sum(result.verdict == "PASS" for result in context.pass_fail_results)
+    total = len(context.pass_fail_results)
+    summary: dict[str, Any] = {
+        "mode": "strict_full" if context.strict_mode else "dry_run",
+        "processed_items": len(context.items),
+        "benchmark_total_items": context.benchmark_total_items,
+        "judgment_rows": len(context.judgments),
+        "judges_present": sorted({aggregate.judge for aggregate in context.per_judge.values()}),
+        "query_ids": [item.id for item in context.items],
+        "pass_rate": {
+            "passes": passes,
+            "total": total,
+            "rate": (passes / total) if total else 0.0,
+        },
+        "routing": {
+            "exact_match_rate": context.routing_metrics.exact_match_rate,
+            "micro_precision": context.routing_metrics.micro_precision,
+            "micro_recall": context.routing_metrics.micro_recall,
+            "micro_f1": context.routing_metrics.micro_f1,
+            "macro_f1": context.routing_metrics.macro_f1,
+        },
+        "gate": {
+            "true_positive": context.gate_metrics.true_positive,
+            "true_negative": context.gate_metrics.true_negative,
+            "false_positive": context.gate_metrics.false_positive,
+            "false_negative": context.gate_metrics.false_negative,
+            "sensitivity": context.gate_metrics.sensitivity,
+            "specificity": context.gate_metrics.specificity,
+            "over_interrogation_rate": context.gate_metrics.over_interrogation_rate,
+            "mean_parameter_recall": context.gate_metrics.mean_parameter_recall,
+        },
+        "citation": {
+            "total_citations": context.citation_metrics.total_citations,
+            "matched_citations": context.citation_metrics.matched_citations,
+            "existence_accuracy": context.citation_metrics.existence_accuracy,
+        },
+    }
+    if context.agreement_report is not None:
+        summary["agreement"] = {
+            "krippendorff_alpha": context.agreement_report.krippendorff_alpha,
+            "likert": [
+                {
+                    "dimension": row.dimension,
+                    "weighted_kappa": row.weighted_kappa,
+                    "icc_value": row.icc_value,
+                    "icc_ci_lower": row.icc_ci_lower,
+                    "icc_ci_upper": row.icc_ci_upper,
+                }
+                for row in context.agreement_report.likert
+            ],
+            "binary": [
+                {
+                    "dimension": row.dimension,
+                    "kappa": row.kappa,
+                    "percent_agreement": row.percent_agreement,
+                }
+                for row in context.agreement_report.binary
+            ],
+        }
+    if context.citation_breakdown is not None:
+        total_tiers = context.citation_breakdown.tier_totals
+        summary["citation_breakdown"] = {
+            "tier_a_pct": (
+                context.citation_breakdown.tiers.get("A_VERIFIED", 0) / total_tiers
+                if total_tiers
+                else 0.0
+            ),
+            "tier_b_pct": (
+                context.citation_breakdown.tiers.get("B_METADATA_ERR", 0) / total_tiers
+                if total_tiers
+                else 0.0
+            ),
+            "reported_hal_rate": context.citation_breakdown.reported_hal_rate,
+            "adjusted_hal_rate": context.citation_breakdown.adjusted_hal_rate,
+            "high_risk_items": _high_risk_items(context),
+            "real_error_items": context.citation_breakdown.items_real_error,
+        }
+    if context.reclassification_report is not None:
+        summary["reclassification"] = {
+            "total_flags": context.reclassification_report.total_flags,
+            "flags_reclassified": context.reclassification_report.flags_reclassified,
+            "reclassification_rate": context.reclassification_report.reclassification_rate,
+            "reported_hal_rate": context.reclassification_report.reported_hal_rate,
+            "auto_classified_hal_rate": context.reclassification_report.auto_classified_hal_rate,
+            "clinical_review_rate": context.reclassification_report.clinical_review_rate,
+            "high_risk_rate": context.reclassification_report.high_risk_rate,
+        }
+    (metrics_dir / "summary.json").write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
 def _fmt_ci(lower: float | None, upper: float | None) -> str:
     if lower is None or upper is None:
         return "n/a"
@@ -1103,6 +1400,10 @@ def _fmt_optional_float(value: float | None) -> str:
 
 def _fmt_pct(value: float) -> str:
     return f"{value * 100:.1f}%"
+
+
+def _fmt_ratio(count: int, total: int) -> str:
+    return _fmt_pct(count / total) if total else "0.0%"
 
 
 def _fmt_optional_pct(value: float | None) -> str:

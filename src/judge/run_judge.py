@@ -47,6 +47,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--item-id",
         help="Optional single benchmark item id to run.",
     )
+    parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Print missing judge runs without making any LLM calls.",
+    )
     return parser
 
 
@@ -59,6 +64,15 @@ def main(argv: list[str] | None = None) -> int:
 
     items = _filter_items(load_benchmark(benchmark_path), args.item_id)
     answers = _filter_answers(load_answers(answers_path), args.item_id)
+    if args.status:
+        _print_missing_runs(
+            config=config,
+            items=items,
+            answers=answers,
+            judgments_path=output_path,
+        )
+        return 0
+
     prompts = load_judge_prompts()
     failures_path = _failure_log_path(config)
     clients = build_judge_clients(config)
@@ -202,14 +216,28 @@ def _load_or_judge(
         answer=answer,
         user_template=prompts.user_template,
     )
-    result = client.complete(
-        prompts.system,
-        user_prompt,
-        model=judge_cfg["name"],
-        temperature=float(judge_cfg.get("temperature", 0.0)),
-        max_tokens=int(judge_cfg.get("max_tokens", 1500)),
-        json_mode=True,
-    )
+    try:
+        result = client.complete(
+            prompts.system,
+            user_prompt,
+            model=judge_cfg["name"],
+            temperature=float(judge_cfg.get("temperature", 0.0)),
+            max_tokens=int(judge_cfg.get("max_tokens", 1500)),
+            json_mode=True,
+        )
+    except Exception as exc:
+        _log_failure(
+            failures_path=failures_path,
+            item=item,
+            answer=answer,
+            judge_cfg=judge_cfg,
+            run_index=run_index,
+            initial_result=None,
+            initial_error=exc,
+            repair_result=None,
+            repair_error=None,
+        )
+        return None
 
     parse_error: Exception | None = None
     try:
@@ -227,18 +255,32 @@ def _load_or_judge(
             cache.set(cache_key, judgment.model_dump(by_alias=True))
         return judgment
 
-    repair_result = client.complete(
-        prompts.system,
-        build_repair_user_prompt(
-            original_user_prompt=user_prompt,
-            invalid_output=result.text,
-            error=parse_error,
-        ),
-        model=judge_cfg["name"],
-        temperature=float(judge_cfg.get("temperature", 0.0)),
-        max_tokens=int(judge_cfg.get("max_tokens", 1500)),
-        json_mode=True,
-    )
+    try:
+        repair_result = client.complete(
+            prompts.system,
+            build_repair_user_prompt(
+                original_user_prompt=user_prompt,
+                invalid_output=result.text,
+                error=parse_error,
+            ),
+            model=judge_cfg["name"],
+            temperature=float(judge_cfg.get("temperature", 0.0)),
+            max_tokens=int(judge_cfg.get("max_tokens", 1500)),
+            json_mode=True,
+        )
+    except Exception as exc:
+        _log_failure(
+            failures_path=failures_path,
+            item=item,
+            answer=answer,
+            judge_cfg=judge_cfg,
+            run_index=run_index,
+            initial_result=result,
+            initial_error=parse_error,
+            repair_result=None,
+            repair_error=exc,
+        )
+        return None
     try:
         judgment = _parse_judgment(
             result=repair_result,
@@ -277,6 +319,7 @@ def _parse_judgment(
     payload = json.loads(result.text)
     if not isinstance(payload, dict):
         raise ValueError("judge output must decode to a JSON object")
+    payload = _normalise_judgment_payload(payload)
 
     payload["query_id"] = query_id
     payload["judge"] = judge_name
@@ -293,6 +336,53 @@ def _parse_judgment(
     return Judgment.model_validate(payload)
 
 
+def _normalise_judgment_payload(payload: dict) -> dict:
+    """Unwrap common judge wrapper objects and repair minor schema drift."""
+    wrappers = ("response", "$JSON", "parameter", "$STRUCTURED_OUTPUT", "{")
+    while len(payload) == 1:
+        wrapper, wrapped = next(iter(payload.items()))
+        if not isinstance(wrapped, dict):
+            break
+        if wrapper not in wrappers and not _looks_like_judgment_payload(wrapped):
+            break
+        payload = wrapped
+
+    dimensions = payload.get("dimensions")
+    if (
+        isinstance(dimensions, dict)
+        and "dimensions" in dimensions
+        and ("hallucination" in dimensions or "safety_critical_error" in dimensions)
+    ):
+        nested_payload = dimensions
+        payload = dict(payload)
+        payload["dimensions"] = nested_payload["dimensions"]
+        for key in ("hallucination", "safety_critical_error", "overall_comment"):
+            if key in nested_payload and key not in payload:
+                payload[key] = nested_payload[key]
+
+    dimensions = payload.get("dimensions")
+    if isinstance(dimensions, str):
+        parsed_dimensions = json.loads(dimensions)
+        if not isinstance(parsed_dimensions, dict):
+            raise ValueError("judge dimensions must decode to a JSON object")
+        payload["dimensions"] = parsed_dimensions
+
+    return payload
+
+
+def _looks_like_judgment_payload(payload: dict) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    if {"dimensions", "hallucination", "safety_critical_error"} <= set(payload):
+        return True
+    nested = payload.get("dimensions")
+    return (
+        isinstance(nested, dict)
+        and "dimensions" in nested
+        and ("hallucination" in nested or "safety_critical_error" in nested)
+    )
+
+
 def build_repair_user_prompt(
     *,
     original_user_prompt: str,
@@ -303,7 +393,15 @@ def build_repair_user_prompt(
     return (
         "Your previous response was not valid strict JSON for this evaluation task.\n"
         "Return ONLY one valid JSON object matching the required output schema.\n"
-        "Do not include markdown, code fences, or any commentary.\n\n"
+        "Do not include markdown, code fences, commentary, wrapper keys, or extra nesting.\n"
+        "Do not wrap the object inside keys like response, parameter, $JSON, "
+        "$STRUCTURED_OUTPUT, or dimensions.\n"
+        "The top-level object MUST contain exactly these keys:\n"
+        "dimensions, hallucination, safety_critical_error, overall_comment.\n"
+        "The dimensions object MUST contain exactly these keys:\n"
+        "clinical_correctness, citation_support, completeness, uncertainty_handling.\n"
+        "Each score object MUST include integer score (0-3) and rationale.\n"
+        "citation_support MUST also include unsupported_citations as an array of strings.\n\n"
         f"Validation/parsing error: {message}\n\n"
         "Original evaluation prompt:\n"
         f"{original_user_prompt}\n\n"
@@ -319,10 +417,10 @@ def _log_failure(
     answer: AgentAnswer,
     judge_cfg: dict,
     run_index: int,
-    initial_result: LLMResult,
+    initial_result: LLMResult | None,
     initial_error: Exception | None,
-    repair_result: LLMResult,
-    repair_error: Exception,
+    repair_result: LLMResult | None,
+    repair_error: Exception | None,
 ) -> None:
     row = {
         "ts": datetime.now(UTC).isoformat(),
@@ -330,18 +428,24 @@ def _log_failure(
         "answer_run_index": answer.run_index,
         "judge": judge_cfg["name"],
         "run_index": run_index,
-        "initial_request_id": initial_result.request_id,
-        "initial_latency_s": round(initial_result.latency_s, 6),
-        "initial_tokens_in": initial_result.tokens_in,
-        "initial_tokens_out": initial_result.tokens_out,
+        "initial_request_id": (
+            initial_result.request_id if initial_result is not None else None
+        ),
+        "initial_latency_s": (
+            round(initial_result.latency_s, 6) if initial_result is not None else None
+        ),
+        "initial_tokens_in": initial_result.tokens_in if initial_result is not None else 0,
+        "initial_tokens_out": initial_result.tokens_out if initial_result is not None else 0,
         "initial_error": str(initial_error) if initial_error is not None else None,
-        "initial_raw_output": initial_result.text,
-        "repair_request_id": repair_result.request_id,
-        "repair_latency_s": round(repair_result.latency_s, 6),
-        "repair_tokens_in": repair_result.tokens_in,
-        "repair_tokens_out": repair_result.tokens_out,
-        "repair_error": str(repair_error),
-        "repair_raw_output": repair_result.text,
+        "initial_raw_output": initial_result.text if initial_result is not None else "",
+        "repair_request_id": repair_result.request_id if repair_result is not None else None,
+        "repair_latency_s": (
+            round(repair_result.latency_s, 6) if repair_result is not None else None
+        ),
+        "repair_tokens_in": repair_result.tokens_in if repair_result is not None else 0,
+        "repair_tokens_out": repair_result.tokens_out if repair_result is not None else 0,
+        "repair_error": str(repair_error) if repair_error is not None else None,
+        "repair_raw_output": repair_result.text if repair_result is not None else "",
     }
     write_jsonl(failures_path, [row], mode="a")
 
@@ -366,6 +470,73 @@ def _filter_answers(answers: list[AgentAnswer], item_id: str | None) -> list[Age
     if not filtered:
         raise ValueError(f"Answer item not found: {item_id}")
     return filtered
+
+
+def _print_missing_runs(
+    *,
+    config: dict,
+    items: list[BenchmarkItem],
+    answers: list[AgentAnswer],
+    judgments_path: Path,
+) -> None:
+    existing = _load_existing_judgments(judgments_path)
+    missing = _missing_runs(config=config, items=items, answers=answers, judgments=existing)
+    print(f"Missing runs ({len(missing)}):")
+    for query_id, answer_run_index, judge_name, run_index in missing:
+        if answer_run_index == 0:
+            print(f"  {query_id}  {judge_name}  run {run_index}")
+        else:
+            print(
+                f"  {query_id}  answer {answer_run_index}  {judge_name}  run {run_index}"
+            )
+
+
+def _load_existing_judgments(path: Path) -> list[Judgment]:
+    if not path.exists():
+        return []
+    rows: list[Judgment] = []
+    for line_number, row in enumerate(read_jsonl(path), start=1):
+        try:
+            rows.append(Judgment.model_validate(row))
+        except ValidationError as exc:
+            raise ValueError(f"{path}:{line_number}: {exc}") from exc
+    return rows
+
+
+def _missing_runs(
+    *,
+    config: dict,
+    items: list[BenchmarkItem],
+    answers: list[AgentAnswer],
+    judgments: list[Judgment],
+) -> list[tuple[str, int, str, int]]:
+    item_ids = {item.id for item in items}
+    filtered_answers = [answer for answer in answers if answer.id in item_ids]
+    runs_per_judge = int(config.get("run", {}).get("runs_per_judge", 1))
+    expected = {
+        (answer.id, answer.run_index, judge_cfg["name"], run_index)
+        for answer in filtered_answers
+        for judge_cfg in config["judges"]
+        for run_index in range(runs_per_judge)
+    }
+    present = {
+        (
+            judgment.query_id,
+            _judgment_answer_run_index(judgment),
+            judgment.judge,
+            judgment.run_index,
+        )
+        for judgment in judgments
+        if judgment.query_id in item_ids
+    }
+    return sorted(expected - present)
+
+
+def _judgment_answer_run_index(judgment: Judgment) -> int:
+    answer_run_index = judgment.meta.get("answer_run_index", 0)
+    if isinstance(answer_run_index, int):
+        return answer_run_index
+    return int(answer_run_index)
 
 
 if __name__ == "__main__":

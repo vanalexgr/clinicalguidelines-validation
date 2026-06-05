@@ -218,13 +218,16 @@ class AnthropicClient(_BaseLLMClient):
         if self._sdk_client is None:
             raise ValueError("AnthropicClient requires ANTHROPIC_API_KEY or an injected client.")
 
+        # claude-opus-4+ and newer extended-thinking models deprecated temperature
+        _temperature_deprecated = model.startswith(("claude-opus-4", "claude-sonnet-4"))
         request: dict[str, Any] = {
             "model": model,
             "system": system,
             "messages": [{"role": "user", "content": user}],
-            "temperature": temperature,
             "max_tokens": max_tokens,
         }
+        if not _temperature_deprecated:
+            request["temperature"] = temperature
         if self.timeout is not None:
             request["timeout"] = self.timeout
         if json_mode:
@@ -282,15 +285,20 @@ class OpenAIClient(_BaseLLMClient):
         if self._sdk_client is None:
             raise ValueError("OpenAIClient requires OPENAI_API_KEY or an injected client.")
 
+        # o-series reasoning models (o1, o3, o4-mini…) reject temperature
+        # and require max_completion_tokens instead of max_tokens
+        _reasoning_model = model.startswith(("o1", "o3", "o4"))
+        tokens_key = "max_completion_tokens" if _reasoning_model else "max_tokens"
         request: dict[str, Any] = {
             "model": model,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-            "temperature": temperature,
-            "max_tokens": max_tokens,
+            tokens_key: max_tokens,
         }
+        if not _reasoning_model:
+            request["temperature"] = temperature
         if self.timeout is not None:
             request["timeout"] = self.timeout
         if json_mode:

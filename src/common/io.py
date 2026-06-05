@@ -12,6 +12,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 
 from src.common.schemas import BenchmarkItem
 
@@ -68,6 +69,7 @@ def load_benchmark(path: PathLike) -> list[BenchmarkItem]:
 
 def load_config(path: PathLike) -> dict:
     """Load YAML config and resolve *_env keys from the environment."""
+    load_dotenv(override=True)
     source = Path(path)
     raw = yaml.safe_load(source.read_text(encoding="utf-8"))
     return _resolve_env_keys(raw)

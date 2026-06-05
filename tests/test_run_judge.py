@@ -92,6 +92,20 @@ class FakeJudgeClient:
         )
 
 
+class FailingJudgeClient:
+    def complete(
+        self,
+        system: str,
+        user: str,
+        *,
+        model: str,
+        temperature: float = 0.0,
+        max_tokens: int = 1500,
+        json_mode: bool = False,
+    ) -> LLMResult:
+        raise RuntimeError("synthetic judge transport failure")
+
+
 def test_render_judge_prompt_uses_blinded_response() -> None:
     item = _benchmark_item()
     answer = _answer(item)
@@ -178,6 +192,38 @@ def test_run_judges_logs_failure_after_failed_repair(tmp_path: Path, monkeypatch
     assert failure_rows[0]["repair_raw_output"] == "{still-bad"
 
 
+def test_run_judges_logs_failure_after_call_exception(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    item = _benchmark_item()
+    answer = _answer(item)
+    config = {
+        "judges": [{"name": "o3", "temperature": 0, "max_tokens": 900}],
+        "run": {"runs_per_judge": 1, "cache": True},
+        "paths": {"metrics_dir": str(tmp_path / "metrics")},
+    }
+    prompts = run_judge_module.load_judge_prompts()
+    failures_path = tmp_path / "metrics" / "judge_failures.jsonl"
+
+    rows = run_judge_module.run_judges(
+        config=config,
+        items=[item],
+        answers=[answer],
+        prompts=prompts,
+        clients={"o3": FailingJudgeClient()},
+        failures_path=failures_path,
+    )
+
+    assert rows == []
+    failure_rows = [
+        json.loads(line) for line in failures_path.read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(failure_rows) == 1
+    assert failure_rows[0]["query_id"] == item.id
+    assert failure_rows[0]["judge"] == "o3"
+    assert "transport failure" in failure_rows[0]["initial_error"]
+    assert failure_rows[0]["repair_error"] is None
+
+
 def test_run_judge_cli_writes_jsonl(tmp_path: Path, monkeypatch) -> None:
     item = _benchmark_item()
     answer = _answer(item)
@@ -226,3 +272,111 @@ def test_run_judge_cli_writes_jsonl(tmp_path: Path, monkeypatch) -> None:
     assert len(rows) == 1
     assert rows[0]["query_id"] == item.id
     assert rows[0]["judge"] == "gpt-5"
+
+
+def test_parse_judgment_normalises_wrapped_payload_and_citation_ids() -> None:
+    result = LLMResult(
+        text=json.dumps(
+            {
+                "response": {
+                    "dimensions": json.dumps(
+                        {
+                            "clinical_correctness": {
+                                "score": 3,
+                                "rationale": "Matches the gold key.",
+                            },
+                            "citation_support": {
+                                "score": 1,
+                                "rationale": "IDs came back as ints.",
+                                "unsupported_citations": [61, 50, 100],
+                            },
+                            "completeness": {
+                                "score": 2,
+                                "rationale": "Mostly complete.",
+                            },
+                            "uncertainty_handling": {
+                                "score": 3,
+                                "rationale": "Appropriate refusal.",
+                            },
+                        }
+                    ),
+                    "hallucination": {
+                        "present": False,
+                        "unsupported_claims": [],
+                        "count": 0,
+                    },
+                    "safety_critical_error": {"flag": False, "reason": None},
+                    "overall_comment": "Valid after normalization.",
+                }
+            }
+        ),
+        request_id="req-normalized",
+        latency_s=0.3,
+        tokens_in=10,
+        tokens_out=20,
+        raw={},
+    )
+
+    judgment = run_judge_module._parse_judgment(
+        result=result,
+        query_id="Q012",
+        answer_run_index=0,
+        judge_name="claude-opus-4-7",
+        run_index=2,
+    )
+
+    assert judgment.query_id == "Q012"
+    assert judgment.dimensions.citation_support.unsupported_citations == ["61", "50", "100"]
+
+
+def test_parse_judgment_normalises_nested_wrapper_shapes() -> None:
+    result = LLMResult(
+        text=json.dumps(
+            {
+                "$STRUCTURED_OUTPUT": {
+                    "dimensions": {
+                        "clinical_correctness": {
+                            "score": 1,
+                            "rationale": "Missed the main recommendation.",
+                        },
+                        "citation_support": {
+                            "score": 2,
+                            "rationale": "No unsupported citations.",
+                            "unsupported_citations": [],
+                        },
+                        "completeness": {
+                            "score": 0,
+                            "rationale": "Omitted key next steps.",
+                        },
+                        "uncertainty_handling": {
+                            "score": 2,
+                            "rationale": "Declined safely but vaguely.",
+                        },
+                    },
+                    "hallucination": {
+                        "present": False,
+                        "unsupported_claims": [],
+                        "count": 0,
+                    },
+                    "safety_critical_error": {"flag": False, "reason": None},
+                    "overall_comment": "Valid after wrapper normalization.",
+                }
+            }
+        ),
+        request_id="req-structured",
+        latency_s=0.3,
+        tokens_in=10,
+        tokens_out=20,
+        raw={},
+    )
+    judgment = run_judge_module._parse_judgment(
+        result=result,
+        query_id="Q016",
+        answer_run_index=0,
+        judge_name="claude-opus-4-7",
+        run_index=0,
+    )
+
+    assert judgment.query_id == "Q016"
+    assert judgment.overall_comment == "Valid after wrapper normalization."
+    assert judgment.dimensions.completeness.score == 0

@@ -10,7 +10,7 @@ from enum import Enum
 from typing import Literal
 from warnings import warn
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 # --------------------------------------------------------------------------- #
@@ -137,6 +137,13 @@ class LikertScore(BaseModel):
 
 class CitationSupportScore(LikertScore):
     unsupported_citations: list[str] = Field(default_factory=list)
+
+    @field_validator("unsupported_citations", mode="before")
+    @classmethod
+    def coerce_unsupported_citations(cls, value: object) -> object:
+        if isinstance(value, list):
+            return [str(item) for item in value]
+        return value
 
 
 class Hallucination(BaseModel):

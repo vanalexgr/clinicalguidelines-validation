@@ -40,6 +40,39 @@ class CitationExistenceResult:
     details: list[CitationExistenceDetail]
 
 
+_CANONICAL_CLASS_MAP: dict[str, str] = {
+    "1": "I",
+    "2": "IIb",
+    "3": "III",
+    "i": "I",
+    "iia": "IIa",
+    "iib": "IIb",
+    "iii": "III",
+    "gps": "GPS",
+    "good": "GPS",
+    "good practice statement": "GPS",
+}
+
+
+def _normalise_class(raw: str | None) -> str | None:
+    if raw is None:
+        return None
+    cleaned = " ".join(raw.strip().split())
+    if not cleaned:
+        return None
+    return _CANONICAL_CLASS_MAP.get(cleaned.lower(), cleaned)
+
+
+def _normalise_level(raw: str | None) -> str | None:
+    if raw is None:
+        return None
+    cleaned = " ".join(raw.strip().split())
+    if not cleaned or cleaned == "?":
+        return None
+    canonical = {"a": "A", "b": "B", "c": "C"}.get(cleaned.lower())
+    return canonical or cleaned
+
+
 def load_recommendation_index(
     path: str | Path,
 ) -> dict[str, RecommendationIndexEntry]:
@@ -81,8 +114,12 @@ def evaluate_citation_existence(
         )
         entry = index.get(lookup_key) or index.get(citation.rec_id or "")
         exists = entry is not None
-        class_match = exists and citation.class_ is not None and citation.class_ == entry.class_
-        level_match = exists and citation.level is not None and citation.level == entry.level
+        citation_class = _normalise_class(citation.class_)
+        entry_class = _normalise_class(entry.class_ if entry else None)
+        citation_level = _normalise_level(citation.level)
+        entry_level = _normalise_level(entry.level if entry else None)
+        class_match = exists and citation_class is not None and citation_class == entry_class
+        level_match = exists and citation_level == entry_level
         matched = bool(exists and class_match and level_match)
         matched_citations += int(matched)
         details.append(

@@ -367,11 +367,14 @@ def test_build_report_cli_writes_sections_tables_plots_and_banner(
         "## 5. Context Gate Sensitivity / Specificity",
         "## 6. Citation Accuracy",
         "## 7. Hallucination Rate",
-        "## 8. Safety-Critical Discordance Rate",
-        "## 9. Performance by Query Type",
-        "## 10. Inter-Judge Agreement",
-        "## 11. Judge-vs-Human Agreement",
-        "## 12. Plots",
+        "## §8 Citation Correctness Tiers",
+        "## §9 Hallucination Analysis",
+        "## §10 Judge Reclassification Summary",
+        "## §11 Safety-Critical Discordance Rate",
+        "## §12 Performance by Query Type",
+        "## §13 Inter-Judge Agreement",
+        "## §14 Judge-vs-Human Agreement",
+        "## §15 Plots",
     ]
     for heading in headings:
         assert heading in report_text
@@ -393,6 +396,14 @@ def test_build_report_cli_writes_sections_tables_plots_and_banner(
         target = report_dir / relative_path
         assert target.exists()
         assert target.stat().st_size > 0
+
+    for relative_path in [
+        "tables/citation_tiers.csv",
+        "tables/hallucination_types.csv",
+        "tables/hallucination_rate_summary.csv",
+        "tables/clinical_risk_distribution.csv",
+    ]:
+        assert (report_dir / relative_path).exists()
 
 
 def test_compute_human_calibration_returns_numeric_kappas(tmp_path: Path) -> None:

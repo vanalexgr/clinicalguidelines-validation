@@ -3,13 +3,17 @@
 
 agent:
   client: http
-  base_url_env: CGIO_API_BASE       # e.g. https://api.clinicalguidelines.io
+  # api_type: openwebui_synthesis → SSE tool-call + direct Laravel retrieval + SSE synthesis
+  # api_type: laravel             → direct HTTP to /api/v1/vascular-consult (raw retrieval only)
+  api_type: openwebui_synthesis
+  model: gpt-5-chat
+  base_url_env: CGIO_API_BASE            # https://chat.clinicalguidelines.io  (OpenWebUI)
   api_key_env: CGIO_API_KEY
+  laravel_base_url_env: CGIO_LARAVEL_BASE  # https://chat.clinicalguidelines.io  (Laravel)
+  laravel_api_key_env: CGIO_LARAVEL_KEY
   timeout_seconds: 120
   endpoint_path: /api/v1/vascular-consult
-  # pre_retrieval_mode=true enables the two-round flow that exposes gate behavior.
-  # Phase 1 returns phase:awaiting_confirmation (gate fired) or retrieval_payload directly.
-  pre_retrieval_mode: true
+  pre_retrieval_mode: true               # enable gate for benchmark runs (two-phase: auto-confirm)
 
 judges:
   - name: claude-opus-4-7
@@ -17,7 +21,7 @@ judges:
     api_key_env: ANTHROPIC_API_KEY
     temperature: 0
     max_tokens: 1500
-  - name: gpt-4o
+  - name: o3
     provider: openai
     api_key_env: OPENAI_API_KEY
     temperature: 0
@@ -30,7 +34,7 @@ run:
   blind_answers: true              # strip model self-identification before judging
 
 paths:
-  benchmark: data/benchmark/benchmark_queries.jsonl
+  benchmark: data/benchmark/benchmark_queries.v2.jsonl
   corpus_index: data/corpus/recommendation_index.json
   answers: outputs/answers/answers.jsonl
   judgments: outputs/judgments/judgments.jsonl

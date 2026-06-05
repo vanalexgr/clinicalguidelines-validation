@@ -12,6 +12,17 @@ machine-readable rubric. The split between *deterministic* metrics (routing, gat
 and *judge-dependent* metrics (correctness, faithfulness, completeness, uncertainty, hallucination,
 safety) is the core defensibility decision.
 
+## Current snapshot
+
+The repo now includes Benchmark v2:
+
+- `55` benchmark items in `data/benchmark/benchmark_queries.v2.jsonl`
+- live Context Gate support in the agent client
+- integrated citation-tier / hallucination reclassification reporting
+- hardened judge recovery and cache reconstruction tooling
+
+The latest full-run record is documented in `docs/benchmark_v2_run_2026-06-06.md`.
+
 ## Pipeline (7 steps)
 1. Benchmark query set with human-authored gold labels (`data/benchmark/`).
 2. Generate answers with the agent (`src/runner/`).
@@ -30,6 +41,12 @@ cp data/benchmark/benchmark_queries.seed.jsonl data/benchmark/benchmark_queries.
 python -m src.runner.generate_answers --config config/config.yaml --dry-run   # confirm agent API shape
 bash scripts/run_all.sh
 ```
+
+## Runbooks
+
+- `CODEX_PLAN.md` — implementation plan for corpus normalization, citation breakdown, and reporting
+- `CODEX_BENCHMARK_RUN.md` — benchmark-v2 build and full-pipeline execution runbook
+- `docs/benchmark_v2_run_2026-06-06.md` — completed run record with results and caveats
 
 ## Status & roles
 - **Orchestrator (Claude):** owns design, rubric, prompts, statistics; reviews every PR.

@@ -7,7 +7,11 @@ import pytest
 
 from src.common.schemas import Citation
 from src.corpus.build_index import DEFAULT_INDEX_TEMPLATE, build_recommendation_index_template
-from src.corpus.index import evaluate_citation_existence, load_recommendation_index
+from src.corpus.index import (
+    _normalise_class,
+    evaluate_citation_existence,
+    load_recommendation_index,
+)
 
 FIXTURE_PATH = Path("tests/fixtures/recommendation_index.fixture.json")
 
@@ -76,6 +80,31 @@ def test_evaluate_citation_existence_vacuous_accuracy_for_empty_list() -> None:
     assert result.matched_citations == 0
     assert result.existence_accuracy == 1.0
     assert result.details == []
+
+
+def test_gvg_class_normalisation() -> None:
+    assert _normalise_class("2") == "IIb"
+    assert _normalise_class("Good") == "GPS"
+    assert _normalise_class("IIb") == "IIb"
+    assert _normalise_class("Iib") == "IIb"
+
+
+def test_citation_existence_gvg() -> None:
+    index = {
+        "GVG_CLTI_2019:6.35": load_recommendation_index(FIXTURE_PATH)["AAA-EXAMPLE"].model_copy(
+            update={"guideline": "GVG_CLTI_2019", "class_": "IIb", "level": "C"}
+        )
+    }
+    citations = [
+        Citation(rec_id="6.35", class_="2", level="C", guideline="GVG_CLTI_2019"),
+    ]
+
+    result = evaluate_citation_existence(citations, index)
+
+    assert result.total_citations == 1
+    assert result.matched_citations == 1
+    assert result.existence_accuracy == pytest.approx(1.0)
+    assert result.details[0].matched is True
 
 
 def test_build_recommendation_index_template_writes_stub(tmp_path: Path) -> None:
