@@ -3,6 +3,9 @@
 This document records the post-fix rerun of Tasks 4-7 from `CODEX_BENCHMARK_RUN.md` after the
 answer collection bug was fixed in `src/agent_client/http_client.py`.
 
+The later Phase 3 rerun, which applied metric fixes and reran answers + judges against the
+deployed gate update, is documented in `docs/benchmark_v2_phase3_rerun_2026-06-06.md`.
+
 ## Scope
 
 The goal of this rerun was narrower than the original benchmark-v2 build:

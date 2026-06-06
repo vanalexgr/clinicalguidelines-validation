@@ -22,7 +22,7 @@ The repo now includes Benchmark v2:
 - hardened judge recovery and cache reconstruction tooling
 - calibrated judge token budgets in `config/config.yaml` that reproduce the completed `330`-row run
 
-The latest completed rerun is documented in `docs/benchmark_v2_phase2_rerun_2026-06-06.md`.
+The latest completed rerun is documented in `docs/benchmark_v2_phase3_rerun_2026-06-06.md`.
 
 ## Pipeline (7 steps)
 1. Benchmark query set with human-authored gold labels (`data/benchmark/`).
@@ -49,6 +49,7 @@ bash scripts/run_all.sh
 - `CODEX_BENCHMARK_RUN.md` — benchmark-v2 build and full-pipeline execution runbook
 - `docs/benchmark_v2_run_2026-06-06.md` — initial benchmark-v2 full-run record
 - `docs/benchmark_v2_phase2_rerun_2026-06-06.md` — post-fix Phase 2 rerun with final `330` judgments
+- `docs/benchmark_v2_phase3_rerun_2026-06-06.md` — metric-fix + single-pass rerun after deployed gate update
 
 ## Status & roles
 - **Orchestrator (Claude):** owns design, rubric, prompts, statistics; reviews every PR.
