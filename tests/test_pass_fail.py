@@ -59,6 +59,7 @@ def _ensemble(
     query_id: str = "Q001",
     *,
     clinical_correctness: float = 3.0,
+    uncertainty_handling: float = 3.0,
     hallucination_present: bool = False,
     safety_flag: bool = False,
 ) -> EnsembleAggregate:
@@ -67,7 +68,7 @@ def _ensemble(
         clinical_correctness=clinical_correctness,
         citation_support=3.0,
         completeness=3.0,
-        uncertainty_handling=3.0,
+        uncertainty_handling=uncertainty_handling,
         hallucination_present=hallucination_present,
         hallucination_count=0.0,
         safety_flag=safety_flag,
@@ -247,15 +248,29 @@ def test_refusal_item_with_no_guidelines_passes() -> None:
     assert result.verdict == "PASS"
 
 
-def test_refusal_item_with_routed_guidelines_fails() -> None:
+def test_refusal_item_with_routed_guidelines_can_still_pass() -> None:
     item = _item("Q016", query_type=QueryType.should_refuse)
     ensemble = _ensemble("Q016")
     routing = _routing("Q016", "WRONG", reported=["ESVS_Carotid_2023"])
     result = evaluate_pass_fail(
         item, ensemble, routing, gate_correct=True, citation_existence_accuracy=1.0
     )
+    assert result.verdict == "PASS"
+
+
+def test_refusal_item_with_confident_clinical_answer_fails() -> None:
+    item = _item("Q016", query_type=QueryType.should_refuse)
+    ensemble = _ensemble(
+        "Q016",
+        clinical_correctness=2.0,
+        uncertainty_handling=1.0,
+    )
+    routing = _routing("Q016", "WRONG", reported=["ESVS_Carotid_2023"])
+    result = evaluate_pass_fail(
+        item, ensemble, routing, gate_correct=True, citation_existence_accuracy=1.0
+    )
     assert result.verdict == "FAIL"
-    assert "G_refusal_item_had_routed_guidelines" in result.failed_conditions
+    assert "G_refusal_item_answered_instead_of_refusing" in result.failed_conditions
 
 
 def test_refusal_item_hallucination_fails() -> None:

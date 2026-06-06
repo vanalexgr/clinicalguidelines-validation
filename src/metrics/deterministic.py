@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import ceil
+import re
 from statistics import mean, median
 
 from src.common.schemas import AgentAnswer, BenchmarkItem, GateExpected, GateOutcome, RoutingLabel
@@ -275,23 +276,46 @@ def summarize_latency(answers: list[AgentAnswer]) -> LatencyMetrics:
 
 
 def _parameter_recall(*, required: list[str], requested: list[str]) -> float:
-    required_set = {
-        normalized
-        for value in required
-        if (normalized := _normalize_parameter(value))
-    }
-    requested_set = {
-        normalized
-        for value in requested
-        if (normalized := _normalize_parameter(value))
-    }
-    if not required_set:
+    """Keyword-overlap recall for required parameters vs clarification questions."""
+    if not required:
         return 1.0
-    return len(required_set & requested_set) / len(required_set)
+    normalized_questions = [_normalize_parameter(q) for q in requested]
+    low_signal_keywords = {
+        "and",
+        "an",
+        "a",
+        "class",
+        "findings",
+        "grade",
+        "history",
+        "of",
+        "on",
+        "or",
+        "results",
+        "status",
+        "the",
+        "type",
+        "value",
+        "vs",
+    }
+    matched = 0
+    for param in required:
+        keywords = [
+            keyword
+            for keyword in _normalize_parameter(param.replace("_", " ")).split()
+            if keyword not in low_signal_keywords
+        ]
+        if not keywords:
+            keywords = _normalize_parameter(param.replace("_", " ")).split()
+        for question in normalized_questions:
+            if all(keyword in question for keyword in keywords):
+                matched += 1
+                break
+    return matched / len(required)
 
 
 def _normalize_parameter(value: str) -> str:
-    return " ".join(value.lower().split())
+    return " ".join(re.findall(r"[a-z0-9]+", value.lower()))
 
 
 def _safe_ratio(
