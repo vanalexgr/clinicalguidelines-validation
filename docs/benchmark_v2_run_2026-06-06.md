@@ -1,5 +1,9 @@
 # Benchmark v2 Run Record (2026-06-06)
 
+This document records the initial benchmark-v2 full run. The later post-fix rerun with the final
+`330`-judgment matrix and improved metrics is documented in
+`docs/benchmark_v2_phase2_rerun_2026-06-06.md`.
+
 This document captures the repo state, pipeline changes, benchmark composition, execution
 procedure, recovery steps, and final outcomes for the full Benchmark v2 run completed on
 2026-06-06.

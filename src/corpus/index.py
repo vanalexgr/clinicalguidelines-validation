@@ -26,7 +26,8 @@ class CitationExistenceDetail:
     exists: bool
     class_match: bool
     level_match: bool
-    matched: bool
+    matched: bool          # existence only (used for D3a pass/fail)
+    metadata_matched: bool  # existence AND class AND level (separate accuracy metric)
     expected_guideline: str | None
     expected_class: str | None
     expected_level: str | None
@@ -35,8 +36,10 @@ class CitationExistenceDetail:
 @dataclass(slots=True)
 class CitationExistenceResult:
     total_citations: int
-    matched_citations: int
-    existence_accuracy: float
+    matched_citations: int         # existence-only count (used for D3a)
+    existence_accuracy: float      # existence-only rate (used for D3a pass/fail)
+    metadata_matched_citations: int       # existence + class + level count
+    metadata_accuracy: float              # full metadata accuracy (separate metric)
     details: list[CitationExistenceDetail]
 
 
@@ -104,7 +107,8 @@ def evaluate_citation_existence(
 ) -> CitationExistenceResult:
     """Return citation-existence accuracy and per-citation match detail."""
     details: list[CitationExistenceDetail] = []
-    matched_citations = 0
+    matched_citations = 0          # existence only
+    metadata_matched_citations = 0  # existence + class + level
 
     for citation in citations:
         lookup_key = (
@@ -120,8 +124,12 @@ def evaluate_citation_existence(
         entry_level = _normalise_level(entry.level if entry else None)
         class_match = exists and citation_class is not None and citation_class == entry_class
         level_match = exists and citation_level == entry_level
-        matched = bool(exists and class_match and level_match)
+        # D3a: existence only — did the system cite a recommendation that actually exists?
+        matched = exists
+        # Separate full-metadata accuracy — class and level also correct
+        metadata_matched = bool(exists and class_match and level_match)
         matched_citations += int(matched)
+        metadata_matched_citations += int(metadata_matched)
         details.append(
             CitationExistenceDetail(
                 rec_id=citation.rec_id,
@@ -129,6 +137,7 @@ def evaluate_citation_existence(
                 class_match=bool(class_match),
                 level_match=bool(level_match),
                 matched=matched,
+                metadata_matched=metadata_matched,
                 expected_guideline=entry.guideline if entry else None,
                 expected_class=entry.class_ if entry else None,
                 expected_level=entry.level if entry else None,
@@ -137,9 +146,12 @@ def evaluate_citation_existence(
 
     total_citations = len(citations)
     existence_accuracy = 1.0 if total_citations == 0 else matched_citations / total_citations
+    metadata_accuracy = 1.0 if total_citations == 0 else metadata_matched_citations / total_citations
     return CitationExistenceResult(
         total_citations=total_citations,
         matched_citations=matched_citations,
         existence_accuracy=existence_accuracy,
+        metadata_matched_citations=metadata_matched_citations,
+        metadata_accuracy=metadata_accuracy,
         details=details,
     )

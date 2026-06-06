@@ -58,17 +58,22 @@ def test_evaluate_citation_existence_returns_accuracy_and_details() -> None:
     result = evaluate_citation_existence(citations, index)
 
     assert result.total_citations == 3
-    assert result.matched_citations == 1
-    assert result.existence_accuracy == pytest.approx(1 / 3)
+    assert result.matched_citations == 2
+    assert result.existence_accuracy == pytest.approx(2 / 3)
+    assert result.metadata_matched_citations == 1
+    assert result.metadata_accuracy == pytest.approx(1 / 3)
 
     assert result.details[0].matched is True
     assert result.details[0].exists is True
+    assert result.details[0].metadata_matched is True
     assert result.details[1].exists is True
     assert result.details[1].class_match is False
     assert result.details[1].level_match is True
-    assert result.details[1].matched is False
+    assert result.details[1].matched is True
+    assert result.details[1].metadata_matched is False
     assert result.details[2].exists is False
     assert result.details[2].matched is False
+    assert result.details[2].metadata_matched is False
 
 
 def test_evaluate_citation_existence_vacuous_accuracy_for_empty_list() -> None:

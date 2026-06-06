@@ -20,8 +20,9 @@ The repo now includes Benchmark v2:
 - live Context Gate support in the agent client
 - integrated citation-tier / hallucination reclassification reporting
 - hardened judge recovery and cache reconstruction tooling
+- calibrated judge token budgets in `config/config.yaml` that reproduce the completed `330`-row run
 
-The latest full-run record is documented in `docs/benchmark_v2_run_2026-06-06.md`.
+The latest completed rerun is documented in `docs/benchmark_v2_phase2_rerun_2026-06-06.md`.
 
 ## Pipeline (7 steps)
 1. Benchmark query set with human-authored gold labels (`data/benchmark/`).
@@ -46,7 +47,8 @@ bash scripts/run_all.sh
 
 - `CODEX_PLAN.md` — implementation plan for corpus normalization, citation breakdown, and reporting
 - `CODEX_BENCHMARK_RUN.md` — benchmark-v2 build and full-pipeline execution runbook
-- `docs/benchmark_v2_run_2026-06-06.md` — completed run record with results and caveats
+- `docs/benchmark_v2_run_2026-06-06.md` — initial benchmark-v2 full-run record
+- `docs/benchmark_v2_phase2_rerun_2026-06-06.md` — post-fix Phase 2 rerun with final `330` judgments
 
 ## Status & roles
 - **Orchestrator (Claude):** owns design, rubric, prompts, statistics; reviews every PR.

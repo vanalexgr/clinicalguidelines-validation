@@ -178,8 +178,16 @@ def test_summarize_gate_matches_hand_computed_fixture() -> None:
         ),
         _answer(fire_miss, gate_fired=False),
         _answer(suppress_true_negative, gate_fired=False),
-        _answer(suppress_false_positive, gate_fired=True),
-        _answer(suppress_followup_false_positive, gate_fired=True),
+        _answer(
+            suppress_false_positive,
+            gate_fired=True,
+            clarification_requested=["extra parameter"],
+        ),
+        _answer(
+            suppress_followup_false_positive,
+            gate_fired=True,
+            clarification_requested=["follow-up question"],
+        ),
     ]
 
     metrics = summarize_gate(
@@ -248,10 +256,11 @@ def test_summarize_citation_existence_and_latency_match_hand_computed_fixture() 
     latency_metrics = summarize_latency(answers)
 
     assert citation_metrics.total_citations == 3
-    assert citation_metrics.matched_citations == 1
-    assert citation_metrics.existence_accuracy == pytest.approx(1 / 3)
-    assert citation_metrics.per_answer[0].result.matched_citations == 1
+    assert citation_metrics.matched_citations == 2
+    assert citation_metrics.existence_accuracy == pytest.approx(2 / 3)
+    assert citation_metrics.per_answer[0].result.matched_citations == 2
     assert citation_metrics.per_answer[0].result.total_citations == 2
+    assert citation_metrics.per_answer[0].result.metadata_matched_citations == 1
     assert citation_metrics.per_answer[1].result.matched_citations == 0
     assert citation_metrics.per_answer[1].result.total_citations == 1
     assert citation_metrics.per_answer[2].result.existence_accuracy == pytest.approx(1.0)

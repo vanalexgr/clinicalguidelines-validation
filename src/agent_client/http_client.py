@@ -217,7 +217,7 @@ class _OpenWebUISynthesisTransport:
         if not laravel_resp:
             return {"result": "", "_phase": "laravel_failed"}
 
-        # ── Gate: if Laravel returned phase-1, auto-confirm ───────────
+        # ── Gate: if Laravel returned phase-1, obtain retrieval results ──
         gate_fired = False
         clarification_questions: list[str] = []
         if laravel_resp.get("phase") == "awaiting_confirmation":
@@ -227,19 +227,27 @@ class _OpenWebUISynthesisTransport:
                 for q in (laravel_resp.get("clarification_questions") or [])
                 if str(q).strip()
             ]
-            confirmation_msg = laravel_resp.get("confirmation_message") or ""
-            # Send phase-2: confirm without supplying missing parameters so the
-            # benchmark captures the system's behaviour under incomplete input.
-            p2b_timeout = min(p2_timeout, max(30.0, timeout_seconds - (time.monotonic() - t0)))
-            laravel_resp2 = self._call_laravel(
-                "Confirmed. Please proceed.",
-                guidelines,
-                timeout=p2b_timeout,
-                pre_retrieval_mode=True,
-                history=[tool_question, confirmation_msg],
-            )
-            if laravel_resp2:
-                laravel_resp = laravel_resp2
+            # The gate pre-fetches retrieval in parallel; use it if available.
+            retrieval_payload = laravel_resp.get("retrieval_payload") or {}
+            if (
+                retrieval_payload.get("llm_citation_chunks")
+                or retrieval_payload.get("llm_narrative_chunks")
+            ):
+                laravel_resp = retrieval_payload
+            else:
+                # Fallback: re-run retrieval with the original question.
+                # pre_retrieval_mode=False skips the gate so it does not fire
+                # again; the original tool_question (not the confirmation text)
+                # drives RAG retrieval so we get real guideline content.
+                p2b_timeout = min(p2_timeout, max(30.0, timeout_seconds - (time.monotonic() - t0)))
+                laravel_resp2 = self._call_laravel(
+                    tool_question,           # original question → drives RAG
+                    guidelines,
+                    timeout=p2b_timeout,
+                    pre_retrieval_mode=False,  # gate already ran; skip re-check
+                )
+                if laravel_resp2:
+                    laravel_resp = laravel_resp2
 
         llm_out = _format_tool_output(laravel_resp)
 

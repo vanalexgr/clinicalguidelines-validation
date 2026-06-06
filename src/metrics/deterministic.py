@@ -166,7 +166,11 @@ def summarize_gate(items: list[BenchmarkItem], answers: list[AgentAnswer]) -> Ga
             continue
 
         expected_fire = item.gold.gate_expected == GateExpected.fire
-        fired = answer.gate_fired
+        # Use clarification_requested (non-empty) as the operational definition of
+        # "gate fired" — gate_fired is True for ALL items because the checkpoint
+        # always runs; the meaningful signal is whether clarification questions
+        # were actually asked.
+        fired = bool(answer.clarification_requested)
         correct = expected_fire == fired
 
         if expected_fire and fired:
