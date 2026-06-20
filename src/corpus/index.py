@@ -146,7 +146,9 @@ def evaluate_citation_existence(
 
     total_citations = len(citations)
     existence_accuracy = 1.0 if total_citations == 0 else matched_citations / total_citations
-    metadata_accuracy = 1.0 if total_citations == 0 else metadata_matched_citations / total_citations
+    metadata_accuracy = (
+        1.0 if total_citations == 0 else metadata_matched_citations / total_citations
+    )
     return CitationExistenceResult(
         total_citations=total_citations,
         matched_citations=matched_citations,

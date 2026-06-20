@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from math import ceil
-import re
 from statistics import mean, median
 
 from src.common.schemas import AgentAnswer, BenchmarkItem, GateExpected, GateOutcome, RoutingLabel

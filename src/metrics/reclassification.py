@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass
 
-from src.metrics.citation_breakdown import CitationBreakdownResult, REAL_ERROR_TYPES
+from src.metrics.citation_breakdown import REAL_ERROR_TYPES, CitationBreakdownResult
 
 
 @dataclass(slots=True)

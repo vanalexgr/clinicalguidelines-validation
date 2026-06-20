@@ -30,6 +30,11 @@ from src.metrics.aggregate import (
     aggregate_within_judge,
 )
 from src.metrics.agreement import AgreementReport, compute_agreement, wilson_ci
+from src.metrics.citation_breakdown import (
+    ARTEFACT_TYPES,
+    CitationBreakdownResult,
+    compute_citation_breakdown,
+)
 from src.metrics.deterministic import (
     CitationMetrics,
     GateMetrics,
@@ -43,12 +48,6 @@ from src.metrics.deterministic import (
 from src.metrics.human_calibration import (
     HumanCalibrationReport,
     compute_human_calibration,
-)
-from src.metrics.citation_breakdown import (
-    ARTEFACT_TYPES,
-    CitationBreakdownResult,
-    REAL_ERROR_TYPES,
-    compute_citation_breakdown,
 )
 from src.metrics.pass_fail import PassFailResult, evaluate_pass_fail_batch
 from src.metrics.reclassification import (
@@ -490,8 +489,10 @@ def render_report_markdown(context: ReportContext) -> str:
                 "### 9.4 Clean / Artefact-only / Real-error Items",
                 "",
                 f"Clean: {', '.join(context.citation_breakdown.items_clean) or '(none)'}",
-                f"Artefact-only: {', '.join(context.citation_breakdown.items_artefact_only) or '(none)'}",
-                f"Real errors: {', '.join(context.citation_breakdown.items_real_error) or '(none)'}",
+                "Artefact-only: "
+                f"{', '.join(context.citation_breakdown.items_artefact_only) or '(none)'}",
+                "Real errors: "
+                f"{', '.join(context.citation_breakdown.items_real_error) or '(none)'}",
                 "",
                 "## §10 Judge Reclassification Summary",
                 "",
@@ -1060,7 +1061,10 @@ def _reclassification_rows(
         },
         {
             "layer": "Flags reclassified after review",
-            "hallucination_rate": f"{report.flags_reclassified}/{report.total_flags} ({_fmt_pct(report.reclassification_rate)})",
+            "hallucination_rate": (
+                f"{report.flags_reclassified}/{report.total_flags} "
+                f"({_fmt_pct(report.reclassification_rate)})"
+            ),
         },
     ]
 

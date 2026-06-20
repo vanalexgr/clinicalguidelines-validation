@@ -6,6 +6,15 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# Standalone CLI/data scripts: do sys.path setup before imports (E402) and embed
+# long verbatim clinical vignette / prompt text that should not be reflowed (E501).
+"scripts/*" = ["E402", "E501"]
+# Test fixtures embed long verbatim clinical sentences used as judge inputs (E501).
+"tests/*" = ["E501"]
+# Constant map of official ESVS/GVG guideline titles — irreducible long string keys.
+"src/agent_client/http_client.py" = ["E501"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
