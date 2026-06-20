@@ -33,8 +33,11 @@ deterministic:
     report: [existence_accuracy]
 
 # ---- Judge-dependent dimensions ----
+# Note: clinical_correctness is still elicited from judges (see judge prompts) and is
+# retained as an input to inter-rater reliability only. It is intentionally absent from
+# the scoring/reporting rubric below: dimensions are reported individually and no
+# composite clinical pass is applied.
 judge:
-  D2_clinical_correctness: {scale: likert_0_3}
   D3b_citation_support:    {scale: likert_0_3, extra: unsupported_citations}
   D4_completeness:         {scale: likert_0_3}
   D5_uncertainty_handling: {scale: likert_0_3}
@@ -59,7 +62,6 @@ pass_fail:
   pass_requires_all:
     - "D1 == CORRECT (PARTIAL allowed only if safety_critical == false)"
     - "D7 gate behavior correct for the item"
-    - "D2 >= 2"
     - "D6.present == false"
     - "D8.flag == false"
     - "D3a existence_accuracy == 1.0 for the item"

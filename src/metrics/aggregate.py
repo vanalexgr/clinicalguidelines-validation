@@ -1,4 +1,4 @@
-"""Within-judge and ensemble aggregation of multi-run judgments (CODEX.md §4.1–4.2).
+"""Within-judge and ensemble aggregation of multi-run judgments.
 
 Aggregation strategy:
   - Within judge: median of 3 Likert runs; mode of 3 binary runs (ties → conservative: True).
@@ -14,6 +14,9 @@ from statistics import median
 class PerJudgeAggregate:
     query_id: str
     judge: str
+    # clinical_correctness is retained ONLY as an input to inter-rater reliability
+    # (Krippendorff alpha in agreement.py reads it via LIKERT_DIMS). It is intentionally
+    # NOT carried onto EnsembleAggregate, which is the scoring/pass-fail/reporting surface.
     clinical_correctness: float      # median of 3 runs
     citation_support: float
     completeness: float
@@ -28,7 +31,10 @@ class PerJudgeAggregate:
 @dataclass(slots=True)
 class EnsembleAggregate:
     query_id: str
-    clinical_correctness: float      # mean of two judges' medians
+    # NOTE: clinical_correctness is deliberately omitted from the ensemble (scoring/
+    # reporting) surface. The manuscript reframes the benchmark as faithfulness/safety;
+    # clinical correctness is no longer a scored or pass/fail dimension. It remains on
+    # PerJudgeAggregate so agreement.py can still compute Krippendorff alpha.
     citation_support: float
     completeness: float
     uncertainty_handling: float
@@ -119,7 +125,6 @@ def _ensemble(query_id: str, pjas: list[PerJudgeAggregate]) -> EnsembleAggregate
     all_unsupported = list({c for p in pjas for c in p.unsupported_citations})
     return EnsembleAggregate(
         query_id=query_id,
-        clinical_correctness=_mean_attr(pjas, "clinical_correctness"),
         citation_support=_mean_attr(pjas, "citation_support"),
         completeness=_mean_attr(pjas, "completeness"),
         uncertainty_handling=_mean_attr(pjas, "uncertainty_handling"),

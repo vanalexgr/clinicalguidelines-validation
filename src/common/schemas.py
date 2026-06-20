@@ -1,8 +1,8 @@
 """Authoritative data contracts for the validation pipeline.
 
 These pydantic models are the single source of truth. JSON on disk must validate
-against them. Codex: extend with validators as needed but do NOT change field names
-or semantics without orchestrator sign-off (see CODEX.md §2).
+against them. Extend with validators as needed, but treat field names and semantics
+as stable contracts.
 """
 from __future__ import annotations
 

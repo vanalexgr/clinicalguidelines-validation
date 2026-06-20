@@ -1,4 +1,4 @@
-"""Inter-judge agreement statistics (CODEX.md §4.3).
+"""Inter-judge agreement statistics.
 
 Computes per Likert dimension:
   - Cohen's quadratic-weighted kappa (judge-vs-judge)
@@ -26,6 +26,11 @@ import pandas as pd
 import pingouin as pg
 from sklearn.metrics import cohen_kappa_score
 
+# These are the four originally-elicited ordinal rating dimensions. They are retained
+# here for inter-rater reliability ONLY (Cohen's kappa, ICC, and the Krippendorff alpha
+# reported in the manuscript). clinical_correctness in particular is no longer a scoring,
+# pass/fail, or quality-reporting dimension, but MUST remain in this tuple so that the
+# published Krippendorff alpha (computed over all four dimensions) is preserved.
 LIKERT_DIMS = ("clinical_correctness", "citation_support", "completeness", "uncertainty_handling")
 BINARY_DIMS = ("hallucination_present", "safety_flag")
 

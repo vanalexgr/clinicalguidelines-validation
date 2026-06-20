@@ -176,11 +176,11 @@ def test_export_review_writes_three_rows_with_full_context(tmp_path: Path) -> No
             for run_index in range(3)
         ],
         *[
-            _judgment("Q002", "judge_a", run_index, clinical_correctness=0)
+            _judgment("Q002", "judge_a", run_index, citation_support=0)
             for run_index in range(3)
         ],
         *[
-            _judgment("Q002", "judge_b", run_index, clinical_correctness=3)
+            _judgment("Q002", "judge_b", run_index, citation_support=3)
             for run_index in range(3)
         ],
         *[
@@ -237,9 +237,11 @@ def test_export_review_writes_three_rows_with_full_context(tmp_path: Path) -> No
     assert rows_by_id["Q001"]["routing_label"] == "WRONG"
     assert rows_by_id["Q001"]["trigger_routing_wrong"] == "True"
     assert rows_by_id["Q002"]["trigger_likert_disagreement"] == "True"
-    assert rows_by_id["Q002"]["likert_disagreement_dimensions"] == '["clinical_correctness"]'
+    assert rows_by_id["Q002"]["likert_disagreement_dimensions"] == '["citation_support"]'
     assert rows_by_id["Q003"]["trigger_any_safety_flag"] == "True"
-    assert rows_by_id["Q003"]["human_score_clinical_correctness"] == ""
+    # clinical_correctness is no longer exported on the discordance review surface.
+    assert "ensemble_clinical_correctness" not in rows_by_id["Q003"]
+    assert "human_score_clinical_correctness" not in rows_by_id["Q003"]
     assert rows_by_id["Q003"]["human_notes"] == ""
     assert "Routing error answer." in rows_by_id["Q001"]["agent_answer"]
     assert "Carotid passage text." in rows_by_id["Q003"]["retrieved_passages_json"]

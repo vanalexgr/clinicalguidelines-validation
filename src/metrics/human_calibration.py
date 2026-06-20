@@ -109,6 +109,25 @@ def compute_human_calibration(
     )
 
 
+def _ensemble_likert_value(
+    ensembles: dict[str, EnsembleAggregate],
+    by_query: dict[str, dict[str, PerJudgeAggregate]],
+    query_id: str,
+    dimension: str,
+) -> float:
+    """Ensemble Likert value for ``dimension``.
+
+    Most dimensions live on EnsembleAggregate. clinical_correctness is intentionally not a
+    scoring dimension and is absent there, so fall back to the mean of the per-judge medians.
+    """
+    ensemble = ensembles[query_id]
+    if hasattr(ensemble, dimension):
+        return float(getattr(ensemble, dimension))
+    per_judge = list(by_query[query_id].values())
+    values = [float(getattr(pja, dimension)) for pja in per_judge]
+    return sum(values) / len(values) if values else 0.0
+
+
 def _compute_likert_agreement(
     *,
     dimension: str,
@@ -127,8 +146,12 @@ def _compute_likert_agreement(
     judge_b_values = [
         round(getattr(by_query[query_id][judge_b], dimension)) for query_id in query_ids
     ]
+    # clinical_correctness is no longer carried on EnsembleAggregate (it is not a scoring
+    # dimension). For calibration we reconstruct its ensemble value as the mean of the two
+    # judges' per-judge medians, matching the historical ensemble definition.
     ensemble_values = [
-        round(getattr(ensembles[query_id], dimension)) for query_id in query_ids
+        round(_ensemble_likert_value(ensembles, by_query, query_id, dimension))
+        for query_id in query_ids
     ]
     return HumanLikertAgreement(
         dimension=dimension,

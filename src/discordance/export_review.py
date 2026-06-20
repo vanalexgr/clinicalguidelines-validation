@@ -1,4 +1,4 @@
-"""Export discordance-review artifacts for clinician follow-up (CODEX.md §5)."""
+"""Export discordance-review artifacts for clinician follow-up."""
 
 from __future__ import annotations
 
@@ -25,14 +25,15 @@ from src.metrics.aggregate import (
 from src.metrics.deterministic import RoutingDecision, label_routing
 from src.metrics.pass_fail import PassFailResult, evaluate_pass_fail
 
+# clinical_correctness is intentionally excluded from the discordance-review surface
+# (disagreement triggers and exported scores). It is retained only for inter-rater
+# reliability in metrics/agreement.py.
 LIKERT_DIMENSIONS = (
-    "clinical_correctness",
     "citation_support",
     "completeness",
     "uncertainty_handling",
 )
 HUMAN_COLUMNS = (
-    "human_score_clinical_correctness",
     "human_score_citation_support",
     "human_score_completeness",
     "human_score_uncertainty_handling",
@@ -298,7 +299,6 @@ def render_review_markdown(review_items: list[ReviewItem]) -> str:
                     "",
                     "| Metric | Aggregate |",
                     "|---|---:|",
-                    f"| clinical_correctness | {aggregate.clinical_correctness} |",
                     f"| citation_support | {aggregate.citation_support} |",
                     f"| completeness | {aggregate.completeness} |",
                     f"| uncertainty_handling | {aggregate.uncertainty_handling} |",
@@ -481,7 +481,6 @@ def _review_row(review_item: ReviewItem, judge_names: list[str]) -> dict[str, st
             ]
         ),
         "gold_notes": item.gold.notes,
-        "ensemble_clinical_correctness": str(review_item.ensemble.clinical_correctness),
         "ensemble_citation_support": str(review_item.ensemble.citation_support),
         "ensemble_completeness": str(review_item.ensemble.completeness),
         "ensemble_uncertainty_handling": str(review_item.ensemble.uncertainty_handling),
@@ -503,7 +502,6 @@ def _review_row(review_item: ReviewItem, judge_names: list[str]) -> dict[str, st
             [judgment.model_dump(by_alias=True) for judgment in judgments]
         )
         if aggregate is None:
-            row[f"{prefix}_clinical_correctness"] = ""
             row[f"{prefix}_citation_support"] = ""
             row[f"{prefix}_completeness"] = ""
             row[f"{prefix}_uncertainty_handling"] = ""
@@ -514,7 +512,6 @@ def _review_row(review_item: ReviewItem, judge_names: list[str]) -> dict[str, st
             row[f"{prefix}_unsupported_citations_json"] = ""
             continue
 
-        row[f"{prefix}_clinical_correctness"] = str(aggregate.clinical_correctness)
         row[f"{prefix}_citation_support"] = str(aggregate.citation_support)
         row[f"{prefix}_completeness"] = str(aggregate.completeness)
         row[f"{prefix}_uncertainty_handling"] = str(aggregate.uncertainty_handling)
@@ -534,11 +531,6 @@ def _review_row(review_item: ReviewItem, judge_names: list[str]) -> dict[str, st
 
 def _judgment_run_rows(judgment: Judgment) -> list[str]:
     rows = [
-        (
-            f"| {judgment.run_index} | clinical_correctness | "
-            f"{judgment.dimensions.clinical_correctness.score} | "
-            f"{_markdown_text(judgment.dimensions.clinical_correctness.rationale)} |"
-        ),
         (
             f"| {judgment.run_index} | citation_support | "
             f"{judgment.dimensions.citation_support.score} | "
@@ -620,7 +612,6 @@ def _fieldnames(rows: list[dict[str, str]]) -> list[str]:
         "gold_required_parameters_json",
         "gold_key_recommendations_json",
         "gold_notes",
-        "ensemble_clinical_correctness",
         "ensemble_citation_support",
         "ensemble_completeness",
         "ensemble_uncertainty_handling",

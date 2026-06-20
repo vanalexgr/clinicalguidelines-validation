@@ -1,6 +1,15 @@
 # Benchmark v2 Phase 3 Rerun Record (2026-06-06)
 
-This document records the Phase 3 rerun defined in `CODEX_PHASE3.md`: deterministic metric fixes,
+> **Historical provenance note.** This is a dated run-log preserved unchanged for
+> reproducibility. The composite `pass_rate` reported below (`40.0%`) depended on a
+> clinical-correctness scoring condition that was subsequently **retired**: clinical
+> cases admit several defensible recommendations, so the evaluation was reframed as a
+> faithfulness-and-safety-behaviour benchmark and the individual faithfulness metrics
+> (routing, scope enforcement, gate behaviour, citation existence, unsupported-claim
+> rate) are reported individually with no composite clinical pass. The `pass_rate`
+> figure here is retained only as a record of what was computed at the time.
+
+This document records the Phase 3 rerun: deterministic metric fixes,
 a tighter hallucination rubric, a single fresh answer pass against the deployed gate update, and a
 single fresh judge pass with a short retry tail.
 

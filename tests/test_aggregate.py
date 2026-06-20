@@ -120,12 +120,25 @@ def test_within_judge_unsupported_citations_deduped() -> None:
 
 def test_ensemble_likert_is_mean_of_judges() -> None:
     judgments = (
+        _three_runs("Q001", "judge_a", citation_support=2)
+        + _three_runs("Q001", "judge_b", citation_support=0)
+    )
+    per_judge = aggregate_within_judge(judgments)
+    ensemble = aggregate_ensemble(per_judge)
+    assert ensemble["Q001"].citation_support == pytest.approx(1.0)
+
+
+def test_ensemble_drops_clinical_correctness_but_per_judge_retains_it() -> None:
+    # clinical_correctness is removed from the scoring/reporting ensemble surface, but
+    # MUST remain on PerJudgeAggregate so agreement.py can compute Krippendorff alpha.
+    judgments = (
         _three_runs("Q001", "judge_a", clinical_correctness=2)
         + _three_runs("Q001", "judge_b", clinical_correctness=0)
     )
     per_judge = aggregate_within_judge(judgments)
     ensemble = aggregate_ensemble(per_judge)
-    assert ensemble["Q001"].clinical_correctness == pytest.approx(1.0)
+    assert per_judge[("Q001", "judge_a")].clinical_correctness == pytest.approx(2.0)
+    assert not hasattr(ensemble["Q001"], "clinical_correctness")
 
 
 def test_ensemble_safety_flag_is_or() -> None:

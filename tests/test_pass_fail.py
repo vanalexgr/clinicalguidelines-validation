@@ -1,4 +1,4 @@
-"""Exhaustive truth-table tests for src/metrics/pass_fail.py (CODEX.md §3.2)."""
+"""Exhaustive truth-table tests for src/metrics/pass_fail.py."""
 from __future__ import annotations
 
 import json
@@ -58,14 +58,13 @@ def _item(
 def _ensemble(
     query_id: str = "Q001",
     *,
-    clinical_correctness: float = 3.0,
     uncertainty_handling: float = 3.0,
     hallucination_present: bool = False,
     safety_flag: bool = False,
 ) -> EnsembleAggregate:
+    # clinical_correctness is no longer a scoring dimension and is absent from EnsembleAggregate.
     return EnsembleAggregate(
         query_id=query_id,
-        clinical_correctness=clinical_correctness,
         citation_support=3.0,
         completeness=3.0,
         uncertainty_handling=uncertainty_handling,
@@ -94,7 +93,6 @@ def _evaluate(
     safety_critical: bool = False,
     routing_label: str = "CORRECT",
     gate_correct: bool = True,
-    clinical_correctness: float = 3.0,
     hallucination: bool = False,
     safety_flag: bool = False,
     citation_accuracy: float = 1.0,
@@ -103,7 +101,6 @@ def _evaluate(
     item = _item("Q001", safety_critical=safety_critical, query_type=query_type)
     ensemble = _ensemble(
         "Q001",
-        clinical_correctness=clinical_correctness,
         hallucination_present=hallucination,
         safety_flag=safety_flag,
     )
@@ -156,24 +153,24 @@ def test_gate_incorrect_fails() -> None:
 
 
 # --------------------------------------------------------------------------- #
-# Condition 3: clinical correctness
+# clinical_correctness is NO LONGER a scoring / pass-fail dimension.
+# It is not exposed on EnsembleAggregate or PassFailResult and never affects the verdict.
 # --------------------------------------------------------------------------- #
 
 
-def test_clinical_correctness_exactly_2_passes() -> None:
-    result = _evaluate(clinical_correctness=2.0)
+def test_clinical_correctness_not_a_pass_fail_condition() -> None:
+    result = _evaluate()
     assert result.verdict == "PASS"
+    assert not any("clinical_correctness" in cond for cond in result.failed_conditions)
 
 
-def test_clinical_correctness_below_2_fails() -> None:
-    result = _evaluate(clinical_correctness=1.9)
-    assert result.verdict == "FAIL"
-    assert "D2_clinical_correctness_lt_2" in result.failed_conditions
+def test_pass_fail_result_has_no_clinical_correctness_field() -> None:
+    result = _evaluate()
+    assert not hasattr(result, "clinical_correctness")
 
 
-def test_clinical_correctness_0_fails() -> None:
-    result = _evaluate(clinical_correctness=0.0)
-    assert result.verdict == "FAIL"
+def test_ensemble_aggregate_has_no_clinical_correctness_field() -> None:
+    assert not hasattr(_ensemble(), "clinical_correctness")
 
 
 # --------------------------------------------------------------------------- #
@@ -262,7 +259,6 @@ def test_refusal_item_with_confident_clinical_answer_fails() -> None:
     item = _item("Q016", query_type=QueryType.should_refuse)
     ensemble = _ensemble(
         "Q016",
-        clinical_correctness=2.0,
         uncertainty_handling=1.0,
     )
     routing = _routing("Q016", "WRONG", reported=["ESVS_Carotid_2023"])

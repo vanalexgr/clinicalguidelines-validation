@@ -60,8 +60,9 @@ matplotlib.use("Agg")
 from matplotlib import pyplot as plt
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
+# clinical_correctness is intentionally excluded from the reported quality dimensions.
+# It remains elicited and is used only for inter-rater reliability (see metrics/agreement.py).
 LIKERT_DIMENSIONS = (
-    "clinical_correctness",
     "citation_support",
     "completeness",
     "uncertainty_handling",
@@ -551,7 +552,6 @@ def _write_report_tables(context: ReportContext, tables_dir: Path) -> None:
         {
             "query_id": query_id,
             "query_type": item_by_id[query_id].query_type.value,
-            "clinical_correctness": aggregate.clinical_correctness,
             "citation_support": aggregate.citation_support,
             "completeness": aggregate.completeness,
             "uncertainty_handling": aggregate.uncertainty_handling,
@@ -605,7 +605,6 @@ def _write_report_tables(context: ReportContext, tables_dir: Path) -> None:
             ),
             "routing_label": result.routing_label,
             "gate_correct": result.gate_correct,
-            "clinical_correctness": result.clinical_correctness,
             "hallucination_present": result.hallucination_present,
             "safety_flag": result.safety_flag,
             "citation_existence_accuracy": result.citation_existence_accuracy,
@@ -648,7 +647,6 @@ def _plot_score_distributions(context: ReportContext, path: Path) -> None:
         for dimension in LIKERT_DIMENSIONS
     ]
     labels = [
-        "Clinical\nCorrectness",
         "Citation\nSupport",
         "Completeness",
         "Uncertainty\nHandling",
@@ -656,7 +654,7 @@ def _plot_score_distributions(context: ReportContext, path: Path) -> None:
 
     fig, ax = plt.subplots(figsize=(9, 5))
     boxplot = ax.boxplot(data, patch_artist=True, tick_labels=labels)
-    colors = ["#4C78A8", "#72B7B2", "#F58518", "#E45756"]
+    colors = ["#72B7B2", "#F58518", "#E45756"]
     for patch, color in zip(boxplot["boxes"], colors, strict=False):
         patch.set_facecolor(color)
         patch.set_alpha(0.65)
@@ -1171,7 +1169,6 @@ def _by_query_type_rows(context: ReportContext) -> list[dict[str, str]]:
                     "pass_rate_fraction": "0.0",
                     "pass_rate": "0.0%",
                     "pass_rate_ci_95": "n/a",
-                    "mean_clinical_correctness": "",
                     "mean_citation_support": "",
                     "mean_completeness": "",
                     "mean_uncertainty_handling": "",
@@ -1192,9 +1189,6 @@ def _by_query_type_rows(context: ReportContext) -> list[dict[str, str]]:
                 "pass_rate_fraction": f"{ci.proportion:.6f}",
                 "pass_rate": _fmt_pct(ci.proportion),
                 "pass_rate_ci_95": _fmt_ci(ci.lower, ci.upper),
-                "mean_clinical_correctness": _fmt_float(
-                    mean(value.clinical_correctness for value in ensemble_values)
-                ),
                 "mean_citation_support": _fmt_float(
                     mean(value.citation_support for value in ensemble_values)
                 ),
