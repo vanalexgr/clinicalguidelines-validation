@@ -285,9 +285,9 @@ class OpenAIClient(_BaseLLMClient):
         if self._sdk_client is None:
             raise ValueError("OpenAIClient requires OPENAI_API_KEY or an injected client.")
 
-        # o-series reasoning models (o1, o3, o4-mini…) reject temperature
-        # and require max_completion_tokens instead of max_tokens
-        _reasoning_model = model.startswith(("o1", "o3", "o4"))
+        # o-series reasoning models (o1, o3, o4-mini…) and the GPT-5 family reject
+        # temperature and require max_completion_tokens instead of max_tokens
+        _reasoning_model = model.startswith(("o1", "o3", "o4", "gpt-5"))
         tokens_key = "max_completion_tokens" if _reasoning_model else "max_tokens"
         request: dict[str, Any] = {
             "model": model,
