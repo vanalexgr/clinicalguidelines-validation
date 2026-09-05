@@ -8,8 +8,26 @@ venv/
 .cache/
 .codex
 .codex/
+# Published: the artifacts the paper's Data Availability statement promises --
+# the recorded answers, all 330 judge records, the metrics they feed, and the
+# generated report. Superseded/partial judge captures stay local so there is no
+# ambiguity about which set reproduces the reported numbers.
 outputs/**
 !outputs/**/.gitkeep
+# A file cannot be re-included while its parent directory is excluded, so each
+# published directory is un-ignored before the files inside it.
+!outputs/answers/
+!outputs/answers/answers.jsonl
+!outputs/judgments/
+!outputs/judgments/judgments.jsonl
+!outputs/metrics/
+!outputs/metrics/summary.json
+!outputs/metrics/citation_breakdown.json
+!outputs/metrics/pass_fail.jsonl
+!outputs/metrics/llm_calls.jsonl
+!outputs/metrics/judge_failures.jsonl
+!outputs/report/
+!outputs/report/**
 data/benchmark/benchmark_queries.jsonl
 data/corpus/recommendation_index.json
 *.parquet

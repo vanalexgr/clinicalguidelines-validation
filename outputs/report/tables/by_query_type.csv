@@ -1,0 +1,7 @@
+query_type,n,passes,pass_rate_fraction,pass_rate,pass_rate_ci_95,mean_citation_support,mean_completeness,mean_uncertainty_handling
+A_knowledge,8,7,0.875000,87.5%,"[0.529, 0.978]",1.938,1.500,1.875
+B_complete_case,17,10,0.588235,58.8%,"[0.360, 0.784]",2.118,1.559,2.235
+C_underspecified,14,7,0.500000,50.0%,"[0.268, 0.732]",2.000,1.250,1.107
+D_followup,2,1,0.500000,50.0%,"[0.095, 0.905]",2.500,2.250,2.500
+E_multiguideline,10,4,0.400000,40.0%,"[0.168, 0.687]",1.800,1.300,2.000
+G_should_refuse,4,4,1.000000,100.0%,"[0.510, 1.000]",1.750,2.750,3.000

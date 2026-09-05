@@ -1,0 +1,56 @@
+query_id,answer_run_index,routing_label,expected_guidelines_json,reported_guidelines_json,true_positives,false_positives,false_negatives,precision,recall,f1
+Q001,0,CORRECT,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020""]",1,0,0,1.000,1.000,1.000
+Q002,0,CORRECT,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024""]",1,0,0,1.000,1.000,1.000
+Q003,0,CORRECT,"[""ESVS_Carotid_2023""]","[""ESVS_Carotid_2023""]",1,0,0,1.000,1.000,1.000
+Q004,0,CORRECT,"[""ESVS_Carotid_2023""]","[""ESVS_Carotid_2023""]",1,0,0,1.000,1.000,1.000
+Q005,0,CORRECT,"[""ESVS_Venous_Thrombosis_2021""]","[""ESVS_Venous_Thrombosis_2021""]",1,0,0,1.000,1.000,1.000
+Q006,0,CORRECT,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020""]",1,0,0,1.000,1.000,1.000
+Q007,0,CORRECT,"[""GVG_CLTI_2019""]","[""GVG_CLTI_2019""]",1,0,0,1.000,1.000,1.000
+Q008,0,CORRECT,"[""GVG_CLTI_2019"", ""ESVS_Carotid_2023"", ""ESVS_Antithrombotic_2023""]","[""GVG_CLTI_2019"", ""ESVS_Antithrombotic_2023"", ""ESVS_Carotid_2023""]",3,0,0,1.000,1.000,1.000
+Q009,0,CORRECT,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020""]",1,0,0,1.000,1.000,1.000
+Q010,0,CORRECT,"[""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Chronic_Venous_Disease_2022""]",1,0,0,1.000,1.000,1.000
+Q011,0,CORRECT,"[""ESVS_AAA_2024"", ""ESVS_Asymptomatic_PAD_IC_2024""]","[""ESVS_AAA_2024"", ""ESVS_Asymptomatic_PAD_IC_2024""]",2,0,0,1.000,1.000,1.000
+Q012,0,WRONG,[],"[""ESVS_MesentericRenal_2017""]",0,1,0,0.000,1.000,0.000
+Q013,0,CORRECT,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024""]",1,0,0,1.000,1.000,1.000
+Q014,0,CORRECT,"[""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Chronic_Venous_Disease_2022""]",1,0,0,1.000,1.000,1.000
+Q015,0,CORRECT,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024""]",1,0,0,1.000,1.000,1.000
+Q016,0,CORRECT,"[""ESVS_Carotid_2023""]","[""ESVS_Carotid_2023""]",1,0,0,1.000,1.000,1.000
+Q100,0,CORRECT,"[""ESVS_Carotid_2023""]","[""ESVS_Carotid_2023""]",1,0,0,1.000,1.000,1.000
+Q101,0,PARTIAL,"[""ESVS_Carotid_2023""]","[""ESVS_AorticArch_2024"", ""ESVS_Carotid_2023""]",1,1,0,0.500,1.000,0.667
+Q102,0,CORRECT,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024""]",1,0,0,1.000,1.000,1.000
+Q103,0,CORRECT,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024""]",1,0,0,1.000,1.000,1.000
+Q104,0,PARTIAL,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020"", ""ESVS_Antithrombotic_2023""]",1,1,0,0.500,1.000,0.667
+Q105,0,CORRECT,"[""GVG_CLTI_2019""]","[""GVG_CLTI_2019""]",1,0,0,1.000,1.000,1.000
+Q106,0,CORRECT,"[""ESVS_Asymptomatic_PAD_IC_2024""]","[""ESVS_Asymptomatic_PAD_IC_2024""]",1,0,0,1.000,1.000,1.000
+Q107,0,PARTIAL,"[""ESVS_Venous_Thrombosis_2021""]","[""ESVS_Venous_Thrombosis_2021"", ""ESVS_Antithrombotic_2023""]",1,1,0,0.500,1.000,0.667
+Q108,0,CORRECT,"[""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Chronic_Venous_Disease_2022""]",1,0,0,1.000,1.000,1.000
+Q109,0,CORRECT,"[""ESVS_GraftInfections_2020""]","[""ESVS_GraftInfections_2020""]",1,0,0,1.000,1.000,1.000
+Q110,0,CORRECT,"[""ESVS_VascularTrauma_2023""]","[""ESVS_VascularTrauma_2023""]",1,0,0,1.000,1.000,1.000
+Q111,0,CORRECT,"[""ESVS_VascularAccess_2023""]","[""ESVS_VascularAccess_2023""]",1,0,0,1.000,1.000,1.000
+Q112,0,CORRECT,"[""ESVS_Carotid_2023""]","[""ESVS_Carotid_2023""]",1,0,0,1.000,1.000,1.000
+Q113,0,PARTIAL,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024"", ""ESVS_ThoracoAbdominal_2026""]",1,1,0,0.500,1.000,0.667
+Q114,0,PARTIAL,"[""ESVS_Venous_Thrombosis_2021""]","[""ESVS_Venous_Thrombosis_2021"", ""ESVS_Antithrombotic_2023""]",1,1,0,0.500,1.000,0.667
+Q115,0,WRONG,"[""ESVS_Asymptomatic_PAD_IC_2024""]","[""GVG_CLTI_2019""]",0,1,1,0.000,0.000,0.000
+Q116,0,PARTIAL,"[""GVG_CLTI_2019""]","[""GVG_CLTI_2019"", ""ESVS_Antithrombotic_2023""]",1,1,0,0.500,1.000,0.667
+Q117,0,CORRECT,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020""]",1,0,0,1.000,1.000,1.000
+Q118,0,CORRECT,"[""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Chronic_Venous_Disease_2022""]",1,0,0,1.000,1.000,1.000
+Q119,0,CORRECT,"[""ESVS_Antithrombotic_2023""]","[""ESVS_Antithrombotic_2023""]",1,0,0,1.000,1.000,1.000
+Q120,0,PARTIAL,"[""ESVS_ThoracoAbdominal_2026""]","[""ESVS_ThoracoAbdominal_2026"", ""ESVS_AorticArch_2024""]",1,1,0,0.500,1.000,0.667
+Q121,0,CORRECT,"[""ESVS_GraftInfections_2020""]","[""ESVS_GraftInfections_2020""]",1,0,0,1.000,1.000,1.000
+Q122,0,CORRECT,"[""ESVS_Carotid_2023"", ""ESVS_Antithrombotic_2023""]","[""ESVS_Antithrombotic_2023"", ""ESVS_Carotid_2023""]",2,0,0,1.000,1.000,1.000
+Q123,0,CORRECT,"[""ESVS_AAA_2024"", ""ESVS_Antithrombotic_2023""]","[""ESVS_AAA_2024"", ""ESVS_Antithrombotic_2023""]",2,0,0,1.000,1.000,1.000
+Q124,0,PARTIAL,"[""ESVS_Asymptomatic_PAD_IC_2024"", ""ESVS_Venous_Thrombosis_2021""]","[""ESVS_Venous_Thrombosis_2021"", ""ESVS_Asymptomatic_PAD_IC_2024"", ""ESVS_Antithrombotic_2023""]",2,1,0,0.667,1.000,0.800
+Q125,0,CORRECT,"[""GVG_CLTI_2019"", ""ESVS_Antithrombotic_2023""]","[""GVG_CLTI_2019"", ""ESVS_Antithrombotic_2023""]",2,0,0,1.000,1.000,1.000
+Q126,0,CORRECT,"[""ESVS_ALI_2020"", ""ESVS_Antithrombotic_2023""]","[""ESVS_ALI_2020"", ""ESVS_Antithrombotic_2023""]",2,0,0,1.000,1.000,1.000
+Q127,0,CORRECT,"[""ESVS_Carotid_2023"", ""ESVS_Asymptomatic_PAD_IC_2024""]","[""ESVS_Asymptomatic_PAD_IC_2024"", ""ESVS_Carotid_2023""]",2,0,0,1.000,1.000,1.000
+Q128,0,PARTIAL,"[""ESVS_Venous_Thrombosis_2021"", ""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Venous_Thrombosis_2021"", ""ESVS_Chronic_Venous_Disease_2022"", ""ESVS_Antithrombotic_2023""]",2,1,0,0.667,1.000,0.800
+Q129,0,PARTIAL,"[""ESVS_AAA_2024"", ""ESVS_ThoracoAbdominal_2026""]","[""ESVS_AAA_2024"", ""ESVS_ThoracoAbdominal_2026"", ""ESVS_MesentericRenal_2017""]",2,1,0,0.667,1.000,0.800
+Q200,0,CORRECT,"[""GVG_CLTI_2019""]","[""GVG_CLTI_2019""]",1,0,0,1.000,1.000,1.000
+Q201,0,CORRECT,"[""ESVS_GraftInfections_2020""]","[""ESVS_GraftInfections_2020""]",1,0,0,1.000,1.000,1.000
+Q202,0,CORRECT,"[""ESVS_Chronic_Venous_Disease_2022""]","[""ESVS_Chronic_Venous_Disease_2022""]",1,0,0,1.000,1.000,1.000
+Q203,0,PARTIAL,"[""ESVS_AAA_2024""]","[""ESVS_AAA_2024"", ""ESVS_ThoracoAbdominal_2026""]",1,1,0,0.500,1.000,0.667
+Q204,0,CORRECT,"[""ESVS_ALI_2020""]","[""ESVS_ALI_2020""]",1,0,0,1.000,1.000,1.000
+Q205,0,CORRECT,"[""GVG_CLTI_2019""]","[""GVG_CLTI_2019""]",1,0,0,1.000,1.000,1.000
+Q210,0,WRONG,[],"[""ESVS_AorticArch_2024""]",0,1,0,0.000,1.000,0.000
+Q211,0,WRONG,[],"[""ESVS_AorticArch_2024""]",0,1,0,0.000,1.000,0.000
+Q212,0,WRONG,[],"[""ESVS_GraftInfections_2020""]",0,1,0,0.000,1.000,0.000

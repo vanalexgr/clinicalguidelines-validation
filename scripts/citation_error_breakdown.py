@@ -10,16 +10,23 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import yaml
+
 from src.metrics.citation_breakdown import (
     breakdown_to_dict,
     compute_citation_breakdown,
     render_citation_breakdown_markdown,
 )
 
-ANSWERS_PATH = Path("outputs/answers/answers.jsonl")
-JUDGMENTS_PATH = Path("outputs/judgments/judgments.jsonl")
+CONFIG_PATH = Path("config/config.yaml")
+_paths = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))["paths"]
+
+ANSWERS_PATH = Path(_paths["answers"])
+JUDGMENTS_PATH = Path(_paths["judgments"])
 INDEX_PATH = Path("data/corpus/recommendation_index.json")
-BENCH_PATH = Path("data/benchmark/benchmark_queries.seed.jsonl")
+# Must track the benchmark the run was actually scored against; a hardcoded seed
+# path silently reported the 16-item pilot as if it were the full 55-item run.
+BENCH_PATH = Path(_paths["benchmark"])
 OVERRIDES_PATH = Path("data/annotation/hallucination_overrides.jsonl")
 OUT_JSON = Path("outputs/metrics/citation_breakdown.json")
 OUT_MD = Path("outputs/report/citation_error_breakdown.md")

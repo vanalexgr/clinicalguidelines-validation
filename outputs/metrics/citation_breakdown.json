@@ -1,0 +1,3637 @@
+{
+  "citation_tiers": {
+    "total": 259,
+    "counts": {
+      "A_VERIFIED": 230,
+      "B_METADATA_ERR": 5,
+      "D_NOT_IN_INDEX": 24
+    },
+    "pct": {
+      "A_VERIFIED": 0.888,
+      "B_METADATA_ERR": 0.019,
+      "D_NOT_IN_INDEX": 0.093
+    },
+    "legend": {
+      "A_VERIFIED": "rec_id found · guideline + class + level all match",
+      "B_METADATA_ERR": "rec_id found · class or level reported differently from index",
+      "C_GUIDELINE_MISMATCH": "rec_id exists in index but under a different guideline",
+      "D_NOT_IN_INDEX": "rec_id not found anywhere in the recommendation index",
+      "E_NO_REC_ID": "citation returned with no rec_id field"
+    }
+  },
+  "hallucination_types": {
+    "total_flagged_claims": 63,
+    "counts": {
+      "FALSE_POSITIVE": 13,
+      "SCOPE_EXPANSION": 2,
+      "UNGROUNDED_CORRECT": 35,
+      "WRONG_APPLICATION": 7,
+      "WRONG_THRESHOLD": 6
+    },
+    "legend": {
+      "FALSE_POSITIVE": "Claim matches a real indexed rec — judge flagged incorrectly",
+      "METADATA_INFLATION": "Class/level stated higher or differently than the actual rec",
+      "WRONG_APPLICATION": "Correct rec misapplied to wrong patient subgroup or scenario",
+      "SCOPE_EXPANSION": "Broadens a rec's applicability beyond its stated scope",
+      "CITATION_MISMATCH": "Correct content but wrong citation bracket number in text",
+      "VALID_INFERENCE": "Clinically valid inference from cited recs, not verbatim",
+      "REFUSAL_OVERCLAIM": "System refused when passages do address the topic",
+      "GENUINE_ERROR": "Explicit factual claim with no retrievable rec basis",
+      "UNGROUNDED_CORRECT": "Clinically accurate, but no retrievable basis in the locked corpus (e.g. guideline table content that was never indexed as a chunk)",
+      "WRONG_THRESHOLD": "States a numeric decision threshold that does not match the guideline (diameter, stenosis, grade cut-off)",
+      "OTHER": "Does not fit any of the above patterns",
+      "SEVERITY_INFLATION": "Overstates urgency or mandate beyond what the cited guidance supports"
+    }
+  },
+  "hallucination_rate_summary": {
+    "reported_rate": 0.18181818181818182,
+    "adjusted_rate": 0.07272727272727272,
+    "artefact_claims": 48,
+    "real_error_claims": 15,
+    "items_clean": [
+      "Q001",
+      "Q002",
+      "Q003",
+      "Q004",
+      "Q005",
+      "Q006",
+      "Q008",
+      "Q009",
+      "Q010",
+      "Q011",
+      "Q012",
+      "Q013",
+      "Q014",
+      "Q015",
+      "Q016",
+      "Q100",
+      "Q101",
+      "Q102",
+      "Q103",
+      "Q104",
+      "Q107",
+      "Q108",
+      "Q111",
+      "Q112",
+      "Q113",
+      "Q114",
+      "Q115",
+      "Q116",
+      "Q117",
+      "Q118",
+      "Q119",
+      "Q120",
+      "Q121",
+      "Q122",
+      "Q123",
+      "Q126",
+      "Q128",
+      "Q200",
+      "Q201",
+      "Q203",
+      "Q204",
+      "Q205",
+      "Q210",
+      "Q211",
+      "Q212"
+    ],
+    "items_only_artefact": [
+      "Q007",
+      "Q106",
+      "Q109",
+      "Q110",
+      "Q125",
+      "Q202"
+    ],
+    "items_real_error": [
+      "Q105",
+      "Q124",
+      "Q127",
+      "Q129"
+    ]
+  },
+  "provenance_gap": {
+    "rate": 0.10909090909090909,
+    "claims": 35,
+    "items": [
+      "Q007",
+      "Q105",
+      "Q106",
+      "Q109",
+      "Q110",
+      "Q202"
+    ],
+    "definition": "Items containing at least one clinically correct claim with no retrievable basis in the locked corpus."
+  },
+  "clinical_risk_distribution": {
+    "moderate": 15,
+    "none": 48
+  },
+  "per_item": {
+    "Q001": {
+      "citations": [
+        {
+          "rec_id": "4",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients presenting with acute limb ischaemia, the Rutherford classification for acute limb ischaemia is recommended for clini"
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q002": {
+      "citations": [
+        {
+          "rec_id": "116",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients with complex abdominal aortic aneurysms may be considered for elective repair at a diameter of 55 mm in men and 50 mm in "
+        },
+        {
+          "rec_id": "150",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Early surgical treatment (open or endovascular) may be considered for penetrating aortic ulcer and saccular abdominal aortic aneur"
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Men with an abdominal aortic aneurysm >55 mm should be considered for elective repair."
+        },
+        {
+          "rec_id": "147",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with an inflammatory abdominal aortic aneurysm should be considered for repair at an aneurysm diameter of 55 mm, with end"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q003": {
+      "citations": [
+        {
+          "rec_id": "44",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For symptomatic patients with a 50–99% stenosis in whom a carotid intervention is considered appropriate, it is recommended that t"
+        },
+        {
+          "rec_id": "49",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "New  For patients with acute ischaemic stroke due to a symptomatic 50–99% carotid stenosis who have received intravenous thromboly"
+        },
+        {
+          "rec_id": "42",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients aged ≥70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the pre"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIb",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "A",
+          "index_text": "For patients aged &lt;70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the "
+        },
+        {
+          "rec_id": "47",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with 50–99% stenoses who present with stroke in evolution or crescendo transient ischaemic attacks, urgent carotid en"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q004": {
+      "citations": [
+        {
+          "rec_id": "115",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For asymptomatic carotid stenosis patients in whom a carotid intervention is deemed necessary if they are undergoing coronary arte"
+        },
+        {
+          "rec_id": "21",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Unchanged  For asymptomatic patients deemed by the multidisciplinary team to be 'high risk for surgery' and who have an asymptomat"
+        },
+        {
+          "rec_id": "19",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis, carotid endarterectomy should be considered in"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIb",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "A",
+          "index_text": "For patients aged &lt;70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the "
+        },
+        {
+          "rec_id": "20",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis in the presence of one or more imaging or clini"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q005": {
+      "citations": [
+        {
+          "rec_id": "30",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with proximal deep vein thrombosis who have contraindications to anticoagulation during the initial or principal trea"
+        },
+        {
+          "rec_id": "32",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "Ia",
+          "level": "A",
+          "tier": "B_METADATA_ERR",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with proximal deep vein thrombosis, use of below knee compression stockings should be considered in order to reduce t"
+        },
+        {
+          "rec_id": "36",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with deep vein thrombosis treated by early thrombus removal, with or without stenting, it is recommended that the dur"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q006": {
+      "citations": [
+        {
+          "rec_id": "4",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients presenting with acute limb ischaemia, the Rutherford classification for acute limb ischaemia is recommended for clini"
+        },
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q007": {
+      "citations": [
+        {
+          "rec_id": "6.14",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization in average-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.35",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with advanced limb threat (eg, WIf I stage 4) and moderate ischemia"
+        },
+        {
+          "rec_id": "1.2",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use a lower extremity threatened limb classification staging system (eg, SVS’s WIf I classification system) that grades wound exte"
+        },
+        {
+          "rec_id": "6.9",
+          "guideline": "GVG_CLTI_2019",
+          "class": "Good",
+          "level": null,
+          "tier": "A_VERIFIED",
+          "index_class": "GPS",
+          "index_level": "",
+          "index_text": "Do not perform revascularization in the absence of significant ischemia (WIf I ischemia grade 0) unless an isolated region of poor"
+        },
+        {
+          "rec_id": "6.6",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use an integrated threatened limb classification system (such as WIf I) to stage all CLTI patients who are candidates for limb sal"
+        },
+        {
+          "rec_id": "6.36",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and modera"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Ankle pressure 40 mmHg corresponds to WIfI ischemia grade 3"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Composite WIfI Stage 4 assignment based on the provided data"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Ankle pressure 40 mmHg corresponds to WIfI ischemia grade 3"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Guidelines recommend urgent revascularization for Stage 4 limbs with severe ischemia"
+        }
+      ]
+    },
+    "Q008": {
+      "citations": [
+        {
+          "rec_id": "115",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For asymptomatic carotid stenosis patients in whom a carotid intervention is deemed necessary if they are undergoing coronary arte"
+        },
+        {
+          "rec_id": "112",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For coronary artery bypass surgery patients with a history of stroke or transient ischaemic attack in the preceding six months and"
+        },
+        {
+          "rec_id": "111",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For coronary artery bypass surgery patients with a history of stroke or transient ischaemic attack in the preceding six months and"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q009": {
+      "citations": [
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "47",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients who have had revascularisation for acute limb ischaemia of embolic origin, long term anticoagulation may be considere"
+        },
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q010": {
+      "citations": [
+        {
+          "rec_id": "28",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with great saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended as first choic"
+        },
+        {
+          "rec_id": "15",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with superficial venous incompetence presenting with symptomatic varicose veins (CEAP clinical class C2s), interventi"
+        },
+        {
+          "rec_id": "55",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with symptomatic recurrent varicose veins due to saphenous trunk incompetence, endovenous thermal ablation or ultraso"
+        },
+        {
+          "rec_id": "52",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with uncomplicated varicose veins (CEAP clinical class C2) requiring treatment, phlebectomies with preservation of th"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q011": {
+      "citations": [
+        {
+          "rec_id": "13",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Men should be considered for imaging surveillance using ultrasound, every five years for a sub-aneurysmal aorta 25 - 29 mm in diam"
+        },
+        {
+          "rec_id": "14",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Women should be considered for imaging surveillance using ultrasound, every three years for abdominal aortic aneurysms 30-39 mm in"
+        },
+        {
+          "rec_id": "36",
+          "guideline": "ESVS_AAA_2024",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "Routine screening for asymptomatic carotid stenosis and routine prophylactic carotid intervention for asymptomatic carotid artery "
+        },
+        {
+          "rec_id": "3",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For clinically asymptomatic individuals without increased cardiovascular risk, screening for lower limb peripheral arterial diseas"
+        },
+        {
+          "rec_id": "44",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with lower limb peripheral arterial disease, even if asymptomatic, it is recommended to consider an ankle brachial in"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q012": {
+      "citations": [
+        {
+          "rec_id": "40",
+          "guideline": "ESVS_MesentericRenal_2017",
+          "class": "Iia",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Resection without primary reconstruction and second look laparotomy for definitive treatment should be considered in patients unde"
+        },
+        {
+          "rec_id": "35",
+          "guideline": "ESVS_MesentericRenal_2017",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Revascularisation first before bowel resection should be considered in patients with acute mesenteric ischaemia."
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q013": {
+      "citations": [
+        {
+          "rec_id": "147",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with an inflammatory abdominal aortic aneurysm should be considered for repair at an aneurysm diameter of 55 mm, with end"
+        },
+        {
+          "rec_id": "116",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients with complex abdominal aortic aneurysms may be considered for elective repair at a diameter of 55 mm in men and 50 mm in "
+        },
+        {
+          "rec_id": "65",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For most patients with suitable anatomy and reasonable life expectancy, endovascular repair should be considered the preferred tre"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q014": {
+      "citations": [
+        {
+          "rec_id": "55",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with symptomatic recurrent varicose veins due to saphenous trunk incompetence, endovenous thermal ablation or ultraso"
+        },
+        {
+          "rec_id": "52",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with uncomplicated varicose veins (CEAP clinical class C2) requiring treatment, phlebectomies with preservation of th"
+        },
+        {
+          "rec_id": "54",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients presenting with foot and ankle varicose veins, phlebectomy, sclerotherapy, and foot perforating vein ligation may be "
+        },
+        {
+          "rec_id": "76",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with active venous leg ulceration and superficial venous incompetence, early endovenous ablation is recommended to ac"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with small saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended in preference "
+        },
+        {
+          "rec_id": "50",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with advanced skin changes (CEAP clinical class C4b, C5 or C6), with isolated or residual incompetent perforating vei"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q015": {
+      "citations": [
+        {
+          "rec_id": "80",
+          "guideline": "ESVS_AAA_2024",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with a ruptured abdominal aortic aneurysm and suitable anatomy endovascular repair is recommended as the first line t"
+        },
+        {
+          "rec_id": "65",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For most patients with suitable anatomy and reasonable life expectancy, endovascular repair should be considered the preferred tre"
+        },
+        {
+          "rec_id": "74",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Haemodynamically unstable patients with a ruptured abdominal aortic aneurysm undergoing open or endovascular repair may be conside"
+        },
+        {
+          "rec_id": "129",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with a ruptured complex abdominal aortic aneurysm (or who are deemed urgent for any other reason), open surgical repa"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q016": {
+      "citations": [
+        {
+          "rec_id": "44",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For symptomatic patients with a 50–99% stenosis in whom a carotid intervention is considered appropriate, it is recommended that t"
+        },
+        {
+          "rec_id": "46",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with 50–99% stenoses who experience a disabling stroke (modified Rankin score ≥3), or whose area of infarction exceed"
+        },
+        {
+          "rec_id": "47",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with 50–99% stenoses who present with stroke in evolution or crescendo transient ischaemic attacks, urgent carotid en"
+        },
+        {
+          "rec_id": "49",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "New  For patients with acute ischaemic stroke due to a symptomatic 50–99% carotid stenosis who have received intravenous thromboly"
+        },
+        {
+          "rec_id": "118",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with a history of prior stroke and no significant carotid artery disease, it is recommended that, where possible, ele"
+        },
+        {
+          "rec_id": "117",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with a history of stroke or transient ischaemic attack in the preceding six months attributable to an ipsilateral 50–"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q100": {
+      "citations": [
+        {
+          "rec_id": "20",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis in the presence of one or more imaging or clini"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIb",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "A",
+          "index_text": "For patients aged &lt;70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the "
+        },
+        {
+          "rec_id": "62",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with confirmed ocular ischaemia syndrome and a 50–99% ipsilateral carotid stenosis, carotid endarterectomy or carotid"
+        },
+        {
+          "rec_id": "51",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "New  For a patient with acute ischaemic stroke undergoing intracranial mechanical thrombectomy with a tandem 50–99% carotid stenos"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q101": {
+      "citations": [
+        {
+          "rec_id": "3",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "Changed  For a patient where carotid artery stenting is being considered, it is recommended that any duplex ultrasound study be fo"
+        },
+        {
+          "rec_id": "19",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis, carotid endarterectomy should be considered in"
+        },
+        {
+          "rec_id": "122",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with an asymptomatic 50–99% carotid stenosis undergoing a major non-cardiac surgical procedure, prophylactic carotid "
+        },
+        {
+          "rec_id": "21",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Unchanged  For asymptomatic patients deemed by the multidisciplinary team to be 'high risk for surgery' and who have an asymptomat"
+        },
+        {
+          "rec_id": "20",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis in the presence of one or more imaging or clini"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q102": {
+      "citations": [
+        {
+          "rec_id": "147",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with an inflammatory abdominal aortic aneurysm should be considered for repair at an aneurysm diameter of 55 mm, with end"
+        },
+        {
+          "rec_id": "20",
+          "guideline": "ESVS_AAA_2024",
+          "class": "III",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "A",
+          "index_text": "Men with an asymptomatic abdominal aortic aneurysm < 55 mm are not recommended for elective repair."
+        },
+        {
+          "rec_id": "116",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients with complex abdominal aortic aneurysms may be considered for elective repair at a diameter of 55 mm in men and 50 mm in "
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Men with an abdominal aortic aneurysm >55 mm should be considered for elective repair."
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q103": {
+      "citations": [
+        {
+          "rec_id": "147",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with an inflammatory abdominal aortic aneurysm should be considered for repair at an aneurysm diameter of 55 mm, with end"
+        },
+        {
+          "rec_id": "33",
+          "guideline": "ESVS_AAA_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Assessment of pre-operative kidney function by measuring serum creatinine and estimated glomerular filtration rate (eGFR) is recom"
+        },
+        {
+          "rec_id": "150",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Early surgical treatment (open or endovascular) may be considered for penetrating aortic ulcer and saccular abdominal aortic aneur"
+        },
+        {
+          "rec_id": "34",
+          "guideline": "ESVS_AAA_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Patients with renal impairment should be adequately hydrated before elective abdominal aortic aneurysm repair."
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q104": {
+      "citations": [
+        {
+          "rec_id": "4",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients presenting with acute limb ischaemia, the Rutherford classification for acute limb ischaemia is recommended for clini"
+        },
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q105": {
+      "citations": [
+        {
+          "rec_id": "6.35",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with advanced limb threat (eg, WIf I stage 4) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.36",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and modera"
+        },
+        {
+          "rec_id": "6.14",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization in average-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and moderate ischemia"
+        },
+        {
+          "rec_id": "1.2",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use a lower extremity threatened limb classification staging system (eg, SVS’s WIf I classification system) that grades wound exte"
+        },
+        {
+          "rec_id": "6.34",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with intermediate limb threat (eg, WIf Istages 2 and 3) and signifi"
+        },
+        {
+          "rec_id": "6.13",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization in average-risk patients with advanced limb threat (eg, WIf I stage 4) and moderate ischemia (eg, WIf I"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "WIfI stage 2 (intermediate limb threat) — derived from wrong ischemia grade"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "ischemia grade 2 for ABI 0.38 and TcPO2 22 mmHg"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "Ischemia grade 2 for ABI 0.38 / TcPO2 22 mmHg"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "WIfI composite Stage 2"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "The >50% wound-area reduction at 4 weeks criterion is a reassessment trigger for lower-threat or less-ischaemic limbs, not a reason to defer revascularisation in a WIfI I3 limb with rest pain and gangrene.",
+          "claim": "Applying the '>50% size reduction within 4 weeks' threshold as a general reassessment rule in this severe ischemia scenario"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "citations [8] and [10] referring to narrative/GLASS staging not present in retrieved passages"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "'PTA-plantar arch target' specific anatomic recommendation not in retrieved passages"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "Ischemia grade 2 for ABI 0.38/TcPO2 22"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_APPLICATION",
+          "clinical_risk": "moderate",
+          "clinical_note": "ABI 0.38 with TcPO₂ 22 mmHg is WIfI ischaemia grade 3, not 2; with W2 and fI0 this yields WIfI Stage 4, not Stage 2.",
+          "claim": "Overall WIfI Stage 2 assignment"
+        }
+      ]
+    },
+    "Q106": {
+      "citations": [
+        {
+          "rec_id": "75",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "In rare circumstances for patients with disabling intermittent claudication due to below knee lesions, bypass grafting with a veno"
+        },
+        {
+          "rec_id": "62",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with disabling intermittent claudication and a hostile groin (e.g., prior ipsilateral common femoral endarterectomy, "
+        },
+        {
+          "rec_id": "61",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation, with common femoral artery stenosis or occlusi"
+        },
+        {
+          "rec_id": "59",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation who are not suitable for iliac endovascular, hy"
+        },
+        {
+          "rec_id": "60",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For fit patients with disabling intermittent claudication at low risk of groin complications and with common femoral artery bifurc"
+        },
+        {
+          "rec_id": "69",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with disabling intermittent claudication with long and heavily calcified femoropopliteal occlusions undergoing revasc"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "METADATA_INFLATION",
+          "auto_type": "METADATA_INFLATION",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Class I, Level B for stepwise escalation attributed to rec [8]/rec 45 — rec 45 text is in passages but the agent's citation list does not actually contain rec 45; the labeling within evidence section is inconsistent"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "CITATION_MISMATCH",
+          "auto_type": "CITATION_MISMATCH",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Cilostazol/naftidrofuryl recommendation attributed to rec 51 but rec 51 not in citation list provided"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 1,
+          "type": "METADATA_INFLATION",
+          "auto_type": "METADATA_INFLATION",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Class IIa, Level C [6] applied to this focal SFA occlusion (rec 69 actually addresses long/heavily calcified occlusions)"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 1,
+          "type": "METADATA_INFLATION",
+          "auto_type": "METADATA_INFLATION",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Class I, Level B for stepwise escalation — class/level matches rec 45 but is attached correctly; not a hallucination"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "METADATA_INFLATION",
+          "auto_type": "METADATA_INFLATION",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Class I, Level B for stepwise escalation [8] — correct class/level matches Rec 45"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "METADATA_INFLATION",
+          "auto_type": "METADATA_INFLATION",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Class IIa, Level C [6] applied to a focal 10 cm SFA occlusion — Rec 69 applies to long heavily calcified occlusions, not the lesion described"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"endovascular therapy is typically considered first-line for most femoropopliteal occlusions\""
+        }
+      ]
+    },
+    "Q107": {
+      "citations": [
+        {
+          "rec_id": "19",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with unprovoked proximal deep vein thrombosis, treatment with a direct oral anticoagulant is recommended over treatme"
+        },
+        {
+          "rec_id": "16",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with provoked proximal deep vein thrombosis, treatment with a direct oral anticoagulant is recommended over a vitamin"
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with unprovoked proximal deep vein thrombosis requiring extended anticoagulation beyond three months, treatment with "
+        },
+        {
+          "rec_id": "14",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with a provoked proximal deep vein thrombosis with a major transient risk factor, three months of anticoagulation tre"
+        },
+        {
+          "rec_id": "15",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "IIa",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "A",
+          "index_text": "For patients with a provoked proximal deep vein thrombosis with a major transient risk factor, three months of anticoagulation tre"
+        },
+        {
+          "rec_id": "17",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "In selected patients with provoked proximal deep vein thrombosis with a persistent risk factor other than malignancy, anticoagulat"
+        },
+        {
+          "rec_id": "64",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Patients with a proximal deep vein thrombosis requiring extended anticoagulation following the principal three month treatment pha"
+        },
+        {
+          "rec_id": "63",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "Patients with proximal deep vein thrombosis are recommended to have a three month course of a full dose direct oral anticoagulant "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q108": {
+      "citations": [
+        {
+          "rec_id": "28",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with great saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended as first choic"
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "A",
+          "index_text": "For patients with superﬁcial venous incompetence undergoing ultrasound guided foam sclerotherapy or endovenous thermal ablation of"
+        },
+        {
+          "rec_id": "55",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with symptomatic recurrent varicose veins due to saphenous trunk incompetence, endovenous thermal ablation or ultraso"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with small saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended in preference "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q109": {
+      "citations": [
+        {
+          "rec_id": "29",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with aorto-oesophageal fistula complicating thoracic/thoraco-abdominal vascular graft/endograft infection, explantati"
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with suspected thoracic graft/endograft infection, in the absence of fistulisation to the oesophagus or airway, or ge"
+        },
+        {
+          "rec_id": "38",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For fit patients with an abdominal aortic vascular graft/endograft infection, complete excision of all graft material and infected"
+        },
+        {
+          "rec_id": "33",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "In patients with aortobronchial or aortopulmonary fistula complicating thoracic/thoraco-abdominal vascular graft/endograft infecti"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"in situ reconstruction after excision is the usual definitive pathway mentioned in the broader context\""
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"in situ reconstruction after excision is the usual definitive pathway\""
+        }
+      ]
+    },
+    "Q110": {
+      "citations": [
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_VascularTrauma_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular therapy should be considered as first line treatment for symptomatic or progressing pseudoaneurysm or arteriovenous f"
+        },
+        {
+          "rec_id": "67",
+          "guideline": "ESVS_VascularTrauma_2023",
+          "class": "Ila",
+          "level": "C",
+          "tier": "B_METADATA_ERR",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular stent graft repair should be considered for haemodynamically stable patients and abdominal aortic injury with externa"
+        },
+        {
+          "rec_id": "77",
+          "guideline": "ESVS_VascularTrauma_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular stent graft repair should be considered for haemodynamically stable patients with ESVS Grade 2 injury (e.g., pseudoan"
+        },
+        {
+          "rec_id": "69",
+          "guideline": "ESVS_VascularTrauma_2023",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Primary surgical repair, synthetic interposition graft reconstruction, or vascular shunting is recommended for common or external "
+        },
+        {
+          "rec_id": "70",
+          "guideline": "ESVS_VascularTrauma_2023",
+          "class": "Ila",
+          "level": "C",
+          "tier": "B_METADATA_ERR",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular stent graft repair should be considered for ESVS Grade 2 or 3 common or external iliac artery injury."
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "ESVS Grade 2 injury — pseudoaneurysm with intact bifurcation (grade classification applied to CFA without explicit guideline text for femoral grading shown in retrieved passages — though plausible from general grading table)"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "structured duplex or CTA surveillance post-operatively (no retrieved passage specifies surveillance modality/schedule)"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "antibiotic prophylaxis is advised in trauma surgery when prosthetic material is implanted"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Surveillance imaging (duplex US or CTA) is recommended after vascular repair"
+        },
+        {
+          "judge": "o3",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Peri-operative antibiotic prophylaxis recommendation"
+        },
+        {
+          "judge": "o3",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Structured duplex or CTA surveillance after repair"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"open surgical repair is the standard\" for extremity Grade 2 injuries"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "antibiotic prophylaxis recommendation limited to prosthetic use"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "post-operative imaging surveillance recommendation"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"open surgical repair is the standard\" for Grade 2 extremity trauma"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"peri-operative antibiotic prophylaxis is advised when prosthetic grafts are used\" (no support)"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"surveillance imaging is recommended after vascular repair\""
+        }
+      ]
+    },
+    "Q111": {
+      "citations": [
+        {
+          "rec_id": "4",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "The radiocephalic arteriovenous fistula is recommended as the preferred vascular access."
+        },
+        {
+          "rec_id": "34",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Arteriovenous fistulas should be considered for cannulation 4-6 weeks after creation, and standard arteriovenous grafts after 2-4 "
+        },
+        {
+          "rec_id": "21",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "IIa",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "A",
+          "index_text": "When the upper arm cephalic vein is unavailable, a basilic vein transposition arteriovenous fistula should be considered in prefer"
+        },
+        {
+          "rec_id": "38",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Structured post-operative hand exercise training should be considered, to increase arteriovenous fistula maturation."
+        },
+        {
+          "rec_id": "35",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "If an arteriovenous fistula fails to mature by 6 weeks, additional investigations (like duplex ultrasound) should be considered in"
+        },
+        {
+          "rec_id": "37",
+          "guideline": "ESVS_VascularAccess_2023",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Arteriovenous fistula cannulation between 2 and 4 weeks after creation may be considered in selected patients under close supervis"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q112": {
+      "citations": [
+        {
+          "rec_id": "53",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Unchanged  For selected patients experiencing recurrent transient ischaemic attacks or minor stroke, despite best medical therapy "
+        },
+        {
+          "rec_id": "19",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Unchanged  For average surgical risk patients with an asymptomatic 60–99% stenosis, carotid endarterectomy should be considered in"
+        },
+        {
+          "rec_id": "49",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "New  For patients with acute ischaemic stroke due to a symptomatic 50–99% carotid stenosis who have received intravenous thromboly"
+        },
+        {
+          "rec_id": "47",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with 50–99% stenoses who present with stroke in evolution or crescendo transient ischaemic attacks, urgent carotid en"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIb",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "A",
+          "index_text": "For patients aged &lt;70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the "
+        },
+        {
+          "rec_id": "112",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For coronary artery bypass surgery patients with a history of stroke or transient ischaemic attack in the preceding six months and"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q113": {
+      "citations": [
+        {
+          "rec_id": "62",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "52",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "Ila",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "53",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "39",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q114": {
+      "citations": [
+        {
+          "rec_id": "66",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Patients with a first episode of unprovoked proximal deep vein thrombosis not deemed to be at high risk of recurrence should be co"
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with unprovoked proximal deep vein thrombosis requiring extended anticoagulation beyond three months, treatment with "
+        },
+        {
+          "rec_id": "36",
+          "guideline": "ESVS_Venous_Thrombosis_2021",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with deep vein thrombosis treated by early thrombus removal, with or without stenting, it is recommended that the dur"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q115": {
+      "citations": [
+        {
+          "rec_id": "10.1",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "Continue best medical therapy for PAD, including the long-term use of antiplatelet and statin therapies, in all patients who have "
+        },
+        {
+          "rec_id": "6.25",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "Use an endovascular-first approach for treatment of CLTI patients with moderate to severe (eg, GLASS stage IA) aorto-iliac (AI) di"
+        },
+        {
+          "rec_id": "7.3",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Consider intermittent pneumatic compression therapy in carefully selected patients (eg, rest pain, minor tissue loss) in whom reva"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q116": {
+      "citations": [
+        {
+          "rec_id": "6.35",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with advanced limb threat (eg, WIf I stage 4) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.38",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider angiosome-guided revascularization in patients with significant wounds (eg, WIf I wound grades 3 and 4), particularly tho"
+        },
+        {
+          "rec_id": "6.36",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and modera"
+        },
+        {
+          "rec_id": "6.14",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization in average-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.12",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization for average-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and significant perf"
+        },
+        {
+          "rec_id": "6.1",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "B_METADATA_ERR",
+          "index_class": "GPS",
+          "index_level": "",
+          "index_text": "Refer all patients with suspected CLTI to a vascular specialist for consideration of limb salvage, unless major amputation is cons"
+        },
+        {
+          "rec_id": "6.11",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Offer revascularization to all average-risk patients with advanced limb-threatening conditions (eg, WIf I stage 4) and significant"
+        },
+        {
+          "rec_id": "6.9",
+          "guideline": "GVG_CLTI_2019",
+          "class": "Good",
+          "level": null,
+          "tier": "A_VERIFIED",
+          "index_class": "GPS",
+          "index_level": "",
+          "index_text": "Do not perform revascularization in the absence of significant ischemia (WIf I ischemia grade 0) unless an isolated region of poor"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q117": {
+      "citations": [
+        {
+          "rec_id": "7",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients presenting with acute limb ischaemia, duplex ultrasound or contrast-enhanced magnetic resonance angiography may be co"
+        },
+        {
+          "rec_id": "30",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "It is recommended that patients undergoing thrombolytic treatment for acute limb ischaemia should be monitored for vital signs, ac"
+        },
+        {
+          "rec_id": "3",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients presenting with a possible diagnosis of acute limb ischaemia, it is recommended that clinical assessment is performed"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q118": {
+      "citations": [
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with small saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended in preference "
+        },
+        {
+          "rec_id": "28",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with great saphenous vein incompetence requiring treatment, endovenous thermal ablation is recommended as first choic"
+        },
+        {
+          "rec_id": "55",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with symptomatic recurrent varicose veins due to saphenous trunk incompetence, endovenous thermal ablation or ultraso"
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "A",
+          "index_text": "For patients with superﬁcial venous incompetence undergoing ultrasound guided foam sclerotherapy or endovenous thermal ablation of"
+        },
+        {
+          "rec_id": "76",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with active venous leg ulceration and superficial venous incompetence, early endovenous ablation is recommended to ac"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q119": {
+      "citations": [
+        {
+          "rec_id": "35",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients undergoing endovascular intervention for lower extremity arterial disease who are not at high risk of bleeding may be con"
+        },
+        {
+          "rec_id": "37",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Patients undergoing endovascular intervention for lower extremity arterial disease who are not at high risk of bleeding should be "
+        },
+        {
+          "rec_id": "22",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients post-revascularisation for atherosclerotic renal or mesenteric artery disease who are not at high risk of bleeding should"
+        },
+        {
+          "rec_id": "46",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "Iia",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Patients undergoing endovascular or open abdominal aortic aneurysm repair should be considered for aspirin (75 - 100 mg) following"
+        },
+        {
+          "rec_id": "33",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients undergoing endovascular or open arterial surgery may be considered for intra-operative activated partial thromboplastin t"
+        },
+        {
+          "rec_id": "48",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients undergoing open popliteal aneurysm repair may be considered for single antiplatelet therapy post-operatively to reduce th"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q120": {
+      "citations": [
+        {
+          "rec_id": "62",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "53",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "39",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "52",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "Ila",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q121": {
+      "citations": [
+        {
+          "rec_id": "29",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with aorto-oesophageal fistula complicating thoracic/thoraco-abdominal vascular graft/endograft infection, explantati"
+        },
+        {
+          "rec_id": "38",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For fit patients with an abdominal aortic vascular graft/endograft infection, complete excision of all graft material and infected"
+        },
+        {
+          "rec_id": "33",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "In patients with aortobronchial or aortopulmonary fistula complicating thoracic/thoraco-abdominal vascular graft/endograft infecti"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q122": {
+      "citations": [
+        {
+          "rec_id": "64",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "New  For patients who have been started on anticoagulation (on the basis that cardiac embolism was considered the most likely caus"
+        },
+        {
+          "rec_id": "49",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "New  For patients with acute ischaemic stroke due to a symptomatic 50–99% carotid stenosis who have received intravenous thromboly"
+        },
+        {
+          "rec_id": "112",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For coronary artery bypass surgery patients with a history of stroke or transient ischaemic attack in the preceding six months and"
+        },
+        {
+          "rec_id": "63",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "New  For patients presenting with a transient ischaemic attack or minor ischaemic stroke in the presence of newly diagnosed or kno"
+        },
+        {
+          "rec_id": "43",
+          "guideline": "ESVS_Carotid_2023",
+          "class": "IIb",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "A",
+          "index_text": "For patients aged &lt;70 years who have experienced a carotid territory transient ischaemic attack or ischaemic stroke within the "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q123": {
+      "citations": [
+        {
+          "rec_id": "46",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "Iia",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Patients undergoing endovascular or open abdominal aortic aneurysm repair should be considered for aspirin (75 - 100 mg) following"
+        },
+        {
+          "rec_id": "60",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients with a pre-existing indication for full dose anticoagulation undergoing endovascular intervention may be exceptionally co"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q124": {
+      "citations": [
+        {
+          "rec_id": "78",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with intermittent claudication who have undergone an infra-inguinal endovascular intervention and have no increased b"
+        },
+        {
+          "rec_id": "80",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with intermittent claudication who have undergone infra-inguinal endarterectomy or bypass surgery and have no increas"
+        },
+        {
+          "rec_id": "77",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with intermittent claudication who have undergone endovascular intervention, single antiplatelet therapy is recommend"
+        },
+        {
+          "rec_id": "79",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "III",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "C",
+          "index_text": "In the rare post-revascularisation scenario where triple antithrombotic therapy is deemed necessary on clinical grounds, patients "
+        },
+        {
+          "rec_id": "76",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with intermittent claudication not at high risk of bleeding who have undergone lower limb endovascular intervention, "
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "SCOPE_EXPANSION",
+          "clinical_risk": "moderate",
+          "clinical_note": "Symptomatic isolated calf DVT does not automatically require anticoagulation; the decision should be individualized by symptoms, risk of extension, and bleeding risk, and if anticoagulation is chosen ESVS recommends 3 months.",
+          "claim": "Symptomatic isolated calf DVT should be treated with anticoagulation"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "SCOPE_EXPANSION",
+          "clinical_risk": "moderate",
+          "clinical_note": "Symptomatic isolated calf DVT does not automatically require anticoagulation; the decision should be individualized by symptoms, risk of extension, and bleeding risk, and if anticoagulation is chosen ESVS recommends 3 months.",
+          "claim": "Symptomatic calf DVT — including isolated soleal vein thrombosis — should be treated with anticoagulation"
+        }
+      ]
+    },
+    "Q125": {
+      "citations": [
+        {
+          "rec_id": "39",
+          "guideline": "ESVS_Antithrombotic_2023",
+          "class": "III",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "C",
+          "index_text": "If clopidogrel (75 mg) is added in exceptional circumstances to aspirin (75 – 100 mg once daily) in combination with rivaroxaban ("
+        },
+        {
+          "rec_id": "10.3",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Consider DAPT (aspirin plus clopidogrel) in patients who have undergone infrainguinal prosthetic bypass for CLTI for a period of 6"
+        },
+        {
+          "rec_id": "6.4",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "B",
+          "tier": "B_METADATA_ERR",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Define a CLTI patient as average surgical risk when anticipated periprocedural mortality is <5% and estimated 2-year survival is >"
+        },
+        {
+          "rec_id": "6.32",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "In average-risk CLTI patients with infrainguinal disease, base decisions of endovascular intervention vs open surgical bypass on t"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "\"Routine dual antiplatelet therapy ... only for ≤30 days\" for vein bypass"
+        }
+      ]
+    },
+    "Q126": {
+      "citations": [
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        },
+        {
+          "rec_id": "47",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients who have had revascularisation for acute limb ischaemia of embolic origin, long term anticoagulation may be considere"
+        },
+        {
+          "rec_id": "46",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "After revascularisation for acute limb ischaemia caused by an embolus secondary to atrial fibrillation or intracardiac thrombus, l"
+        },
+        {
+          "rec_id": "48",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "Long term anticoagulation may be considered after thrombectomy or endovascular treatment of a prosthetic bypass graft occlusion."
+        },
+        {
+          "rec_id": "49",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "Antiplatelet therapy or anticoagulation and statins are recommended long term to reduce cardiovascular events following acute limb"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q127": {
+      "citations": [
+        {
+          "rec_id": "62",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with disabling intermittent claudication and a hostile groin (e.g., prior ipsilateral common femoral endarterectomy, "
+        },
+        {
+          "rec_id": "61",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation, with common femoral artery stenosis or occlusi"
+        },
+        {
+          "rec_id": "63",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with disabling intermittent claudication due to femoropopliteal steno-occlusive disease, a careful selection for reva"
+        },
+        {
+          "rec_id": "54",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation, balloon angioplasty with selective bare metal "
+        },
+        {
+          "rec_id": "60",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For fit patients with disabling intermittent claudication at low risk of groin complications and with common femoral artery bifurc"
+        },
+        {
+          "rec_id": "64",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "A",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation who have Trans-Atlantic Inter-Society Consensus"
+        },
+        {
+          "rec_id": "57",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with disabling intermittent claudication undergoing revascularisation who have Trans-Atlantic Inter-Society Consensus"
+        },
+        {
+          "rec_id": "69",
+          "guideline": "ESVS_Asymptomatic_PAD_IC_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with disabling intermittent claudication with long and heavily calcified femoropopliteal occlusions undergoing revasc"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "ESVS 2023 permits CEA consideration in selected asymptomatic 60–99% stenosis with high-risk features, so a 62% lesion is not excluded solely because it is <70%.",
+          "claim": "surgery is not recommended for asymptomatic stenosis <70%"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "ESVS 2023 permits CEA consideration in selected asymptomatic 60–99% stenosis with high-risk features, so a 62% lesion is not excluded solely because it is <70%.",
+          "claim": "Surgery is not recommended for asymptomatic carotid stenosis <70%"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "ESVS 2023 permits CEA consideration in selected asymptomatic 60–99% stenosis with high-risk features, so a 62% lesion is not excluded solely because it is <70%.",
+          "claim": "surgery is not recommended for asymptomatic stenosis <70%"
+        }
+      ]
+    },
+    "Q128": {
+      "citations": [
+        {
+          "rec_id": "60",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with iliac vein outflow obstruction suffering from a recalcitrant venous ulcer, severe post-thrombotic syndrome, or d"
+        },
+        {
+          "rec_id": "17",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with superficial venous incompetence, presenting with skin changes as a result of chronic venous disease (CEAP clinic"
+        },
+        {
+          "rec_id": "15",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with superficial venous incompetence presenting with symptomatic varicose veins (CEAP clinical class C2s), interventi"
+        },
+        {
+          "rec_id": "52",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with uncomplicated varicose veins (CEAP clinical class C2) requiring treatment, phlebectomies with preservation of th"
+        },
+        {
+          "rec_id": "54",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients presenting with foot and ankle varicose veins, phlebectomy, sclerotherapy, and foot perforating vein ligation may be "
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with superficial venous incompetence undergoing intervention, risk assessment for venous thromboembolism is recommend"
+        },
+        {
+          "rec_id": "26",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "For patients with superficial venous incompetence undergoing intervention, individualised thromboprophylaxis strategies should be "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q129": {
+      "citations": [
+        {
+          "rec_id": "65",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIa",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "56",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIa",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "24",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "Ila",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "45",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "Ila",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "42",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "54",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIa",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "39",
+          "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
+          "class": "IIb",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "The 52-mm asymptomatic complex AAA is below the 55-mm diameter at which elective repair is considered in men, so it is incorrect to say that both aneurysms exceed intervention thresholds.",
+          "claim": "Both aneurysms exceed ESVS intervention thresholds"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Rec 54: TEVAR primary option for chronic thoracic aneurysm (applied to degenerative TAA, but passage specifies chronic type B dissection)"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "The 52-mm asymptomatic complex AAA is below the 55-mm diameter at which elective repair is considered in men, so it is incorrect to say that both aneurysms exceed intervention thresholds.",
+          "claim": "Both aneurysms exceed ESVS intervention thresholds"
+        },
+        {
+          "judge": "claude-opus-4-7",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "Rec 54: TEVAR primary option for chronic thoracic aneurysm (passage actually addresses chronic type B dissection with aneurysm formation)"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "WRONG_THRESHOLD",
+          "clinical_risk": "moderate",
+          "clinical_note": "Complex or renal-ostial anatomy changes the repair strategy but does not by itself justify elective repair below 55 mm in an asymptomatic man.",
+          "claim": "complex AAA may justify earlier repair below 55 mm"
+        }
+      ]
+    },
+    "Q200": {
+      "citations": [
+        {
+          "rec_id": "1.2",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use a lower extremity threatened limb classification staging system (eg, SVS’s WIf I classification system) that grades wound exte"
+        },
+        {
+          "rec_id": "6.14",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider revascularization in average-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.35",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with advanced limb threat (eg, WIf I stage 4) and moderate ischemia"
+        },
+        {
+          "rec_id": "6.36",
+          "guideline": "GVG_CLTI_2019",
+          "class": "2",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Consider endovascular revascularization for high-risk patients with intermediate limb threat (eg, WIf I stages 2 and 3) and modera"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q201": {
+      "citations": [
+        {
+          "rec_id": "29",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with aorto-oesophageal fistula complicating thoracic/thoraco-abdominal vascular graft/endograft infection, explantati"
+        },
+        {
+          "rec_id": "1",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Once vascular graft/endograft infection is suspected, exhaustive evaluation of clinical status, signs of infection and patient com"
+        },
+        {
+          "rec_id": "38",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For fit patients with an abdominal aortic vascular graft/endograft infection, complete excision of all graft material and infected"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q202": {
+      "citations": [
+        {
+          "rec_id": "1",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with chronic venous disease, the use of the Clinical, Etiological, Anatomical, Pathophysiological (CEAP) classificati"
+        },
+        {
+          "rec_id": "50",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with advanced skin changes (CEAP clinical class C4b, C5 or C6), with isolated or residual incompetent perforating vei"
+        },
+        {
+          "rec_id": "15",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "B",
+          "index_text": "For patients with superficial venous incompetence presenting with symptomatic varicose veins (CEAP clinical class C2s), interventi"
+        },
+        {
+          "rec_id": "17",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with superficial venous incompetence, presenting with skin changes as a result of chronic venous disease (CEAP clinic"
+        },
+        {
+          "rec_id": "52",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with uncomplicated varicose veins (CEAP clinical class C2) requiring treatment, phlebectomies with preservation of th"
+        },
+        {
+          "rec_id": "16",
+          "guideline": "ESVS_Chronic_Venous_Disease_2022",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "For patients with superficial venous incompetence, presenting with oedema (CEAP clinical class C3), other non-venous causes of oed"
+        }
+      ],
+      "hallucination_flags": [
+        {
+          "judge": "o3",
+          "run": 0,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C0s definition and all listed class definitions not present in retrieved text"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C0s definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C1 definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C2 definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C3 definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C4/C4a/C4b/C4c definitions"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C5 definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C6 definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C2r definition"
+        },
+        {
+          "judge": "o3",
+          "run": 1,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C6r definition"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C0s symptomatic definition"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C1 telangiectasies definition"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C2 varicose veins definition"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C3 oedema definition"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C4 subclass definitions"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C5 healed ulcer"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "UNGROUNDED_CORRECT",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C6 active ulcer"
+        },
+        {
+          "judge": "o3",
+          "run": 2,
+          "type": "OTHER",
+          "auto_type": "OTHER",
+          "corrected_type": "FALSE_POSITIVE",
+          "clinical_risk": "none",
+          "clinical_note": "",
+          "claim": "C2r, C6r definitions"
+        }
+      ]
+    },
+    "Q203": {
+      "citations": [
+        {
+          "rec_id": "13",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Men should be considered for imaging surveillance using ultrasound, every five years for a sub-aneurysmal aorta 25 - 29 mm in diam"
+        },
+        {
+          "rec_id": "14",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Women should be considered for imaging surveillance using ultrasound, every three years for abdominal aortic aneurysms 30-39 mm in"
+        },
+        {
+          "rec_id": "131",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "After endovascular treatment for a complex abdominal aortic aneurysm, duplex ultrasound surveillance may be considered as an alter"
+        },
+        {
+          "rec_id": "130",
+          "guideline": "ESVS_AAA_2024",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "After endovascular treatment for a complex abdominal aortic aneurysm, long term imaging surveillance is recommended; with computed"
+        },
+        {
+          "rec_id": "112",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIb",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Patients who have undergone open surgical repair for abdominal aortic aneurysm may be considered for imaging follow up of the enti"
+        },
+        {
+          "rec_id": "111",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with significant aneurysm sac growth (> 10 mm compared with baseline or with the smallest diameter during follow up using"
+        },
+        {
+          "rec_id": "110",
+          "guideline": "ESVS_AAA_2024",
+          "class": "IIa",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with significant aneurysm sac growth (>10 mm compared with baseline or with the smallest diameter during follow up using "
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q204": {
+      "citations": [
+        {
+          "rec_id": "4",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients presenting with acute limb ischaemia, the Rutherford classification for acute limb ischaemia is recommended for clini"
+        },
+        {
+          "rec_id": "23",
+          "guideline": "ESVS_ALI_2020",
+          "class": "III",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "III",
+          "index_level": "B",
+          "index_text": "For patients with acute onset claudication (Rutherford grade I) that does not threaten the limb, (percutaneous) catheter-directed "
+        },
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_ALI_2020",
+          "class": "IIb",
+          "level": "B",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "B",
+          "index_text": "For patients with Rutherford grade IIb acute limb ischaemia, (percutaneous) catheter-directed thrombolysis may be considered if in"
+        },
+        {
+          "rec_id": "24",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "For patients with Rutherford grade IIa acute limb ischaemia, it is recommended that (percutaneous) catheter-directed thrombolysis "
+        },
+        {
+          "rec_id": "56",
+          "guideline": "ESVS_ALI_2020",
+          "class": "I",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "For patients with acute ischaemia of the upper limb, pre-operative imaging is recommended, unless embolic occlusion is obvious, th"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q205": {
+      "citations": [
+        {
+          "rec_id": "6.6",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use an integrated threatened limb classification system (such as WIf I) to stage all CLTI patients who are candidates for limb sal"
+        },
+        {
+          "rec_id": "1.2",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Use a lower extremity threatened limb classification staging system (eg, SVS’s WIf I classification system) that grades wound exte"
+        },
+        {
+          "rec_id": "6.16",
+          "guideline": "GVG_CLTI_2019",
+          "class": "Good",
+          "level": null,
+          "tier": "A_VERIFIED",
+          "index_class": "GPS",
+          "index_level": "",
+          "index_text": "Use an integrated limb-based staging system (eg, GLASS) to define the anatomic pattern of disease and preferred TAP in all CLTI pa"
+        },
+        {
+          "rec_id": "5.1",
+          "guideline": "GVG_CLTI_2019",
+          "class": "Good",
+          "level": null,
+          "tier": "A_VERIFIED",
+          "index_class": "GPS",
+          "index_level": "",
+          "index_text": "Use an integrated, limb-based anatomic staging system (such as the GLASS) to define complexity of a preferred target artery path ("
+        },
+        {
+          "rec_id": "6.32",
+          "guideline": "GVG_CLTI_2019",
+          "class": "1",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "In average-risk CLTI patients with infrainguinal disease, base decisions of endovascular intervention vs open surgical bypass on t"
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q210": {
+      "citations": [
+        {
+          "rec_id": "7",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "8",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "5",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q211": {
+      "citations": [
+        {
+          "rec_id": "41",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "Iib",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "27",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "IIa",
+          "level": "B",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "31",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "30",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "IIa",
+          "level": "B",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "29",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        },
+        {
+          "rec_id": "32",
+          "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
+          "class": "I",
+          "level": "C",
+          "tier": "D_NOT_IN_INDEX",
+          "index_class": null,
+          "index_level": null,
+          "index_text": null
+        }
+      ],
+      "hallucination_flags": []
+    },
+    "Q212": {
+      "citations": [
+        {
+          "rec_id": "25",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "Iib",
+          "level": "C",
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "For patients with suspected thoracic graft/endograft infection, in the absence of fistulisation to the oesophagus or airway, or ge"
+        },
+        {
+          "rec_id": "11",
+          "guideline": "ESVS_GraftInfections_2020",
+          "class": "I",
+          "level": "A",
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "A",
+          "index_text": "In every case where a vascular graft/endograft is implanted, antimicrobial prophylaxis to cover the first 24 hours, by intravenous"
+        }
+      ],
+      "hallucination_flags": []
+    }
+  }
+}

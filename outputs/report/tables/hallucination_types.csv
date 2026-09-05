@@ -1,0 +1,6 @@
+type,category,n
+FALSE_POSITIVE,Artefact,13
+SCOPE_EXPANSION,Real error,2
+UNGROUNDED_CORRECT,Artefact,35
+WRONG_APPLICATION,Real error,7
+WRONG_THRESHOLD,Real error,6

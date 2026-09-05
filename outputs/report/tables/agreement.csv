@@ -1,0 +1,8 @@
+dimension,scale,weighted_kappa,binary_kappa,percent_agreement,icc_value,icc_ci_95,krippendorff_alpha,notes
+clinical_correctness,likert,0.716,,,0.719,"[0.310, 0.870]",,
+citation_support,likert,0.269,,,0.272,"[-0.010, 0.510]",,
+completeness,likert,0.707,,,0.711,"[0.540, 0.820]",,
+uncertainty_handling,likert,0.654,,,0.658,"[0.360, 0.810]",,
+hallucination_present,binary,,0.124,85.5%,,,,
+safety_flag,binary,,0.769,94.5%,,,,
+all_likert,likert,,,,,,0.586,Krippendorff alpha across all Likert dimensions.

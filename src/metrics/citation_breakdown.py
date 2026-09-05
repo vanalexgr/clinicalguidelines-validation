@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, TypeVar
 
@@ -27,8 +27,14 @@ ARTEFACT_TYPES = {
     "VALID_INFERENCE",
     "REFUSAL_OVERCLAIM",
     "CITATION_MISMATCH",
+    "UNGROUNDED_CORRECT",
 }
+# Clinically accurate content that the locked corpus does not actually support.
+# Not a clinical error, so excluded from the adjusted hallucination rate, but it
+# breaches the provenance guarantee and is reported separately.
+PROVENANCE_TYPES = {"UNGROUNDED_CORRECT"}
 REAL_ERROR_TYPES = {
+    "WRONG_THRESHOLD",
     "SEVERITY_INFLATION",
     "WRONG_APPLICATION",
     "SCOPE_EXPANSION",
@@ -52,6 +58,14 @@ HALLUCINATION_LEGEND = {
     "VALID_INFERENCE": "Clinically valid inference from cited recs, not verbatim",
     "REFUSAL_OVERCLAIM": "System refused when passages do address the topic",
     "GENUINE_ERROR": "Explicit factual claim with no retrievable rec basis",
+    "UNGROUNDED_CORRECT": (
+        "Clinically accurate, but no retrievable basis in the locked corpus "
+        "(e.g. guideline table content that was never indexed as a chunk)"
+    ),
+    "WRONG_THRESHOLD": (
+        "States a numeric decision threshold that does not match the guideline "
+        "(diameter, stenosis, grade cut-off)"
+    ),
     "OTHER": "Does not fit any of the above patterns",
     "SEVERITY_INFLATION": "Overstates urgency or mandate beyond what the cited guidance supports",
 }
@@ -72,6 +86,9 @@ class CitationBreakdownResult:
     adjusted_hal_rate: float
     clinical_risk_counts: dict[str, int]
     per_item: dict[str, dict[str, Any]]
+    provenance_gap_count: int = 0
+    items_provenance_gap: list[str] = field(default_factory=list)
+    provenance_gap_rate: float = 0.0
 
 
 def _load_models(path: Path, model_type: type[ModelT]) -> list[ModelT]:
@@ -258,11 +275,14 @@ def compute_citation_breakdown(
     } | {item_id for item_id, payload in per_item.items() if payload["hallucination_flags"]}
     items_real_error: list[str] = []
     items_artefact_only: list[str] = []
+    items_provenance_gap: list[str] = []
     for item_id in item_ids:
         flags = per_item.get(item_id, {}).get("hallucination_flags", [])
         if not flags:
             continue
         corrected_types = {flag["corrected_type"] for flag in flags}
+        if corrected_types & PROVENANCE_TYPES:
+            items_provenance_gap.append(item_id)
         if corrected_types & REAL_ERROR_TYPES:
             items_real_error.append(item_id)
         else:
@@ -284,6 +304,13 @@ def compute_citation_breakdown(
         ),
         real_error_count=sum(
             count for label, count in corrected_type_counts.items() if label in REAL_ERROR_TYPES
+        ),
+        provenance_gap_count=sum(
+            count for label, count in corrected_type_counts.items() if label in PROVENANCE_TYPES
+        ),
+        items_provenance_gap=sorted(items_provenance_gap),
+        provenance_gap_rate=(
+            len(items_provenance_gap) / total_items if total_items else 0.0
         ),
         items_clean=sorted(items_clean),
         items_artefact_only=sorted(items_artefact_only),
@@ -319,6 +346,15 @@ def breakdown_to_dict(result: CitationBreakdownResult) -> dict[str, Any]:
             "items_clean": result.items_clean,
             "items_only_artefact": result.items_artefact_only,
             "items_real_error": result.items_real_error,
+        },
+        "provenance_gap": {
+            "rate": result.provenance_gap_rate,
+            "claims": result.provenance_gap_count,
+            "items": result.items_provenance_gap,
+            "definition": (
+                "Items containing at least one clinically correct claim with no "
+                "retrievable basis in the locked corpus."
+            ),
         },
         "clinical_risk_distribution": result.clinical_risk_counts,
         "per_item": result.per_item,
@@ -440,6 +476,7 @@ __all__ = [
     "HALLUCINATION_LEGEND",
     "REAL_ERROR_TYPES",
     "TIER_LEGEND",
+    "PROVENANCE_TYPES",
     "_load_overrides",
     "breakdown_to_dict",
     "compute_citation_breakdown",

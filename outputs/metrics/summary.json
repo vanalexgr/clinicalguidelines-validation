@@ -1,0 +1,161 @@
+{
+  "mode": "strict_full",
+  "processed_items": 55,
+  "benchmark_total_items": 55,
+  "judgment_rows": 330,
+  "judges_present": [
+    "claude-opus-4-7",
+    "o3"
+  ],
+  "query_ids": [
+    "Q001",
+    "Q002",
+    "Q003",
+    "Q004",
+    "Q005",
+    "Q006",
+    "Q007",
+    "Q008",
+    "Q009",
+    "Q010",
+    "Q011",
+    "Q012",
+    "Q013",
+    "Q014",
+    "Q015",
+    "Q016",
+    "Q100",
+    "Q101",
+    "Q102",
+    "Q103",
+    "Q104",
+    "Q105",
+    "Q106",
+    "Q107",
+    "Q108",
+    "Q109",
+    "Q110",
+    "Q111",
+    "Q112",
+    "Q113",
+    "Q114",
+    "Q115",
+    "Q116",
+    "Q117",
+    "Q118",
+    "Q119",
+    "Q120",
+    "Q121",
+    "Q122",
+    "Q123",
+    "Q124",
+    "Q125",
+    "Q126",
+    "Q127",
+    "Q128",
+    "Q129",
+    "Q200",
+    "Q201",
+    "Q202",
+    "Q203",
+    "Q204",
+    "Q205",
+    "Q210",
+    "Q211",
+    "Q212"
+  ],
+  "pass_rate": {
+    "passes": 33,
+    "total": 55,
+    "rate": 0.6
+  },
+  "routing": {
+    "exact_match_rate": 0.7090909090909091,
+    "micro_precision": 0.7922077922077922,
+    "micro_recall": 0.9838709677419355,
+    "micro_f1": 0.8776978417266187,
+    "macro_f1": 0.7866213151927437
+  },
+  "gate": {
+    "true_positive": 11,
+    "true_negative": 34,
+    "false_positive": 3,
+    "false_negative": 3,
+    "sensitivity": 0.7857142857142857,
+    "specificity": 0.918918918918919,
+    "over_interrogation_rate": 0.058823529411764705,
+    "mean_parameter_recall": 0.28787878787878785
+  },
+  "citation": {
+    "total_citations": 259,
+    "matched_citations": 235,
+    "existence_accuracy": 0.9073359073359073
+  },
+  "agreement": {
+    "krippendorff_alpha": 0.5855287192526988,
+    "likert": [
+      {
+        "dimension": "clinical_correctness",
+        "weighted_kappa": 0.715578539107951,
+        "icc_value": 0.7192982456140351,
+        "icc_ci_lower": 0.31,
+        "icc_ci_upper": 0.87
+      },
+      {
+        "dimension": "citation_support",
+        "weighted_kappa": 0.26852438252058264,
+        "icc_value": 0.27214377406931967,
+        "icc_ci_lower": -0.01,
+        "icc_ci_upper": 0.51
+      },
+      {
+        "dimension": "completeness",
+        "weighted_kappa": 0.7068366164542295,
+        "icc_value": 0.7106244175209694,
+        "icc_ci_lower": 0.54,
+        "icc_ci_upper": 0.82
+      },
+      {
+        "dimension": "uncertainty_handling",
+        "weighted_kappa": 0.6537146968879295,
+        "icc_value": 0.657856625633599,
+        "icc_ci_lower": 0.36,
+        "icc_ci_upper": 0.81
+      }
+    ],
+    "binary": [
+      {
+        "dimension": "hallucination_present",
+        "kappa": 0.12350597609561753,
+        "percent_agreement": 0.8545454545454545
+      },
+      {
+        "dimension": "safety_flag",
+        "kappa": 0.7685834502103787,
+        "percent_agreement": 0.9454545454545454
+      }
+    ]
+  },
+  "citation_breakdown": {
+    "tier_a_pct": 0.888030888030888,
+    "tier_b_pct": 0.019305019305019305,
+    "reported_hal_rate": 0.18181818181818182,
+    "adjusted_hal_rate": 0.07272727272727272,
+    "high_risk_items": [],
+    "real_error_items": [
+      "Q105",
+      "Q124",
+      "Q127",
+      "Q129"
+    ]
+  },
+  "reclassification": {
+    "total_flags": 63,
+    "flags_reclassified": 63,
+    "reclassification_rate": 1.0,
+    "reported_hal_rate": 0.18181818181818182,
+    "auto_classified_hal_rate": 0.18181818181818182,
+    "clinical_review_rate": 0.07272727272727272,
+    "high_risk_rate": 0.0
+  }
+}
