@@ -16,6 +16,7 @@ from src.common.schemas import AgentAnswer, BenchmarkItem, Citation, Judgment
 from src.corpus.index import (
     RecommendationIndexEntry,
     _normalise_class,
+    _normalise_guideline,
     _normalise_level,
     load_recommendation_index,
 )
@@ -180,7 +181,7 @@ def _tier_citation(
     index: dict[str, RecommendationIndexEntry],
 ) -> tuple[str, RecommendationIndexEntry | None]:
     rec_id = (citation.rec_id or "").strip()
-    guideline = (citation.guideline or "").strip()
+    guideline = (_normalise_guideline(citation.guideline) or "").strip()
     if not rec_id:
         return "E_NO_REC_ID", None
 

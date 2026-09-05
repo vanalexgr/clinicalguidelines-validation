@@ -65,9 +65,9 @@
     "Q212"
   ],
   "pass_rate": {
-    "passes": 33,
+    "passes": 34,
     "total": 55,
-    "rate": 0.6
+    "rate": 0.6181818181818182
   },
   "routing": {
     "exact_match_rate": 0.7090909090909091,
@@ -88,8 +88,8 @@
   },
   "citation": {
     "total_citations": 259,
-    "matched_citations": 235,
-    "existence_accuracy": 0.9073359073359073
+    "matched_citations": 259,
+    "existence_accuracy": 1.0
   },
   "agreement": {
     "krippendorff_alpha": 0.5855287192526988,
@@ -137,8 +137,8 @@
     ]
   },
   "citation_breakdown": {
-    "tier_a_pct": 0.888030888030888,
-    "tier_b_pct": 0.019305019305019305,
+    "tier_a_pct": 0.9884169884169884,
+    "tier_b_pct": 0.011583011583011582,
     "reported_hal_rate": 0.18181818181818182,
     "adjusted_hal_rate": 0.07272727272727272,
     "high_risk_items": [],

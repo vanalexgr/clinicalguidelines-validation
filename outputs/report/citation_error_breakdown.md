@@ -4,9 +4,8 @@
 
 | Tier | Description | n | % |
 | --- | --- | --- | --- |
-| `A_VERIFIED` | rec_id found · guideline + class + level all match | 230 | 88.8% |
-| `B_METADATA_ERR` | rec_id found · class or level reported differently from index | 5 | 1.9% |
-| `D_NOT_IN_INDEX` | rec_id not found anywhere in the recommendation index | 24 | 9.3% |
+| `A_VERIFIED` | rec_id found · guideline + class + level all match | 256 | 98.8% |
+| `B_METADATA_ERR` | rec_id found · class or level reported differently from index | 3 | 1.2% |
 
 ## 2. Hallucination Claim Types
 

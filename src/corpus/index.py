@@ -43,6 +43,17 @@ class CitationExistenceResult:
     details: list[CitationExistenceDetail]
 
 
+# The agent cites two guidelines by their published title rather than the
+# canonical dataset id used as the index key, so every citation to them failed the
+# existence lookup and was scored as "not in corpus". The recommendations are
+# present and correctly classed; only the name differed.
+_CANONICAL_GUIDELINE_MAP: dict[str, str] = {
+    "management of descending thoracic and thoraco-abdominal aortic diseases":
+        "ESVS_ThoracoAbdominal_2026",
+    "treatment of thoracic aortic pathologies involving the aortic arch":
+        "ESVS_AorticArch_2024",
+}
+
 _CANONICAL_CLASS_MAP: dict[str, str] = {
     "1": "I",
     "2": "IIb",
@@ -54,7 +65,24 @@ _CANONICAL_CLASS_MAP: dict[str, str] = {
     "gps": "GPS",
     "good": "GPS",
     "good practice statement": "GPS",
+    # Extraction artefacts: lowercase L standing in for the roman numeral I.
+    "ila": "IIa",
+    "ilb": "IIb",
+    "lla": "IIa",
+    "llb": "IIb",
+    "ili": "III",
+    "lll": "III",
 }
+
+
+def _normalise_guideline(raw: str | None) -> str | None:
+    """Map a guideline's published title onto its canonical dataset id."""
+    if raw is None:
+        return None
+    cleaned = " ".join(raw.strip().split())
+    if not cleaned:
+        return None
+    return _CANONICAL_GUIDELINE_MAP.get(cleaned.lower(), cleaned)
 
 
 def _normalise_class(raw: str | None) -> str | None:
@@ -111,9 +139,10 @@ def evaluate_citation_existence(
     metadata_matched_citations = 0  # existence + class + level
 
     for citation in citations:
+        guideline = _normalise_guideline(citation.guideline)
         lookup_key = (
-            f"{citation.guideline}:{citation.rec_id}"
-            if citation.guideline and citation.rec_id
+            f"{guideline}:{citation.rec_id}"
+            if guideline and citation.rec_id
             else citation.rec_id or ""
         )
         entry = index.get(lookup_key) or index.get(citation.rec_id or "")

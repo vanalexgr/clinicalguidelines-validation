@@ -2,14 +2,12 @@
   "citation_tiers": {
     "total": 259,
     "counts": {
-      "A_VERIFIED": 230,
-      "B_METADATA_ERR": 5,
-      "D_NOT_IN_INDEX": 24
+      "A_VERIFIED": 256,
+      "B_METADATA_ERR": 3
     },
     "pct": {
-      "A_VERIFIED": 0.888,
-      "B_METADATA_ERR": 0.019,
-      "D_NOT_IN_INDEX": 0.093
+      "A_VERIFIED": 0.988,
+      "B_METADATA_ERR": 0.012
     },
     "legend": {
       "A_VERIFIED": "rec_id found · guideline + class + level all match",
@@ -1669,7 +1667,7 @@
           "guideline": "ESVS_VascularTrauma_2023",
           "class": "Ila",
           "level": "C",
-          "tier": "B_METADATA_ERR",
+          "tier": "A_VERIFIED",
           "index_class": "IIa",
           "index_level": "C",
           "index_text": "Endovascular stent graft repair should be considered for haemodynamically stable patients and abdominal aortic injury with externa"
@@ -1699,7 +1697,7 @@
           "guideline": "ESVS_VascularTrauma_2023",
           "class": "Ila",
           "level": "C",
-          "tier": "B_METADATA_ERR",
+          "tier": "A_VERIFIED",
           "index_class": "IIa",
           "index_level": "C",
           "index_text": "Endovascular stent graft repair should be considered for ESVS Grade 2 or 3 common or external iliac artery injury."
@@ -1965,40 +1963,40 @@
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "A lower aortic diameter threshold (≥ 5.5 cm) for repair may be considered in selected* patients with descending thoracic or thorac"
         },
         {
           "rec_id": "52",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "Ila",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with chronic type B aortic dissection and an aortic diameter ≥ 6.0 cm should be considered for repair, taking into accoun"
         },
         {
           "rec_id": "53",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "A lower aortic diameter threshold (≥ 5.5 cm) for repair may be considered in selected* patients with chronic type B aortic dissect"
         },
         {
           "rec_id": "39",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Selected patients with uncomplicated* acute type B aortic dissection and suitable anatomy with early aortic expansion or large ini"
         }
       ],
       "hallucination_flags": []
@@ -2320,40 +2318,40 @@
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "A lower aortic diameter threshold (≥ 5.5 cm) for repair may be considered in selected* patients with descending thoracic or thorac"
         },
         {
           "rec_id": "53",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "A lower aortic diameter threshold (≥ 5.5 cm) for repair may be considered in selected* patients with chronic type B aortic dissect"
         },
         {
           "rec_id": "39",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Selected patients with uncomplicated* acute type B aortic dissection and suitable anatomy with early aortic expansion or large ini"
         },
         {
           "rec_id": "52",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "Ila",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Patients with chronic type B aortic dissection and an aortic diameter ≥ 6.0 cm should be considered for repair, taking into accoun"
         }
       ],
       "hallucination_flags": []
@@ -2878,70 +2876,70 @@
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIa",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular repair with fenestrated and branched technologies should be considered as the first line surgical treatment option in"
         },
         {
           "rec_id": "56",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIa",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Endovascular repair with fenestrated and branched technologies should be considered first line therapy in patients with chronic ty"
         },
         {
           "rec_id": "24",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "Ila",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Staged repair should be considered for patients undergoing extensive thoracic and thoraco-abdominal endovascular aortic repair."
         },
         {
           "rec_id": "45",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "Ila",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Open surgical repair of complicated* acute type B aortic dissection should be considered in selected patients unsuitable for endov"
         },
         {
           "rec_id": "42",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Patients with residual malperfusion following thoracic endovascular aortic repair for complicated acute type B aortic dissection a"
         },
         {
           "rec_id": "54",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIa",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "C",
+          "index_text": "Thoracic endovascular aortic repair should be considered as the primary treatment option for patients with chronic type B aortic d"
         },
         {
           "rec_id": "39",
           "guideline": "Management of Descending Thoracic and Thoraco-Abdominal Aortic Diseases",
           "class": "IIb",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "Selected patients with uncomplicated* acute type B aortic dissection and suitable anatomy with early aortic expansion or large ini"
         }
       ],
       "hallucination_flags": [
@@ -3515,30 +3513,30 @@
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "**Preoperative assessment of aortic arch pathologies with CT angiography is recommended as the first line imaging modality**"
         },
         {
           "rec_id": "8",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "**Assessment of patency and morphology of the circle of Willis is recommended where treatment involves the aortic arch**"
         },
         {
           "rec_id": "5",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "A hybrid room with a fixed imaging system is recommended for thoracic endovascular aortic repair involving the aortic arch"
         }
       ],
       "hallucination_flags": []
@@ -3550,60 +3548,60 @@
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "Iib",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIb",
+          "index_level": "C",
+          "index_text": "**Endovascular repair may be considered for bridging purposes or definite treatment in inoperable patients with infections of the "
         },
         {
           "rec_id": "27",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "IIa",
           "level": "B",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Open aortic arch repair should be considered in patients with concomitant aortic valve pathology or at high risk for retrograde ty"
         },
         {
           "rec_id": "31",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "It is recommended that endovascular aortic arch repair is performed in centres with adequate volume of and expertise in open and e"
         },
         {
           "rec_id": "30",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "IIa",
           "level": "B",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "IIa",
+          "index_level": "B",
+          "index_text": "Endovascular aortic arch repair in zone 0 should be considered in patients unfit for open surgery and with a suitable anatomy"
         },
         {
           "rec_id": "29",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "Hybrid aortic arch repair should be centralized in centres with adequate volume and expertise in both open and endovascular surger"
         },
         {
           "rec_id": "32",
           "guideline": "Treatment of Thoracic Aortic Pathologies Involving the Aortic Arch",
           "class": "I",
           "level": "C",
-          "tier": "D_NOT_IN_INDEX",
-          "index_class": null,
-          "index_level": null,
-          "index_text": null
+          "tier": "A_VERIFIED",
+          "index_class": "I",
+          "index_level": "C",
+          "index_text": "In any open proximal thoracic aortic surgery, ascending/hemiarch replacement has to be extensive, and short ascending grafts shoul"
         }
       ],
       "hallucination_flags": []

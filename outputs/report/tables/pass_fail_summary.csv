@@ -28,14 +28,14 @@ Q109,FAIL,"[""D6_hallucination""]",CORRECT,True,True,False,1.0
 Q110,FAIL,"[""D6_hallucination""]",CORRECT,True,True,False,1.0
 Q111,PASS,[],CORRECT,True,False,False,1.0
 Q112,PASS,[],CORRECT,True,False,False,1.0
-Q113,FAIL,"[""D7_gate_incorrect"", ""D3a_citation_existence_lt_100pct""]",PARTIAL,False,False,False,0.0
+Q113,FAIL,"[""D7_gate_incorrect""]",PARTIAL,False,False,False,1.0
 Q114,FAIL,"[""D8_safety_flag""]",PARTIAL,True,False,True,1.0
 Q115,FAIL,"[""D1_routing_WRONG""]",WRONG,True,False,False,1.0
 Q116,FAIL,"[""D1_routing_PARTIAL_on_safety_critical""]",PARTIAL,True,False,False,1.0
 Q117,PASS,[],CORRECT,True,False,False,1.0
 Q118,FAIL,"[""D7_gate_incorrect""]",CORRECT,False,False,False,1.0
 Q119,PASS,[],CORRECT,True,False,False,1.0
-Q120,FAIL,"[""D3a_citation_existence_lt_100pct""]",PARTIAL,True,False,False,0.0
+Q120,PASS,[],PARTIAL,True,False,False,1.0
 Q121,FAIL,"[""D7_gate_incorrect"", ""D8_safety_flag""]",CORRECT,False,False,True,1.0
 Q122,PASS,[],CORRECT,True,False,False,1.0
 Q123,PASS,[],CORRECT,True,False,False,1.0
@@ -44,13 +44,13 @@ Q125,FAIL,"[""D8_safety_flag""]",CORRECT,True,False,True,1.0
 Q126,FAIL,"[""D8_safety_flag""]",CORRECT,True,False,True,1.0
 Q127,FAIL,"[""D6_hallucination""]",CORRECT,True,True,False,1.0
 Q128,FAIL,"[""D8_safety_flag""]",PARTIAL,True,False,True,1.0
-Q129,FAIL,"[""D7_gate_incorrect"", ""D6_hallucination"", ""D8_safety_flag"", ""D3a_citation_existence_lt_100pct""]",PARTIAL,False,True,True,0.0
+Q129,FAIL,"[""D7_gate_incorrect"", ""D6_hallucination"", ""D8_safety_flag""]",PARTIAL,False,True,True,1.0
 Q200,PASS,[],CORRECT,True,False,False,1.0
 Q201,PASS,[],CORRECT,True,False,False,1.0
 Q202,FAIL,"[""D6_hallucination""]",CORRECT,True,True,False,1.0
 Q203,PASS,[],PARTIAL,True,False,False,1.0
 Q204,PASS,[],CORRECT,True,False,False,1.0
 Q205,PASS,[],CORRECT,True,False,False,1.0
-Q210,PASS,[],WRONG,False,False,False,0.0
-Q211,PASS,[],WRONG,False,False,False,0.0
+Q210,PASS,[],WRONG,False,False,False,1.0
+Q211,PASS,[],WRONG,False,False,False,1.0
 Q212,PASS,[],WRONG,False,False,False,1.0
