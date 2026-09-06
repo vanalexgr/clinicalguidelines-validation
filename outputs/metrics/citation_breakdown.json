@@ -26,6 +26,14 @@
       "WRONG_APPLICATION": 7,
       "WRONG_THRESHOLD": 6
     },
+    "distinct_claims": 58,
+    "distinct_counts": {
+      "FALSE_POSITIVE": 12,
+      "SCOPE_EXPANSION": 2,
+      "UNGROUNDED_CORRECT": 33,
+      "WRONG_APPLICATION": 7,
+      "WRONG_THRESHOLD": 4
+    },
     "legend": {
       "FALSE_POSITIVE": "Claim matches a real indexed rec — judge flagged incorrectly",
       "METADATA_INFLATION": "Class/level stated higher or differently than the actual rec",
@@ -46,6 +54,8 @@
     "adjusted_rate": 0.07272727272727272,
     "artefact_claims": 48,
     "real_error_claims": 15,
+    "distinct_artefact_claims": 45,
+    "distinct_real_error_claims": 13,
     "items_clean": [
       "Q001",
       "Q002",
@@ -111,6 +121,7 @@
   "provenance_gap": {
     "rate": 0.10909090909090909,
     "claims": 35,
+    "distinct_claims": 33,
     "items": [
       "Q007",
       "Q105",

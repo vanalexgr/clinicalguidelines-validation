@@ -90,6 +90,16 @@ class CitationBreakdownResult:
     provenance_gap_count: int = 0
     items_provenance_gap: list[str] = field(default_factory=list)
     provenance_gap_rate: float = 0.0
+    # A claim flagged by both judges, or on more than one run, produces several
+    # judgment records but is one claim to adjudicate. The clinician worked from
+    # the de-duplicated set, so the reported breakdown counts distinct claims;
+    # the occurrence counts above are kept because the agreement statistics are
+    # computed per judgment.
+    distinct_hal_type_counts: dict[str, int] = field(default_factory=dict)
+    distinct_hal_total: int = 0
+    distinct_artefact_count: int = 0
+    distinct_real_error_count: int = 0
+    distinct_provenance_gap_count: int = 0
 
 
 def _load_models(path: Path, model_type: type[ModelT]) -> list[ModelT]:
@@ -240,6 +250,8 @@ def compute_citation_breakdown(
             )
 
     corrected_type_counts: Counter[str] = Counter()
+    distinct_type_counts: Counter[str] = Counter()
+    seen_claims: set[tuple[str, str]] = set()
     clinical_risk_counts: Counter[str] = Counter()
     for judgment in judgments:
         if not judgment.hallucination.present:
@@ -258,6 +270,10 @@ def compute_citation_breakdown(
             clinical_note = str(override.get("clinical_note", "")) if override else ""
             corrected_type_counts[corrected_type] += 1
             clinical_risk_counts[clinical_risk] += 1
+            claim_key = (judgment.query_id, _claim_prefix(claim))
+            if claim_key not in seen_claims:
+                seen_claims.add(claim_key)
+                distinct_type_counts[corrected_type] += 1
             per_item[judgment.query_id]["hallucination_flags"].append(
                 {
                     "judge": judgment.judge,
@@ -309,6 +325,17 @@ def compute_citation_breakdown(
         provenance_gap_count=sum(
             count for label, count in corrected_type_counts.items() if label in PROVENANCE_TYPES
         ),
+        distinct_hal_type_counts=dict(sorted(distinct_type_counts.items())),
+        distinct_hal_total=sum(distinct_type_counts.values()),
+        distinct_artefact_count=sum(
+            count for label, count in distinct_type_counts.items() if label in ARTEFACT_TYPES
+        ),
+        distinct_real_error_count=sum(
+            count for label, count in distinct_type_counts.items() if label in REAL_ERROR_TYPES
+        ),
+        distinct_provenance_gap_count=sum(
+            count for label, count in distinct_type_counts.items() if label in PROVENANCE_TYPES
+        ),
         items_provenance_gap=sorted(items_provenance_gap),
         provenance_gap_rate=(
             len(items_provenance_gap) / total_items if total_items else 0.0
@@ -337,6 +364,8 @@ def breakdown_to_dict(result: CitationBreakdownResult) -> dict[str, Any]:
         "hallucination_types": {
             "total_flagged_claims": result.hal_total,
             "counts": result.hal_type_counts,
+            "distinct_claims": result.distinct_hal_total,
+            "distinct_counts": result.distinct_hal_type_counts,
             "legend": HALLUCINATION_LEGEND,
         },
         "hallucination_rate_summary": {
@@ -344,6 +373,8 @@ def breakdown_to_dict(result: CitationBreakdownResult) -> dict[str, Any]:
             "adjusted_rate": result.adjusted_hal_rate,
             "artefact_claims": result.artefact_count,
             "real_error_claims": result.real_error_count,
+            "distinct_artefact_claims": result.distinct_artefact_count,
+            "distinct_real_error_claims": result.distinct_real_error_count,
             "items_clean": result.items_clean,
             "items_only_artefact": result.items_artefact_only,
             "items_real_error": result.items_real_error,
@@ -351,6 +382,7 @@ def breakdown_to_dict(result: CitationBreakdownResult) -> dict[str, Any]:
         "provenance_gap": {
             "rate": result.provenance_gap_rate,
             "claims": result.provenance_gap_count,
+            "distinct_claims": result.distinct_provenance_gap_count,
             "items": result.items_provenance_gap,
             "definition": (
                 "Items containing at least one clinically correct claim with no "
@@ -377,7 +409,8 @@ def render_citation_breakdown_markdown(result: CitationBreakdownResult) -> str:
             "Type": f"`{label}`",
             "Category": "Artefact" if label in ARTEFACT_TYPES else "Real error",
             "Description": HALLUCINATION_LEGEND.get(label, ""),
-            "n": count,
+            "Distinct claims": result.distinct_hal_type_counts.get(label, 0),
+            "Judgment records": count,
         }
         for label, count in result.hal_type_counts.items()
     ]

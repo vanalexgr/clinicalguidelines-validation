@@ -9,13 +9,13 @@
 
 ## 2. Hallucination Claim Types
 
-| Type | Category | Description | n |
-| --- | --- | --- | --- |
-| `FALSE_POSITIVE` | Artefact | Claim matches a real indexed rec — judge flagged incorrectly | 13 |
-| `SCOPE_EXPANSION` | Real error | Broadens a rec's applicability beyond its stated scope | 2 |
-| `UNGROUNDED_CORRECT` | Artefact | Clinically accurate, but no retrievable basis in the locked corpus (e.g. guideline table content that was never indexed as a chunk) | 35 |
-| `WRONG_APPLICATION` | Real error | Correct rec misapplied to wrong patient subgroup or scenario | 7 |
-| `WRONG_THRESHOLD` | Real error | States a numeric decision threshold that does not match the guideline (diameter, stenosis, grade cut-off) | 6 |
+| Type | Category | Description | Distinct claims | Judgment records |
+| --- | --- | --- | --- | --- |
+| `FALSE_POSITIVE` | Artefact | Claim matches a real indexed rec — judge flagged incorrectly | 12 | 13 |
+| `SCOPE_EXPANSION` | Real error | Broadens a rec's applicability beyond its stated scope | 2 | 2 |
+| `UNGROUNDED_CORRECT` | Artefact | Clinically accurate, but no retrievable basis in the locked corpus (e.g. guideline table content that was never indexed as a chunk) | 33 | 35 |
+| `WRONG_APPLICATION` | Real error | Correct rec misapplied to wrong patient subgroup or scenario | 7 | 7 |
+| `WRONG_THRESHOLD` | Real error | States a numeric decision threshold that does not match the guideline (diameter, stenosis, grade cut-off) | 4 | 6 |
 
 ## 3. Adjusted Hallucination Rate
 

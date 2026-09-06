@@ -31,6 +31,13 @@ PAPER = {
     "screening unsupported-claim rate": "18.2% (10/55)",
     "adjudicated clinical error rate": "7.3% (4/55)",
     "provenance gap": "10.9% (6/55)",
+    # Table 5, Panel A: distinct adjudicated claims, not judgment records.
+    "adjudicated claims, total": "58",
+    "adjudicated: judge flagged in error": "12",
+    "adjudicated: correct but ungrounded": "33",
+    "adjudicated: recommendation misapplied": "7",
+    "adjudicated: threshold misstated": "4",
+    "adjudicated: scope expansion": "2",
     "Krippendorff alpha": "0.586",
     "weighted kappa, completeness": "0.707",
     "ICC, completeness": "0.711",
@@ -75,6 +82,8 @@ def main() -> None:
     )
     r, g, c = summary["routing"], summary["gate"], summary["citation"]
     rate = breakdown["hallucination_rate_summary"]
+    types = breakdown["hallucination_types"]
+    distinct = types["distinct_counts"]
     tiers = breakdown["citation_tiers"]
     agree = summary["agreement"]
     completeness = next(x for x in agree["likert"] if x["dimension"] == "completeness")
@@ -93,19 +102,25 @@ def main() -> None:
         "screening unsupported-claim rate": f"{rate['reported_rate']:.1%} (10/55)",
         "adjudicated clinical error rate": f"{rate['adjusted_rate']:.1%} ({len(rate['items_real_error'])}/55)",
         "provenance gap": f"{breakdown['provenance_gap']['rate']:.1%} ({len(breakdown['provenance_gap']['items'])}/55)",
+        "adjudicated claims, total": str(types["distinct_claims"]),
+        "adjudicated: judge flagged in error": str(distinct.get("FALSE_POSITIVE", 0)),
+        "adjudicated: correct but ungrounded": str(distinct.get("UNGROUNDED_CORRECT", 0)),
+        "adjudicated: recommendation misapplied": str(distinct.get("WRONG_APPLICATION", 0)),
+        "adjudicated: threshold misstated": str(distinct.get("WRONG_THRESHOLD", 0)),
+        "adjudicated: scope expansion": str(distinct.get("SCOPE_EXPANSION", 0)),
         "Krippendorff alpha": f"{agree['krippendorff_alpha']:.3f}",
         "weighted kappa, completeness": f"{completeness['weighted_kappa']:.3f}",
         "ICC, completeness": f"{completeness['icc_value']:.3f}",
     }
 
-    print(f"{'metric':36s} {'paper':>22s} {'reproduced':>22s}")
-    print("-" * 84)
+    print(f"{'metric':40s} {'paper':>22s} {'reproduced':>22s}")
+    print("-" * 88)
     mismatches = 0
     for name, expected in PAPER.items():
         got = computed[name]
         ok = expected == got
         mismatches += not ok
-        print(f"{name:36s} {expected:>22s} {got:>22s} {'' if ok else '   <<< MISMATCH'}")
+        print(f"{name:40s} {expected:>22s} {got:>22s} {'' if ok else '   <<< MISMATCH'}")
 
     lo, hi = wilson(len(rate["items_real_error"]), 55)
     print(f"\nadjudicated clinical error rate 95% CI: {lo:.1%}-{hi:.1%}")
