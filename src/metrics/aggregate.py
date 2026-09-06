@@ -97,7 +97,9 @@ def _aggregate_runs(query_id: str, judge: str, runs: list[dict]) -> PerJudgeAggr
         for r in runs
         if r["safety_critical_error"]["reason"]
     ]
-    unsupported = list(
+    # Sorted for the same reason as the ensemble lists: set order is not stable
+    # across runs and would otherwise leave the generated CSV dirty on rebuild.
+    unsupported = sorted(
         {
             c
             for r in runs
@@ -121,8 +123,10 @@ def _aggregate_runs(query_id: str, judge: str, runs: list[dict]) -> PerJudgeAggr
 
 
 def _ensemble(query_id: str, pjas: list[PerJudgeAggregate]) -> EnsembleAggregate:
-    all_safety_reasons = list({r for p in pjas for r in p.safety_reasons})
-    all_unsupported = list({c for p in pjas for c in p.unsupported_citations})
+    # Sorted so a rebuild is byte-identical: set iteration order otherwise
+    # reshuffles these strings and leaves the generated report files dirty.
+    all_safety_reasons = sorted({r for p in pjas for r in p.safety_reasons})
+    all_unsupported = sorted({c for p in pjas for c in p.unsupported_citations})
     return EnsembleAggregate(
         query_id=query_id,
         citation_support=_mean_attr(pjas, "citation_support"),
