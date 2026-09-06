@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-DEFAULT_PATH = Path("data/benchmark/benchmark_queries.seed.jsonl")
+DEFAULT_PATH = Path("data/benchmark/benchmark_queries.v2.jsonl")
 
 
 def load_rows(path: Path) -> list[dict]:

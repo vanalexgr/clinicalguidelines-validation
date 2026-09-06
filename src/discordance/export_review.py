@@ -23,7 +23,6 @@ from src.metrics.aggregate import (
     aggregate_within_judge,
 )
 from src.metrics.deterministic import RoutingDecision, label_routing
-from src.metrics.pass_fail import PassFailResult, evaluate_pass_fail
 
 # clinical_correctness is intentionally excluded from the discordance-review surface
 # (disagreement triggers and exported scores). It is retained only for inter-rater
@@ -57,7 +56,6 @@ class ReviewItem:
     routing_decision: RoutingDecision
     gate_correct: bool
     citation_existence_accuracy: float
-    pass_fail: PassFailResult
     trigger_reasons: list[str]
     disagreement_dimensions: list[str]
 
@@ -169,20 +167,12 @@ def build_review_items(
         citation_existence_accuracy = evaluate_citation_existence(
             answer.citations, recommendation_index
         ).existence_accuracy
-        pass_fail = evaluate_pass_fail(
-            item,
-            ensemble,
-            routing_decision,
-            gate_correct,
-            citation_existence_accuracy,
-        )
         disagreement_dimensions = _likert_disagreement_dimensions(per_judge)
         trigger_reasons = _trigger_reasons(
             item=item,
             per_judge=per_judge,
             routing_decision=routing_decision,
             gate_correct=gate_correct,
-            pass_fail=pass_fail,
             disagreement_dimensions=disagreement_dimensions,
         )
         if not trigger_reasons:
@@ -198,8 +188,7 @@ def build_review_items(
                 routing_decision=routing_decision,
                 gate_correct=gate_correct,
                 citation_existence_accuracy=citation_existence_accuracy,
-                pass_fail=pass_fail,
-                trigger_reasons=trigger_reasons,
+                    trigger_reasons=trigger_reasons,
                 disagreement_dimensions=disagreement_dimensions,
             )
         )
@@ -239,7 +228,6 @@ def render_review_markdown(review_items: list[ReviewItem]) -> str:
                 f"- Verified: `{item.verified}`",
                 f"- Answer run index: `{answer.run_index}`",
                 f"- Triggers: {', '.join(review_item.trigger_reasons)}",
-                f"- Global verdict: `{review_item.pass_fail.verdict}`",
                 "",
                 "### Question Turns",
                 "",
@@ -272,11 +260,6 @@ def render_review_markdown(review_items: list[ReviewItem]) -> str:
                 (
                     "| citation_existence_accuracy | "
                     f"`{review_item.citation_existence_accuracy:.3f}` |"
-                ),
-                f"| pass_fail_verdict | `{review_item.pass_fail.verdict}` |",
-                (
-                    "| pass_fail_failed_conditions | "
-                    f"`{', '.join(review_item.pass_fail.failed_conditions) or '(none)'}` |"
                 ),
                 "",
                 "### Retrieved Passages",
@@ -410,7 +393,6 @@ def _trigger_reasons(
     per_judge: list[PerJudgeAggregate],
     routing_decision: RoutingDecision,
     gate_correct: bool,
-    pass_fail: PassFailResult,
     disagreement_dimensions: list[str],
 ) -> list[str]:
     reasons: list[str] = []
@@ -425,8 +407,6 @@ def _trigger_reasons(
     reasons.extend(
         f"judge_disagreement_ge_2:{dimension}" for dimension in disagreement_dimensions
     )
-    if pass_fail.verdict == "FAIL":
-        reasons.append("global_fail")
     return reasons
 
 
@@ -452,10 +432,7 @@ def _review_row(review_item: ReviewItem, judge_names: list[str]) -> dict[str, st
             "gate_incorrect_on_safety_critical" in review_item.trigger_reasons
         ),
         "trigger_likert_disagreement": str(bool(review_item.disagreement_dimensions)),
-        "trigger_global_fail": str("global_fail" in review_item.trigger_reasons),
         "likert_disagreement_dimensions": _json(review_item.disagreement_dimensions),
-        "pass_fail_verdict": review_item.pass_fail.verdict,
-        "pass_fail_failed_conditions": _json(review_item.pass_fail.failed_conditions),
         "routing_label": review_item.routing_decision.label,
         "expected_guidelines_json": _json(review_item.routing_decision.expected_guidelines),
         "reported_guidelines_json": _json(review_item.routing_decision.reported_guidelines),
@@ -592,10 +569,7 @@ def _fieldnames(rows: list[dict[str, str]]) -> list[str]:
         "trigger_routing_wrong",
         "trigger_gate_incorrect_on_safety_critical",
         "trigger_likert_disagreement",
-        "trigger_global_fail",
         "likert_disagreement_dimensions",
-        "pass_fail_verdict",
-        "pass_fail_failed_conditions",
         "routing_label",
         "expected_guidelines_json",
         "reported_guidelines_json",

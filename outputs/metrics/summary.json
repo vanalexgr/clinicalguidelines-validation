@@ -64,11 +64,6 @@
     "Q211",
     "Q212"
   ],
-  "pass_rate": {
-    "passes": 34,
-    "total": 55,
-    "rate": 0.6181818181818182
-  },
   "routing": {
     "exact_match_rate": 0.7090909090909091,
     "micro_precision": 0.7922077922077922,

@@ -49,7 +49,6 @@ from src.metrics.human_calibration import (
     HumanCalibrationReport,
     compute_human_calibration,
 )
-from src.metrics.pass_fail import PassFailResult, evaluate_pass_fail_batch
 from src.metrics.reclassification import (
     ReclassificationReport,
     compute_reclassification_report,
@@ -81,7 +80,6 @@ class ReportContext:
     reclassification_report: ReclassificationReport | None
     per_judge: dict[tuple[str, str], PerJudgeAggregate]
     ensembles: dict[str, EnsembleAggregate]
-    pass_fail_results: list[PassFailResult]
     review_items: list[Any]
     agreement_report: AgreementReport | None
     latency_mean_seconds: float | None
@@ -199,21 +197,6 @@ def build_report(
     )
     ensembles = aggregate_ensemble(per_judge)
 
-    routing_by_id = {
-        decision.item_id: decision for decision in routing_metrics.decisions
-    }
-    gate_by_id = {outcome.item_id: outcome.correct for outcome in gate_metrics.outcomes}
-    citation_by_id = {
-        metric.item_id: metric.result.existence_accuracy
-        for metric in citation_metrics.per_answer
-    }
-    pass_fail_results = evaluate_pass_fail_batch(
-        processed_items,
-        ensembles,
-        routing_by_id,
-        gate_by_id,
-        citation_by_id,
-    )
 
     review_items = build_review_items(
         items=processed_items,
@@ -244,7 +227,6 @@ def build_report(
         reclassification_report=reclassification_report,
         per_judge=per_judge,
         ensembles=ensembles,
-        pass_fail_results=pass_fail_results,
         review_items=review_items,
         agreement_report=agreement_report,
         latency_mean_seconds=latency_metrics.mean_seconds,
@@ -274,8 +256,6 @@ def render_report_markdown(context: ReportContext) -> str:
     by_query_type_rows = _by_query_type_rows(context)
     human_section = _render_human_calibration_section(context)
 
-    passes = sum(result.verdict == "PASS" for result in context.pass_fail_results)
-    pass_ci = wilson_ci(passes, len(context.pass_fail_results))
 
     exact_match_successes = sum(
         decision.label == "CORRECT" for decision in context.routing_metrics.decisions
@@ -374,19 +354,6 @@ def render_report_markdown(context: ReportContext) -> str:
                         "count": count,
                     }
                     for query_type, count in context.benchmark_counts_by_type.items()
-                ]
-            ),
-            "",
-            "## 2. Overall Pass Rate",
-            "",
-            _markdown_table(
-                [
-                    {
-                        "passes": passes,
-                        "total": len(context.pass_fail_results),
-                        "pass_rate": _fmt_pct(pass_ci.proportion),
-                        "ci_95": _fmt_ci(pass_ci.lower, pass_ci.upper),
-                    }
                 ]
             ),
             "",
@@ -539,7 +506,6 @@ def render_report_markdown(context: ReportContext) -> str:
                 "and ![by query type](plots/by_query_type.png)"
             ),
             "- [agreement.csv](tables/agreement.csv)",
-            "- [pass_fail_summary.csv](tables/pass_fail_summary.csv)",
             "- [routing_accuracy.csv](tables/routing_accuracy.csv)",
             "- [discordance_review.csv](discordance_review.csv)",
         ]
@@ -597,22 +563,6 @@ def _write_report_tables(context: ReportContext, tables_dir: Path) -> None:
     ]
     _write_rows_csv(tables_dir / "gate_confusion.csv", gate_rows)
 
-    pass_fail_rows = [
-        {
-            "query_id": result.query_id,
-            "verdict": result.verdict,
-            "failed_conditions_json": json.dumps(
-                result.failed_conditions, ensure_ascii=False
-            ),
-            "routing_label": result.routing_label,
-            "gate_correct": result.gate_correct,
-            "hallucination_present": result.hallucination_present,
-            "safety_flag": result.safety_flag,
-            "citation_existence_accuracy": result.citation_existence_accuracy,
-        }
-        for result in context.pass_fail_results
-    ]
-    _write_rows_csv(tables_dir / "pass_fail_summary.csv", pass_fail_rows)
 
     agreement_rows = _agreement_rows(context.agreement_report)
     _write_rows_csv(tables_dir / "agreement.csv", agreement_rows)
@@ -691,15 +641,15 @@ def _plot_gate_confusion(gate_metrics: GateMetrics, path: Path) -> None:
 def _plot_by_query_type(context: ReportContext, path: Path) -> None:
     rows = _by_query_type_rows(context)
     query_types = [row["query_type"] for row in rows]
-    pass_rates = [float(row["pass_rate_fraction"]) for row in rows]
+    values = [float(row["mean_completeness"] or 0.0) for row in rows]
 
     fig, ax = plt.subplots(figsize=(10, 5))
     indices = np.arange(len(query_types))
-    ax.bar(indices, pass_rates, color="#4C78A8", width=0.6)
+    ax.bar(indices, values, color="#4C78A8", width=0.6)
     ax.set_xticks(indices, labels=query_types, rotation=25, ha="right")
-    ax.set_ylabel("Pass rate")
-    ax.set_ylim(0.0, 1.0)
-    ax.set_title("Pass Rate by Query Type")
+    ax.set_ylabel("Mean completeness (0-3)")
+    ax.set_ylim(0.0, 3.0)
+    ax.set_title("Mean Completeness by Query Type")
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     fig.savefig(path, dpi=150)
@@ -1156,7 +1106,6 @@ def _agreement_rows(report: AgreementReport | None) -> list[dict[str, str]]:
 
 
 def _by_query_type_rows(context: ReportContext) -> list[dict[str, str]]:
-    pass_fail_by_id = {result.query_id: result for result in context.pass_fail_results}
     grouped: dict[str, list[str]] = defaultdict(list)
     for item in context.items:
         grouped[item.query_type.value].append(item.id)
@@ -1169,10 +1118,6 @@ def _by_query_type_rows(context: ReportContext) -> list[dict[str, str]]:
                 {
                     "query_type": query_type,
                     "n": "0",
-                    "passes": "0",
-                    "pass_rate_fraction": "0.0",
-                    "pass_rate": "0.0%",
-                    "pass_rate_ci_95": "n/a",
                     "mean_citation_support": "",
                     "mean_completeness": "",
                     "mean_uncertainty_handling": "",
@@ -1180,19 +1125,11 @@ def _by_query_type_rows(context: ReportContext) -> list[dict[str, str]]:
             )
             continue
 
-        passes = sum(
-            pass_fail_by_id[query_id].verdict == "PASS" for query_id in query_ids
-        )
-        ci = wilson_ci(passes, len(query_ids))
         ensemble_values = [context.ensembles[query_id] for query_id in query_ids]
         rows.append(
             {
                 "query_type": query_type,
                 "n": str(len(query_ids)),
-                "passes": str(passes),
-                "pass_rate_fraction": f"{ci.proportion:.6f}",
-                "pass_rate": _fmt_pct(ci.proportion),
-                "pass_rate_ci_95": _fmt_ci(ci.lower, ci.upper),
                 "mean_citation_support": _fmt_float(
                     mean(value.citation_support for value in ensemble_values)
                 ),
@@ -1283,8 +1220,6 @@ def _write_rows_csv(path: Path, rows: list[dict[str, object]]) -> None:
 
 def _write_summary_json(context: ReportContext, metrics_dir: Path) -> None:
     metrics_dir.mkdir(parents=True, exist_ok=True)
-    passes = sum(result.verdict == "PASS" for result in context.pass_fail_results)
-    total = len(context.pass_fail_results)
     summary: dict[str, Any] = {
         "mode": "strict_full" if context.strict_mode else "dry_run",
         "processed_items": len(context.items),
@@ -1292,11 +1227,6 @@ def _write_summary_json(context: ReportContext, metrics_dir: Path) -> None:
         "judgment_rows": len(context.judgments),
         "judges_present": sorted({aggregate.judge for aggregate in context.per_judge.values()}),
         "query_ids": [item.id for item in context.items],
-        "pass_rate": {
-            "passes": passes,
-            "total": total,
-            "rate": (passes / total) if total else 0.0,
-        },
         "routing": {
             "exact_match_rate": context.routing_metrics.exact_match_rate,
             "micro_precision": context.routing_metrics.micro_precision,

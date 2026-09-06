@@ -361,7 +361,6 @@ def test_build_report_cli_writes_sections_tables_plots_and_banner(
 
     headings = [
         "## 1. Dataset Summary",
-        "## 2. Overall Pass Rate",
         "## 3. Mean Judge Score Per Dimension",
         "## 4. Guideline-Routing Accuracy",
         "## 5. Context Gate Sensitivity / Specificity",
@@ -386,7 +385,6 @@ def test_build_report_cli_writes_sections_tables_plots_and_banner(
         "tables/score_distributions.csv",
         "tables/routing_accuracy.csv",
         "tables/gate_confusion.csv",
-        "tables/pass_fail_summary.csv",
         "tables/agreement.csv",
         "tables/by_query_type.csv",
         "plots/score_distributions.png",

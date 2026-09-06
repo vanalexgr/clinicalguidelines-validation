@@ -1,66 +1,105 @@
-# ClinicalGuidelines.io — LLM-as-Judge Validation Pipeline
+# ClinicalGuidelines.io — benchmark and evaluation pipeline
 
-Internal validation harness that produces the quantitative evaluation for the architecture manuscript
-*"A Multi-Guideline, Context-Aware Clinical Agent for Vascular Surgery Decision Support."* It runs a
-benchmark query set through the ClinicalGuidelines.io agent, scores the answers with a calibrated
-LLM-as-judge, and reports routing accuracy, Context Gate sensitivity/specificity, citation existence
-accuracy, hallucination (unsupported-claim) rate, safety-critical discordance, and by-query-type
-performance — as a near-term bridge before the full prospective multicenter study.
+Data and code behind the quantitative evaluation in *"A Multi-Guideline Clinical Agent for
+Vascular Surgery: Architecture, Implementation, and Benchmark Evaluation"* (Journal of the
+American Medical Informatics Association, under review).
 
-This is a **faithfulness and safety-behaviour benchmark**. It measures objective design claims —
-corpus constraint, routing, citation grounding, gate behaviour, and the absence of fabricated
-content. It deliberately does **not** score *clinical correctness*: a clinical case may admit several
-defensible recommendations, so judging an answer against a single reference recommendation cannot
-validly separate genuine error from legitimate clinical variation. Clinical acceptability is reserved
-for the planned prospective study. `config/rubric.yaml` is the machine-readable rubric. The split
-between *deterministic* metrics (routing, gate, citation existence) and *judge-dependent* metrics
-(faithfulness, completeness, uncertainty handling, hallucination, safety) is the core defensibility
-decision.
+Everything reported in the manuscript can be regenerated from this repository. No API keys
+and no network access are required.
 
-> Inter-rater reliability (Krippendorff's α) is computed over the four originally-elicited ordinal
-> rating dimensions and is reported as a reliability statistic only; no composite clinical pass is
-> derived from it.
-
-## Current snapshot
-
-The repo now includes Benchmark v2:
-
-- `55` benchmark items in `data/benchmark/benchmark_queries.v2.jsonl`
-- live Context Gate support in the agent client
-- integrated citation-tier / hallucination reclassification reporting
-- hardened judge recovery and cache reconstruction tooling
-- calibrated judge token budgets in `config/config.yaml` that reproduce the completed `330`-row run
-
-The latest completed rerun is documented in `docs/benchmark_v2_phase3_rerun_2026-06-06.md`.
-
-## Pipeline (7 steps)
-1. Benchmark query set with human-authored gold labels (`data/benchmark/`).
-2. Generate answers with the agent (`src/runner/`).
-3. LLM-as-judge evaluation — judge evaluates *support*, never answers the question (`src/judge/`).
-4. Structured rubric — ordinal quality dimensions (Likert 0–3) + binary safety/hallucination
-   (`config/rubric.yaml`). Clinical correctness is deliberately not scored.
-5. Faithfulness and safety-behaviour metrics reported individually — routing accuracy, scope
-   enforcement, gate sensitivity/specificity, citation existence accuracy, and unsupported-claim
-   rate — plus a global safety flag (`src/metrics/pass_fail.py`). No composite clinical pass is applied.
-6. Discordance review export for the clinical team (`src/discordance/`).
-7. Paper-ready report, tables, plots (`src/report/`).
-
-## Quickstart
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env          # fill in keys + agent endpoint
-cp data/benchmark/benchmark_queries.seed.jsonl data/benchmark/benchmark_queries.jsonl
-python -m src.runner.generate_answers --config config/config.yaml --dry-run   # confirm agent API shape
+python -m scripts.reproduce_paper
+```
+
+The script recomputes each figure from the committed artifacts and prints it beside the value
+printed in the paper, so any discrepancy is visible rather than taken on trust.
+
+## What is measured
+
+This is a **faithfulness and safety-behaviour benchmark**. It tests objective design claims —
+corpus constraint, guideline routing, citation grounding, gate behaviour, and the presence of
+unsupported content. It does **not** score the clinical acceptability of complete answers: a
+clinical case may admit several defensible recommendations, so scoring a free-text answer
+against a single reference cannot separate genuine error from legitimate clinical variation.
+Clinical acceptability is reserved for the planned prospective study.
+
+The core design decision is the split between *deterministic* metrics (routing, gate
+behaviour, citation existence) and *judge-dependent* metrics (faithfulness, completeness,
+uncertainty handling, unsupported claims), with every claim the automated judges flagged
+subsequently adjudicated by vascular surgeons.
+
+## Reported results
+
+| Metric | Value | 95% CI |
+|---|---|---|
+| Guideline routing recall | 98.4% (61/62) | 91.4–99.7% |
+| Guideline routing precision | 79.2% (61/77) | — |
+| Exact guideline-set reproduction | 70.9% (39/55) | 57.9–81.2% |
+| Context Gate specificity | 91.9% (34/37) | 78.7–97.2% |
+| Context Gate sensitivity | 78.6% (11/14) | 52.4–92.4% |
+| Mean parameter recall when fired | 0.29 | — |
+| Citation existence accuracy | 100% (259/259) | 98.5–100% |
+| Out-of-scope queries declined | 100% (4/4) | 51.0–100% |
+| In-scope queries inappropriately refused | 13.7% (7/51) | — |
+| Screening unsupported-claim rate | 18.2% (10/55) | 10.2–30.3% |
+| Adjudicated clinical error rate | 5.5–7.3% by rater | — |
+| Provenance gap (correct but ungrounded) | 10.9% (6/55) | 5.1–22.2% |
+| Krippendorff's α (ordinal dimensions) | 0.586 | — |
+
+Two vascular surgeons adjudicated the flagged claims. Agreement on whether a claim was a
+clinical error was 93.3% (Cohen's κ = 0.86). Severity grading initially diverged and
+converged after the definition of a harmful error was made explicit; no error was finally
+graded capable of causing harm.
+
+## Pipeline
+
+1. Benchmark items with human-authored, surgeon-verified gold keys — `data/benchmark/`
+2. Answer generation against the deployed agent — `src/runner/`, `src/agent_client/`
+3. LLM-as-judge scoring; the judge evaluates *support*, never answers the question — `src/judge/`
+4. Structured rubric, ordinal quality dimensions plus binary safety flags — `config/rubric.yaml`
+5. Deterministic and judge-dependent metrics, reported individually — `src/metrics/`
+6. Clinician adjudication of every flagged claim — `data/annotation/`
+7. Discordance export and report generation — `src/discordance/`, `src/report/`
+
+## What is in the repository
+
+| Path | Contents |
+|---|---|
+| `data/benchmark/benchmark_queries.v2.jsonl` | The 55 benchmark items with gold keys, all surgeon-verified |
+| `data/annotation/hallucination_overrides.jsonl` | First-rater adjudication of all 58 distinct flagged claims |
+| `data/annotation/second_rater_adjudication.jsonl` | Blinded second-rater adjudication, both raters' verdicts and the disagreements |
+| `data/corpus/recommendation_index.json` | The recommendation index citations are verified against |
+| `outputs/answers/answers.jsonl` | The 55 recorded agent responses |
+| `outputs/judgments/judgments.jsonl` | All 330 judge records |
+| `outputs/metrics/`, `outputs/report/` | Computed metrics, tables, plots, generated report |
+| `src/`, `scripts/` | The analysis code, including the adjudication tooling |
+
+`data/benchmark/benchmark_queries.seed.jsonl` is a 16-item fixture used by the test suite
+only. It is not part of the reported evaluation.
+
+## Adjudication tooling
+
+The clinician adjudication is reproducible, not just its result. `scripts/` contains the
+worksheet builders, the converter that writes verdicts back into the annotation files, the
+blinded second-rater form builder, and the agreement scorer. The second-rater form
+deliberately mixes claims the first rater called errors with claims they cleared, so
+agreement can be measured rather than a re-check performed.
+
+## Running the full pipeline
+
+Regenerating answers or judgments requires API credentials and contacts the deployed system:
+
+```bash
+cp .env.example .env          # fill in keys and the agent endpoint
+python -m src.runner.generate_answers --config config/config.yaml --dry-run
 bash scripts/run_all.sh
 ```
 
-## Run records
+This is not needed to reproduce the reported figures.
 
-- `docs/benchmark_v2_run_2026-06-06.md` — initial benchmark-v2 full-run record
-- `docs/benchmark_v2_phase2_rerun_2026-06-06.md` — post-fix Phase 2 rerun with final `330` judgments
-- `docs/benchmark_v2_phase3_rerun_2026-06-06.md` — metric-fix + single-pass rerun after deployed gate update
+## Safety and data
 
-## Safety / data
-No real patient data in the repo — benchmark items are synthetic vignettes. Secrets live only in `.env`.
-Gold answer keys require clinical sign-off (`verified: true`) before the report drops its PRELIMINARY banner.
+No real patient data. Benchmark items are synthetic vignettes written by the investigators
+and verified by a vascular surgeon. Secrets live only in `.env`, which is not tracked.
