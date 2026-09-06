@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +32,16 @@ PAPER = {
     "screening unsupported-claim rate": "18.2% (10/55)",
     "adjudicated clinical error rate": "7.3% (4/55)",
     "provenance gap": "10.9% (6/55)",
+    # Table 4: the judge-agreement rows, which the paper reports at three
+    # aggregations because the choice of aggregation moves the value.
+    "judgment-level flagged rate": "8.8% (29/330)",
+    "both-judge concordant rate": "7.3% (4/55)",
+    "items with no flagged claim": "81.8% (45/55)",
+    "kappa, per judgment": "0.288",
+    "kappa, per item, majority of runs": "0.124",
+    "kappa, per item, any run": "0.522",
+    "gate coverage": "74.5% (41/55)",
+    "inappropriate refusal rate": "13.7% (7/51)",
     # Table 5, Panel A: distinct adjudicated claims, not judgment records.
     "adjudicated claims, total": "58",
     "adjudicated: judge flagged in error": "12",
@@ -52,6 +63,88 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     centre = (p + z * z / (2 * n)) / den
     half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / den
     return max(0.0, centre - half), min(1.0, centre + half)
+
+
+def _cohen_kappa(pairs: list[tuple[bool, bool]]) -> float:
+    n = len(pairs)
+    observed = sum(a == b for a, b in pairs) / n
+    pa = sum(a for a, _ in pairs) / n
+    pb = sum(b for _, b in pairs) / n
+    expected = pa * pb + (1 - pa) * (1 - pb)
+    return (observed - expected) / (1 - expected)
+
+
+def judge_agreement(root: Path) -> dict[str, float]:
+    """Judge agreement on the binary flag at the three aggregations in Table 4.
+
+    Kappa moves from 0.124 to 0.522 depending on whether an item counts as
+    flagged on a majority of runs or on any run, so the paper reports all three
+    rather than picking one.
+    """
+    import collections
+
+    rows = [json.loads(line) for line in
+            (root / "outputs/judgments/judgments.jsonl").read_text().splitlines() if line.strip()]
+    flagged = lambda row: bool((row.get("hallucination") or {}).get("present"))  # noqa: E731
+    judges = sorted({row["judge"] for row in rows})
+
+    by_run: dict[tuple[str, int], dict[str, bool]] = collections.defaultdict(dict)
+    by_item: dict[str, dict[str, list[bool]]] = collections.defaultdict(
+        lambda: collections.defaultdict(list))
+    for row in rows:
+        by_run[(row["query_id"], row["run_index"])][row["judge"]] = flagged(row)
+        by_item[row["query_id"]][row["judge"]].append(flagged(row))
+
+    a, b = judges
+    per_judgment = [(v[a], v[b]) for v in by_run.values() if len(v) == 2]
+    majority = [(sum(v[a]) * 2 > len(v[a]), sum(v[b]) * 2 > len(v[b])) for v in by_item.values()]
+    any_run = [(any(v[a]), any(v[b])) for v in by_item.values()]
+
+    return {
+        "rows": len(rows),
+        "flagged": sum(flagged(row) for row in rows),
+        "both": sum(1 for v in by_item.values() if any(v[a]) and any(v[b])),
+        "clean": sum(1 for v in by_item.values() if not any(v[a]) and not any(v[b])),
+        "kappa_judgment": _cohen_kappa(per_judgment),
+        "kappa_majority": _cohen_kappa(majority),
+        "kappa_any": _cohen_kappa(any_run),
+    }
+
+
+def gate_coverage(root: Path) -> dict[str, int]:
+    """Items whose outcome the pre-retrieval judgement decided, rather than a rule.
+
+    Knowledge questions, out-of-scope queries and follow-up turns all meet a
+    deterministic suppression rule, so the Gate cannot fire on them.
+    """
+    items = [json.loads(line) for line in
+             (root / "data/benchmark/benchmark_queries.v2.jsonl").read_text().splitlines()
+             if line.strip()]
+    suppressed = {"A_knowledge", "G_should_refuse", "D_followup"}
+    return {
+        "suppressed": sum(1 for i in items if i["query_type"] in suppressed),
+        "judged": sum(1 for i in items if i["query_type"] not in suppressed),
+    }
+
+
+# The predefined out-of-corpus refusal; same pattern as scripts/revision_metrics.py.
+REFUSAL = re.compile(r"does not (?:explicitly )?address", re.I)
+
+
+def refusal_rate(root: Path) -> dict[str, int]:
+    """In-scope queries that received the out-of-corpus refusal anyway."""
+    bench = {i["id"]: i for i in
+             (json.loads(line) for line in
+              (root / "data/benchmark/benchmark_queries.v2.jsonl").read_text().splitlines()
+              if line.strip())}
+    answers = {a["id"]: a for a in
+               (json.loads(line) for line in
+                (root / "outputs/answers/answers.jsonl").read_text().splitlines() if line.strip())}
+    wrong = [qid for qid, a in answers.items()
+             if REFUSAL.search(a.get("raw_response", ""))
+             and not bench[qid]["gold"].get("acceptable_refusal")]
+    in_scope = [q for q, i in bench.items() if i["query_type"] != "G_should_refuse"]
+    return {"wrong": len(wrong), "in_scope": len(in_scope)}
 
 
 def run(cmd: list[str]) -> None:
@@ -81,6 +174,8 @@ def main() -> None:
         (root / "outputs/metrics/citation_breakdown.json").read_text(encoding="utf-8")
     )
     r, g, c = summary["routing"], summary["gate"], summary["citation"]
+    judge = judge_agreement(root)
+    coverage, refusals = gate_coverage(root), refusal_rate(root)
     rate = breakdown["hallucination_rate_summary"]
     types = breakdown["hallucination_types"]
     distinct = types["distinct_counts"]
@@ -102,6 +197,14 @@ def main() -> None:
         "screening unsupported-claim rate": f"{rate['reported_rate']:.1%} (10/55)",
         "adjudicated clinical error rate": f"{rate['adjusted_rate']:.1%} ({len(rate['items_real_error'])}/55)",
         "provenance gap": f"{breakdown['provenance_gap']['rate']:.1%} ({len(breakdown['provenance_gap']['items'])}/55)",
+        "judgment-level flagged rate": f"{judge['flagged'] / judge['rows']:.1%} ({judge['flagged']}/{judge['rows']})",
+        "both-judge concordant rate": f"{judge['both'] / 55:.1%} ({judge['both']}/55)",
+        "items with no flagged claim": f"{judge['clean'] / 55:.1%} ({judge['clean']}/55)",
+        "kappa, per judgment": f"{judge['kappa_judgment']:.3f}",
+        "kappa, per item, majority of runs": f"{judge['kappa_majority']:.3f}",
+        "kappa, per item, any run": f"{judge['kappa_any']:.3f}",
+        "gate coverage": f"{coverage['judged'] / 55:.1%} ({coverage['judged']}/55)",
+        "inappropriate refusal rate": f"{refusals['wrong'] / refusals['in_scope']:.1%} ({refusals['wrong']}/{refusals['in_scope']})",
         "adjudicated claims, total": str(types["distinct_claims"]),
         "adjudicated: judge flagged in error": str(distinct.get("FALSE_POSITIVE", 0)),
         "adjudicated: correct but ungrounded": str(distinct.get("UNGROUNDED_CORRECT", 0)),
