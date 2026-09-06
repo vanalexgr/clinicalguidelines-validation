@@ -47,15 +47,22 @@ def _asks_for_clarification(text: str) -> bool:
     return any(re.search(p, body, re.I | re.M) for p in CLARIFY_PATTERNS)
 
 
-def _parameter_recall(text: str, required: list[str]) -> tuple[float, list[str]]:
-    """Share of gold mandatory parameters whose key terms appear in the reply.
+def _questions_only(text: str) -> str:
+    """The interrogative sentences of a reply.
 
-    Mirrors the keyword-in-text rule the deterministic gate metric uses, so the
-    two numbers are comparable rather than merely adjacent.
+    Scoring the whole reply conflates a parameter the model *asked for* with one
+    it merely mentioned while answering, which inflated recall to 0.92 on runs
+    that asked nothing at all. Only what is posed as a question counts as a
+    request, which is what the gate metric measures.
     """
+    return " ".join(re.findall(r"[^.!?\n]*\?", text))
+
+
+def _parameter_recall(text: str, required: list[str]) -> tuple[float, list[str]]:
+    """Share of gold mandatory parameters the reply actually asks for."""
     if not required:
         return float("nan"), []
-    low = text.lower()
+    low = _questions_only(text).lower()
     hits = []
     for param in required:
         terms = [t for t in re.split(r"[^a-z0-9.]+", param.lower()) if len(t) > 3]
@@ -69,6 +76,10 @@ def main() -> None:
     parser.add_argument("--config", type=Path, default=Path("config/config.yaml"))
     parser.add_argument("--model", default="gpt-5-chat-latest")
     parser.add_argument("--runs", type=int, default=3)
+    # GPT-5 spends its completion budget on reasoning first. At 1200 tokens the
+    # whole budget went to reasoning and every reply came back empty, which scores
+    # as "asked nothing" -- a false negative that looks like a real finding.
+    parser.add_argument("--max-tokens", type=int, default=6000)
     parser.add_argument("--out", type=Path, default=Path("outputs/metrics/nogate_baseline.jsonl"))
     parser.add_argument("--env", type=Path, default=Path(".env"))
     args = parser.parse_args()
@@ -100,17 +111,26 @@ def main() -> None:
                 user=question,
                 model=args.model,
                 temperature=0.0,
-                max_tokens=1200,
+                max_tokens=args.max_tokens,
             )
             text = result.text if hasattr(result, "text") else str(result)
+            if not text.strip():
+                raise SystemExit(
+                    f"{item['id']} run {run}: empty response from {args.model}. "
+                    "A reasoning model exhausted its budget before emitting text; "
+                    "raise --max-tokens. Refusing to score this as 'no clarification "
+                    "requested'."
+                )
             asked = _asks_for_clarification(text)
             recall, hits = _parameter_recall(text, required)
+            asked_any_question = bool(_questions_only(text).strip())
             records.append(
                 {
                     "query_id": item["id"],
                     "run_index": run,
                     "model": args.model,
                     "asked_for_clarification": asked,
+                    "asked_any_question": asked_any_question,
                     "parameter_recall": recall,
                     "parameters_requested": hits,
                     "required_parameters": required,
